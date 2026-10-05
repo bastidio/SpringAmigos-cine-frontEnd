@@ -9,6 +9,10 @@ export default defineConfig({
     // cree que todo viene del mismo origen (localhost:5173) y no hay CORS.
     proxy: {
       '/api': 'http://localhost:4002',
+      // Los controllers de peliculas y funciones no estan bajo /api,
+      // asi que van aparte.
+      '/peliculas': 'http://localhost:4002',
+      '/funciones': 'http://localhost:4002',
     },
   },
 })
