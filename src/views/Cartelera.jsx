@@ -1,9 +1,9 @@
 import PeliculaList from '../components/cartelera/PeliculaList';
 
-// Vista: solo renderiza. La logica y el estado estan en PeliculaList.
+// Vista de inicio (URL "/"). Solo renderiza: la logica esta en PeliculaList.
 const Cartelera = () => {
   return (
-    <section className="cartelera">
+    <section className="pagina">
       <PeliculaList />
     </section>
   );

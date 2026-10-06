@@ -1,0 +1,241 @@
+/* Estilos de la vista Detalle de pelicula: ficha y funciones por dia.
+   Medidas y efectos del Figma (pantalla "Pelicula"). */
+
+/* ---------- Detalle de una pelicula ---------- */
+
+.detalle {
+  position: relative;
+}
+
+/* Franja de arriba: el poster de fondo, fundido hacia el color de la pagina. */
+.detalle__fondo {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+}
+
+.detalle__fondo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detalle__fondo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(11, 7, 16, 0.3) 0%, rgba(11, 7, 16, 1) 100%);
+}
+
+.detalle__contenido {
+  position: relative;
+  z-index: 1;
+  max-width: 1152px;
+  margin: -128px auto 0;
+  padding: 0 24px;
+}
+
+.detalle__ficha {
+  display: flex;
+  gap: 32px;
+}
+
+.detalle__poster {
+  flex-shrink: 0;
+  width: 208px;
+  align-self: flex-start;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.12);
+}
+
+.detalle__poster img {
+  display: block;
+  width: 100%;
+  background-color: var(--superficie);
+}
+
+.detalle__sin-poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+}
+
+.detalle__info {
+  flex: 1;
+  padding-top: 8px;
+}
+
+.detalle__etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.detalle__titulo {
+  font-family: var(--titulos);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 40px;
+  color: var(--texto);
+  margin-bottom: 12px;
+}
+
+.detalle__resumen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  color: var(--texto-suave);
+  margin-bottom: 16px;
+}
+
+.detalle__datos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 384px;
+  margin-bottom: 20px;
+}
+
+.detalle__datos dt,
+.detalle__subtitulo {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--texto-suave);
+}
+
+.detalle__datos dt {
+  margin-bottom: 2px;
+}
+
+.detalle__datos dd {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--texto);
+}
+
+.detalle__subtitulo {
+  margin-bottom: 8px;
+}
+
+.detalle__sinopsis {
+  font-size: 14px;
+  line-height: 1.625;
+  color: var(--texto-suave);
+}
+
+/* Linea fina dorada que separa la ficha de las funciones. */
+.detalle__separador {
+  height: 1px;
+  border: none;
+  margin: 40px 0;
+  background: linear-gradient(to right, transparent, #d4af37, transparent);
+  opacity: 0.35;
+}
+
+.detalle__funciones-titulo {
+  font-family: var(--titulos);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  color: var(--texto);
+  margin-bottom: 24px;
+}
+
+.detalle__dia {
+  margin-bottom: 32px;
+}
+
+.detalle__dia:last-child {
+  margin-bottom: 0;
+  padding-bottom: 64px;
+}
+
+.detalle__dia-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--texto-suave);
+  border-bottom: 1px solid var(--borde);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.detalle__funciones {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.detalle__contenido > .pagina__mensaje {
+  padding-bottom: 64px;
+}
+
+/* ---------- Tarjeta de una funcion ---------- */
+
+.funcion-card {
+  text-align: left;
+  background-color: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.funcion-card__arriba {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.funcion-card__hora {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  color: var(--texto);
+}
+
+.funcion-card__hs {
+  font-size: 12px;
+  color: var(--texto-suave);
+  margin-left: 4px;
+}
+
+.funcion-card__formato {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: rgba(139, 92, 246, 0.15);
+  color: var(--morado);
+}
+
+.funcion-card__sala,
+.funcion-card__idioma {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--texto-suave);
+}
+
+.funcion-card__sala {
+  margin-bottom: 4px;
+}
+
+.funcion-card__idioma {
+  margin-bottom: 12px;
+}
+
+.funcion-card__precio {
+  font-weight: 700;
+  color: var(--dorado);
+}

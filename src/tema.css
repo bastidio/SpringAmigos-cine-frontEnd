@@ -1,0 +1,164 @@
+/* Estilos compartidos por todas las vistas: tipografias, paleta, botones y
+   etiquetas. Los valores salen del Figma. Se importa una sola vez, en App.jsx. */
+
+/* Tipografias del Figma: Playfair Display para titulos, Inter para el resto. */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Paleta del Figma, guardada en variables para no repetir los colores. */
+:root {
+  --fondo: #0b0710;
+  --superficie: #16101f;
+  --elevado: #1f1730;
+  --morado: #8b5cf6;
+  --morado-profundo: #4c1d95;
+  --dorado: #d4af37;
+  --texto: #f5f3f7;
+  --texto-suave: #a79bb8;
+  --borde: #2a2138;
+  --error: #f87171;
+  --titulos: 'Playfair Display', Georgia, serif;
+  --cuerpo: 'Inter', system-ui, sans-serif;
+}
+
+/* Base de cada vista: fondo oscuro, letra y texto alineado a la izquierda. */
+.pagina {
+  flex-grow: 1;
+  min-height: 100vh;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--cuerpo);
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: left;
+}
+
+.pagina,
+.pagina * {
+  box-sizing: border-box;
+}
+
+/* Saca los margenes y tamanos que index.css les pone a titulos y parrafos.
+   :where() hace que cualquier clase de un componente pueda pisar esto. */
+:where(.pagina) :where(p, h1, h2, h3, dl, dd) {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+  color: inherit;
+}
+
+/* Cargando / error / sin datos. */
+.pagina__mensaje {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+}
+
+.pagina > .pagina__mensaje {
+  padding: 40px 24px;
+}
+
+.pagina__mensaje--error {
+  color: var(--error);
+}
+
+/* ---------- Botones ---------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-family: var(--cuerpo);
+  font-size: 14.4px;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.boton--primario {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  color: var(--texto);
+  border: none;
+  font-weight: 600;
+}
+
+.boton--primario:hover {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+.boton--primario:active {
+  transform: translateY(0);
+}
+
+.boton--secundario {
+  background: transparent;
+  color: var(--morado);
+  border: 1px solid var(--morado);
+  font-weight: 500;
+}
+
+.boton--secundario:hover {
+  background: rgba(139, 92, 246, 0.1);
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.2);
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.boton:focus-visible {
+  outline: 2px solid var(--morado);
+  outline-offset: 2px;
+}
+
+/* ---------- Etiquetas (clasificacion, descuento) ---------- */
+
+.etiqueta {
+  display: inline-block;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #a78bfa;
+  font-size: 11.2px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3.2px 9.6px;
+  border-radius: 4px;
+}
+
+.etiqueta--dorada {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.3);
+  color: var(--dorado);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- Hueco cuando no hay imagen cargada ---------- */
+
+.sin-imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--texto-suave);
+  background-color: var(--superficie);
+}
+
+/* Etiqueta apoyada sobre una foto: lleva un fondo oscuro atras para que se
+   lea aunque la imagen sea clara. */
+.etiqueta--sobre-imagen {
+  position: absolute;
+  z-index: 1;
+  box-shadow: 0 0 0 100px rgba(11, 7, 16, 0.78) inset;
+}

@@ -9,9 +9,9 @@ const PeliculaCard = ({ id, titulo, poster_url, duracion, clasificacion, idioma,
         {poster_url ? (
           <img className="pelicula-card__poster" src={poster_url} alt="" />
         ) : (
-          <span className="pelicula-card__poster pelicula-card__poster--vacio">Sin póster</span>
+          <span className="pelicula-card__poster sin-imagen">Sin póster</span>
         )}
-        <span className="etiqueta pelicula-card__clasificacion">{clasificacion}</span>
+        <span className="etiqueta etiqueta--sobre-imagen pelicula-card__clasificacion">{clasificacion}</span>
       </span>
       <span className="pelicula-card__titulo">{titulo}</span>
       <span className="pelicula-card__datos">

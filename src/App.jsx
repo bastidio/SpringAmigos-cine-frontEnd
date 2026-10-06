@@ -1,25 +1,38 @@
+// tema.css va primero: asi los estilos de cada componente pueden pisarlo.
+import './tema.css';
 import { useState } from 'react';
-import Auth from './components/auth/Auth';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import Navigation from './components/Navigation';
 import Cartelera from './views/Cartelera';
+import DetallePelicula from './views/DetallePelicula';
+import Login from './views/Login';
 
+// App no es una vista: define que vista se muestra en cada URL.
 function App() {
   const [token, setToken] = useState(null);
+  const navigate = useNavigate();
 
-  if (!token) {
-    return <Auth onAutenticado={setToken} />;
-  }
+  // Cuando el login o el registro consiguen un token, se guarda y se vuelve
+  // a la cartelera.
+  const iniciarSesion = (nuevoToken) => {
+    setToken(nuevoToken);
+    navigate('/');
+  };
 
-  // TODO: reemplazar por <Kiosco rol="USUARIO" /> cuando exista
-  // src/components/kiosco/Kiosco.jsx (y decodificar el rol real del token).
+  const cerrarSesion = () => {
+    setToken(null);
+    navigate('/');
+  };
+
   return (
     <>
-      <Cartelera />
-      <main style={{ padding: 32 }}>
-        <p>Sesión iniciada.</p>
-        <button type="button" onClick={() => setToken(null)}>
-          Cerrar sesión
-        </button>
-      </main>
+      <Navigation haySesion={token !== null} cerrarSesion={cerrarSesion} />
+
+      <Routes>
+        <Route path="/" element={<Cartelera />} />
+        <Route path="/pelicula/:id" element={<DetallePelicula />} />
+        <Route path="/login" element={<Login onAutenticado={iniciarSesion} />} />
+      </Routes>
     </>
   );
 }
