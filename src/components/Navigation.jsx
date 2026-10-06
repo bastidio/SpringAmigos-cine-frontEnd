@@ -31,6 +31,14 @@ const Navigation = ({ haySesion, cerrarSesion }) => {
           >
             Cartelera
           </Link>
+          <Link
+            to="/kiosco"
+            className={
+              location.pathname === '/kiosco' ? 'nav__link nav__link--activo' : 'nav__link'
+            }
+          >
+            Kiosco
+          </Link>
         </nav>
 
         {haySesion ? (

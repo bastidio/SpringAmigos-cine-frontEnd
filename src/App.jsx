@@ -5,6 +5,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Cartelera from './views/Cartelera';
 import DetallePelicula from './views/DetallePelicula';
+import Kiosco from './views/Kiosco';
 import Login from './views/Login';
 
 // App no es una vista: define que vista se muestra en cada URL.
@@ -31,6 +32,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Cartelera />} />
         <Route path="/pelicula/:id" element={<DetallePelicula />} />
+        <Route path="/kiosco" element={<Kiosco />} />
         <Route path="/login" element={<Login onAutenticado={iniciarSesion} />} />
       </Routes>
     </>

@@ -1,0 +1,190 @@
+/* Estilos de la vista Kiosco: categorias y grilla de productos.
+   Medidas y efectos del Figma (pantalla "Kiosco"). */
+
+.kiosco {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 32px 24px 96px;
+}
+
+.kiosco__titulo {
+  font-family: var(--titulos);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 36px;
+  color: var(--texto);
+}
+
+.kiosco__bajada {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+/* ---------- Categorias ---------- */
+
+.kiosco__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tab {
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-family: var(--cuerpo);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--texto-suave);
+  background-color: var(--superficie);
+  border: 1px solid var(--borde);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tab--activa {
+  color: var(--texto);
+  background-color: var(--morado);
+  border-color: var(--morado);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--morado);
+  outline-offset: 2px;
+}
+
+/* ---------- Grilla de productos ---------- */
+
+.kiosco__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 1023px) {
+  .kiosco__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .kiosco__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.producto-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: var(--superficie);
+  border: 1px solid var(--borde);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.producto-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 32px rgba(139, 92, 246, 0.22);
+}
+
+.producto-card__marco {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background-color: var(--elevado);
+}
+
+.producto-card__imagen {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.producto-card__imagen.sin-imagen {
+  display: flex;
+  background-color: var(--elevado);
+}
+
+.producto-card:hover img.producto-card__imagen {
+  transform: scale(1.05);
+}
+
+.producto-card__descuento {
+  top: 8px;
+  left: 8px;
+}
+
+.producto-card__contenido {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 16px;
+}
+
+.producto-card__categoria {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--morado);
+  margin-bottom: 4px;
+}
+
+.producto-card__nombre {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--texto);
+  margin-bottom: 4px;
+}
+
+.producto-card__descripcion {
+  flex: 1;
+  font-size: 12px;
+  line-height: 1.625;
+  color: var(--texto-suave);
+  margin-bottom: 12px;
+}
+
+.producto-card__fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.producto-card__precio {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 28px;
+  color: var(--dorado);
+}
+
+.producto-card__precio-anterior {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--texto-suave);
+  text-decoration: line-through;
+}
+
+.producto-card__ultimas {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--error);
+}
+
+.producto-card__agregar {
+  width: 100%;
+  padding: 6.4px 12px;
+  font-size: 12.8px;
+}
