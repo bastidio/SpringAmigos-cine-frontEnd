@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import PeliculaFicha from './PeliculaFicha';
 import FuncionCard from './FuncionCard';
 import './Detalle.css';
@@ -75,6 +75,11 @@ const PeliculaDetalle = () => {
       <div className="detalle__fondo">
         {pelicula.poster_url && <img src={pelicula.poster_url} alt="" />}
       </div>
+
+      {/* Es una palabra y no un boton: para volver se usa Link. */}
+      <Link to="/" className="detalle__volver">
+        ← Volver a la cartelera
+      </Link>
 
       <div className="detalle__contenido">
         <PeliculaFicha pelicula={pelicula} />

@@ -28,6 +28,31 @@
   background: linear-gradient(to bottom, rgba(11, 7, 16, 0.3) 0%, rgba(11, 7, 16, 1) 100%);
 }
 
+/* Link para volver, apoyado arriba a la izquierda sobre la franja. */
+.detalle__volver {
+  position: absolute;
+  top: 20px;
+  left: max(24px, calc((100% - 1152px) / 2 + 24px));
+  z-index: 2;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+  background-color: rgba(11, 7, 16, 0.6);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.detalle__volver:hover {
+  color: var(--texto);
+}
+
+.detalle__volver:focus-visible {
+  outline: 2px solid var(--morado);
+  outline-offset: 2px;
+}
+
 .detalle__contenido {
   position: relative;
   z-index: 1;
