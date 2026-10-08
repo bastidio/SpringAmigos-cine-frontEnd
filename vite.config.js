@@ -1,9 +1,10 @@
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   server: {
     // En desarrollo, Vite reenvia /api al backend Spring. Asi el navegador
     // cree que todo viene del mismo origen (localhost:5173) y no hay CORS.
