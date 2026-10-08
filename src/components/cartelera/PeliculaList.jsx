@@ -1,95 +1,65 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PeliculaDestacada from './PeliculaDestacada';
 import PeliculaCard from './PeliculaCard';
-import PeliculaDetalle from './PeliculaDetalle';
 import Filtro from './Filtro';
 import './Cartelera.css';
 
 // Componente padre de la cartelera: es el unico que tiene estado y logica.
-// Le pide los datos al backend, los guarda, y se los pasa a los hijos por props.
+// Le pide las peliculas al backend, las guarda en un estado local y se las
+// pasa a los hijos por props.
 const PeliculaList = () => {
   const [peliculas, setPeliculas] = useState([]);
-  const [funciones, setFunciones] = useState([]);
-  const [seleccionada, setSeleccionada] = useState(null);
   const [clasificacion, setClasificacion] = useState('Todos');
   const [idioma, setIdioma] = useState('Todos');
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  // Se ejecuta una sola vez, cuando el componente aparece en pantalla.
-  // GET /peliculas y GET /funciones son publicos (no necesitan token). Las
-  // rutas las reenvia el proxy de Vite al backend (ver vite.config.js).
+  const navigate = useNavigate();
+
+  // Pedirle datos al back es un efecto secundario: va adentro de un useEffect.
+  // Array de dependencias vacio: se ejecuta una sola vez, cuando el componente
+  // se monta. GET /peliculas es publico (no necesita token); la ruta la reenvia
+  // el proxy de Vite al backend (ver vite.config.js).
   useEffect(() => {
     fetch('/peliculas')
-      .then((respuesta) => {
-        if (!respuesta.ok) {
-          throw new Error('El backend respondió con error');
+      .then((response) => {
+        // fetch solo rechaza la promesa si falla la conexion. Si el back
+        // responde con un error (404, 500...), hay que mandarlo al catch a mano.
+        if (!response.ok) {
+          throw new Error('Error ' + response.status);
         }
-        return respuesta.json();
+        return response.json();
       })
       .then((data) => {
         setPeliculas(data);
+        setError(null);
         setCargando(false);
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('Error al mostrar la cartelera', error);
         setError('No se pudo cargar la cartelera. Revisá que el backend esté levantado.');
         setCargando(false);
-      });
-
-    fetch('/funciones')
-      .then((respuesta) => {
-        if (!respuesta.ok) {
-          throw new Error('El backend respondió con error');
-        }
-        return respuesta.json();
-      })
-      .then((data) => {
-        setFunciones(data);
-      })
-      .catch(() => {
-        setError('No se pudo cargar la cartelera. Revisá que el backend esté levantado.');
       });
   }, []);
 
-  // El click ocurre en la card (hijo), pero la logica vive aca (padre),
-  // porque este componente es el que tiene el estado.
+  // El click ocurre en la card (hijo), pero la logica vive aca (padre).
+  // Como es un boton, para cambiar de vista se usa useNavigate.
   const verDetalle = (id) => {
-    const pelicula = peliculas.find((p) => p.id === id);
-    setSeleccionada(pelicula);
-  };
-
-  const volver = () => {
-    setSeleccionada(null);
+    navigate(`/pelicula/${id}`);
   };
 
   // Primero "por las malas": cargando, error, lista vacia.
   if (cargando) {
-    return <p className="cartelera__mensaje">Cargando cartelera...</p>;
+    return <p className="pagina__mensaje">Cargando cartelera...</p>;
   }
 
   if (error !== null) {
-    return <p className="cartelera__mensaje cartelera__mensaje--error">{error}</p>;
+    return <p className="pagina__mensaje pagina__mensaje--error">{error}</p>;
   }
 
   if (peliculas.length === 0) {
-    return <p className="cartelera__mensaje">Todavía no hay películas en cartelera.</p>;
-  }
-
-  // Detalle: de todas las funciones, me quedo con las de la pelicula elegida
-  // y las ordeno por horario. filter devuelve un array nuevo, asi que sort
-  // ordena esa copia y el estado funciones no se toca.
-  if (seleccionada !== null) {
-    const funcionesDeLaPelicula = funciones
-      .filter((funcion) => funcion.pelicula.id === seleccionada.id)
-      .sort((a, b) => (a.horario > b.horario ? 1 : -1));
-
-    return (
-      <PeliculaDetalle
-        pelicula={seleccionada}
-        funciones={funcionesDeLaPelicula}
-        volver={volver}
-      />
-    );
+    return <p className="pagina__mensaje">Todavía no hay películas en cartelera.</p>;
   }
 
   // Opciones de los filtros: salen de las peliculas que mando el back.

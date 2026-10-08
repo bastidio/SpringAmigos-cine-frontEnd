@@ -1,0 +1,98 @@
+/* Barra de navegacion. Medidas y colores del Figma (componente "Navbar"). */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: rgba(11, 7, 16, 0.95);
+  border-bottom: 1px solid var(--borde);
+  backdrop-filter: blur(12px);
+  font-family: var(--cuerpo);
+  letter-spacing: normal;
+  text-align: left;
+}
+
+.nav,
+.nav * {
+  box-sizing: border-box;
+}
+
+.nav__contenido {
+  max-width: 1280px;
+  height: 64px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav__marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.nav__rombo {
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--dorado);
+}
+
+.nav__nombre {
+  font-family: var(--titulos);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+  color: var(--texto);
+}
+
+.nav__nombre-acento {
+  color: var(--morado);
+}
+
+.nav__cine {
+  margin-left: 4px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav__link {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--texto-suave);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.nav__link:hover {
+  color: var(--texto);
+}
+
+.nav__link--activo,
+.nav__link--activo:hover {
+  color: var(--morado);
+}
+
+.nav__boton {
+  padding: 8px 16px;
+  font-size: 13.6px;
+}
+
+.nav__marca:focus-visible,
+.nav__link:focus-visible {
+  outline: 2px solid var(--morado);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
