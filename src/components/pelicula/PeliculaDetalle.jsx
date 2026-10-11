@@ -108,6 +108,7 @@ const PeliculaDetalle = () => {
                 {funcionesDelDia.map((funcion) => (
                   <FuncionCard
                     key={funcion.id}
+                    id={funcion.id}
                     horario={funcion.horario}
                     sala={funcion.sala.nombre}
                     idioma={funcion.idioma}

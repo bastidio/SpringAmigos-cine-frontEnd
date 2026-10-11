@@ -1,12 +1,15 @@
+import { Link } from 'react-router-dom';
+
 // Componente "tonto": la tarjeta de UNA funcion (hora, sala, idioma,
 // formato y precio). PeliculaDetalle la renderiza una vez por funcion.
-const FuncionCard = ({ horario, sala, idioma, formato, precio_base }) => {
+// Toda la tarjeta es un Link: al tocarla se va al mapa de butacas de esa funcion.
+const FuncionCard = ({ id, horario, sala, idioma, formato, precio_base }) => {
   // El back manda el horario como texto: "2026-10-21T14:30:00".
   // slice corta un pedazo del texto sin modificar el original: aca, "14:30".
   const hora = horario.slice(11, 16);
 
   return (
-    <article className="funcion-card">
+    <Link to={`/funcion/${id}/butacas`} className="funcion-card">
       <div className="funcion-card__arriba">
         <p>
           <span className="funcion-card__hora">{hora}</span>
@@ -19,7 +22,7 @@ const FuncionCard = ({ horario, sala, idioma, formato, precio_base }) => {
       <p className="funcion-card__idioma">{idioma}</p>
 
       <p className="funcion-card__precio">${precio_base.toLocaleString('es-AR')}</p>
-    </article>
+    </Link>
   );
 };
 

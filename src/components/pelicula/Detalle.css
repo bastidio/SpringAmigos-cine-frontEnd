@@ -208,11 +208,26 @@
 /* ---------- Tarjeta de una funcion ---------- */
 
 .funcion-card {
+  display: block;
   text-align: left;
+  color: inherit;
+  text-decoration: none;
   background-color: var(--superficie);
   border: 1px solid var(--borde);
   border-radius: 12px;
   padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.funcion-card:hover {
+  border-color: var(--morado);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.funcion-card:focus-visible {
+  outline: 2px solid var(--morado);
+  outline-offset: 2px;
 }
 
 .funcion-card__arriba {

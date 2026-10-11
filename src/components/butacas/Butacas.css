@@ -1,0 +1,363 @@
+.butacas {
+  max-width: 1248px;
+  padding: 24px 48px 96px;
+}
+
+.butacas__volver {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.butacas__volver:hover {
+  color: var(--texto);
+}
+
+.butacas__volver:focus-visible {
+  outline: 2px solid var(--morado);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.butacas__encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 50px;
+}
+
+.butacas__titulo {
+  font-family: var(--titulos);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  color: var(--texto);
+}
+
+.butacas__bajada {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+  margin-top: 4px;
+}
+
+.butacas__precio {
+  flex-shrink: 0;
+  font-size: 14px;
+  padding: 4px 12px;
+  text-transform: none;
+}
+
+.butacas__cuerpo {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.mapa,
+.butacas__sin-butacas {
+  flex: 1;
+  min-width: 0;
+}
+
+.butacas__sin-butacas {
+  padding: 40px 0;
+  text-align: center;
+}
+
+.mapa__pantalla {
+  max-width: 760px;
+  margin: 0 auto 32px;
+  text-align: center;
+}
+
+.mapa__pantalla-luz {
+  height: 12px;
+  margin: 0 32px 4px;
+  border-radius: 9999px 9999px 0 0;
+  background: linear-gradient(to bottom, rgba(139, 92, 246, 0.4), transparent);
+}
+
+.mapa__pantalla-linea {
+  height: 4px;
+  margin: 0 16px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, transparent, var(--morado), transparent);
+}
+
+.mapa__pantalla-texto {
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--texto-suave);
+}
+
+.mapa__filas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+
+.mapa__fila {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mapa__letra {
+  flex-shrink: 0;
+  width: 20px;
+  margin-right: 2px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+
+.mapa__letra--derecha {
+  margin-right: 0;
+  margin-left: 2px;
+}
+
+.butaca {
+  flex-shrink: 0;
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  border-radius: 6px 6px 0 0;
+  border: 1px solid var(--borde);
+  transition: all 0.15s ease;
+}
+
+.butaca--pasillo {
+  margin-left: 16px;
+}
+
+.butaca--libre {
+  background-color: var(--elevado);
+  border-color: rgba(165, 126, 255, 0.35);
+  cursor: pointer;
+}
+
+.butaca--libre:hover {
+  background-color: rgba(139, 92, 246, 0.3);
+  border-color: var(--morado);
+  transform: translateY(-2px);
+}
+
+.butaca--seleccionada {
+  background-color: var(--dorado);
+  border-color: var(--texto);
+  box-shadow: 0 0 12px rgba(246, 223, 92, 0.6);
+  cursor: pointer;
+}
+
+.butaca--ocupada {
+  background-color: var(--borde);
+  border-color: var(--borde);
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.butaca:focus-visible {
+  outline: 2px solid var(--dorado);
+  outline-offset: 2px;
+}
+
+.mapa__leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.mapa__leyenda-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--texto-suave);
+}
+
+.butaca--muestra {
+  display: inline-block;
+  width: 20px;
+  height: 16px;
+  border-radius: 4px 4px 0 0;
+  box-shadow: none;
+  cursor: default;
+  pointer-events: none;
+}
+
+.panel {
+  position: sticky;
+  top: 88px;
+  flex-shrink: 0;
+  width: 256px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: var(--superficie);
+  border: 1px solid var(--borde);
+}
+
+.panel__titulo {
+  font-family: var(--titulos);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 28px;
+  color: var(--texto);
+  margin-bottom: 16px;
+}
+
+.panel__vacio {
+  padding: 16px 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+}
+
+.panel__butacas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.panel__butaca {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--texto);
+  background-color: var(--elevado);
+  border: 1px solid var(--morado);
+}
+
+.panel__quitar {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--cuerpo);
+  font-size: 14px;
+  line-height: 16px;
+  color: var(--texto-suave);
+  cursor: pointer;
+}
+
+.panel__quitar:hover {
+  color: var(--texto);
+}
+
+.panel__quitar:focus-visible {
+  outline: 2px solid var(--morado);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.panel__separador {
+  height: 1px;
+  border: none;
+  margin: 0 0 12px;
+  background: linear-gradient(to right, transparent, var(--dorado), transparent);
+  opacity: 0.35;
+}
+
+.panel__renglon {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+  margin-bottom: 4px;
+}
+
+.panel__renglon--total {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--texto);
+  margin-bottom: 16px;
+}
+
+.panel__total {
+  color: var(--dorado);
+}
+
+.panel__boton {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.panel__boton--chico {
+  padding: 9.6px;
+  font-size: 12.8px;
+}
+
+@media (max-width: 1023px) {
+  .butacas__cuerpo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .panel {
+    position: static;
+    width: 100%;
+  }
+}
+
+@media (max-width: 639px) {
+  .butacas {
+    padding: 24px 16px 64px;
+  }
+
+  .butacas__encabezado {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mapa__filas {
+    align-items: flex-start;
+  }
+
+  .mapa__fila {
+    gap: 4px;
+    margin: 0 auto;
+  }
+
+  .mapa__letra {
+    width: 14px;
+  }
+
+  .butaca {
+    width: 22px;
+    height: 20px;
+  }
+
+  .butaca--pasillo {
+    margin-left: 10px;
+  }
+
+  .butaca--muestra {
+    width: 20px;
+    height: 16px;
+  }
+}
