@@ -81,6 +81,16 @@ const Navigation = ({ haySesion, cerrarSesion }) => {
             >
               Kiosco
             </Link>
+            {haySesion && (
+              <Link
+                to="/perfil"
+                className={
+                  location.pathname === '/perfil' ? 'nav__link nav__link--activo' : 'nav__link'
+                }
+              >
+                Mi Perfil
+              </Link>
+            )}
           </nav>
 
           {haySesion ? (
