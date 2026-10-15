@@ -89,7 +89,11 @@ const PerfilDetalle = ({ token, onLogout, onIrAEntradas }) => {
         email={usuario.email}
         entradasActivas={usuario.entradasActivas}
       />
-      <DatosPersonales nombre={usuario.nombre} email={usuario.email} />
+      <DatosPersonales
+        nombre={usuario.nombre}
+        email={usuario.email}
+        telefono={usuario.telefono}
+      />
       <AccionesPerfil onIrAEntradas={onIrAEntradas} onLogout={onLogout} />
     </PerfilLayout>
   );

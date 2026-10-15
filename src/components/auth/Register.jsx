@@ -1,18 +1,32 @@
 import { useState } from 'react';
+import RegisterForm from './RegisterForm';
 
 // Vacio: las rutas /api las reenvia el proxy de Vite (ver vite.config.js).
 const API_BASE = '';
 
-// Formulario de registro. Igual que Login: pide datos, llama al backend,
-// y avisa hacia arriba via props. El backend siempre crea el usuario con rol USER.
+// Componente padre del registro: es el unico que tiene estado y logica.
+// Guarda lo que se escribe, llama al backend y avisa hacia arriba via props.
+// El formulario en si lo dibuja RegisterForm (hijo).
+// El backend siempre crea el usuario con rol USER.
 function Register({ onAutenticado, onIrALogin }) {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
+  // Un solo estado con todos los campos del formulario.
+  const [datos, setDatos] = useState({
+    username: '',
+    nombre: '',
+    apellido: '',
+    email: '',
+    telefono: '',
+    password: '',
+  });
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
+
+  // Sirve para todos los inputs: el name del input dice que campo cambio.
+  // Se arma un objeto nuevo (spread) en vez de modificar el estado.
+  function handleCambio(evento) {
+    const { name, value } = evento.target;
+    setDatos({ ...datos, [name]: value });
+  }
 
   function handleSubmit(evento) {
     evento.preventDefault();
@@ -22,7 +36,8 @@ function Register({ onAutenticado, onIrALogin }) {
     fetch(`${API_BASE}/api/v1/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, email, password, nombre, apellido }),
+      // El telefono es opcional: si quedo vacio se manda null.
+      body: JSON.stringify({ ...datos, telefono: datos.telefono.trim() || null }),
     })
       .then((respuesta) => {
         if (!respuesta.ok) {
@@ -41,72 +56,14 @@ function Register({ onAutenticado, onIrALogin }) {
   }
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
-      <h2 className="auth-form__titulo">Crear cuenta</h2>
-
-      <label className="auth-form__campo">
-        <span>Nombre de usuario</span>
-        <input
-          type="text"
-          value={username}
-          onChange={(evento) => setUsername(evento.target.value)}
-          required
-        />
-      </label>
-
-      <label className="auth-form__campo">
-        <span>Nombre</span>
-        <input
-          type="text"
-          value={nombre}
-          onChange={(evento) => setNombre(evento.target.value)}
-          required
-        />
-      </label>
-
-      <label className="auth-form__campo">
-        <span>Apellido</span>
-        <input
-          type="text"
-          value={apellido}
-          onChange={(evento) => setApellido(evento.target.value)}
-          required
-        />
-      </label>
-
-      <label className="auth-form__campo">
-        <span>Email</span>
-        <input
-          type="email"
-          value={email}
-          onChange={(evento) => setEmail(evento.target.value)}
-          required
-        />
-      </label>
-
-      <label className="auth-form__campo">
-        <span>Contraseña</span>
-        <input
-          type="password"
-          value={password}
-          onChange={(evento) => setPassword(evento.target.value)}
-          required
-        />
-      </label>
-
-      {error && <p className="auth-form__error">{error}</p>}
-
-      <button type="submit" className="auth-form__boton" disabled={enviando}>
-        {enviando ? 'Creando cuenta...' : 'Crear cuenta'}
-      </button>
-
-      <p className="auth-form__link">
-        ¿Ya tenés cuenta?{' '}
-        <button type="button" className="auth-form__link-boton" onClick={onIrALogin}>
-          Iniciá sesión
-        </button>
-      </p>
-    </form>
+    <RegisterForm
+      datos={datos}
+      error={error}
+      enviando={enviando}
+      onCambiar={handleCambio}
+      onEnviar={handleSubmit}
+      onIrALogin={onIrALogin}
+    />
   );
 }
 
