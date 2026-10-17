@@ -19,6 +19,11 @@ export default defineConfig({
       // Perfil del usuario logueado (GET /users/me). La vista del front es
       // /perfil, que no choca con esta ruta.
       '/users': 'http://localhost:4002',
+      // Rutas que usa el panel de admin (y App, para saber si el usuario es
+      // admin con GET /ordenes).
+      '/ordenes': 'http://localhost:4002',
+      '/salas': 'http://localhost:4002',
+      '/categorias': 'http://localhost:4002',
     },
   },
 })

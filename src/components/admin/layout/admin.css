@@ -93,10 +93,12 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 12px;
   padding: 0 32px;
 }
 
 .admin-header__btn-logout,
+.admin-header__btn-cartelera,
 .admin-header button {
   background: transparent;
   color: var(--admin-text-muted);
@@ -106,9 +108,12 @@
   cursor: pointer;
   transition: all 0.2s;
   font-family: var(--admin-font);
+  font-size: 14px;
+  text-decoration: none;
 }
 
 .admin-header__btn-logout:hover,
+.admin-header__btn-cartelera:hover,
 .admin-header button:hover {
   border-color: var(--admin-primary);
   color: var(--admin-primary);

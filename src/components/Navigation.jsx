@@ -4,7 +4,7 @@ import './Navigation.css';
 
 // Barra de arriba. App la renderiza afuera de Routes, por eso aparece en
 // todas las vistas. Para las palabras usa Link; para los botones, useNavigate.
-const Navigation = ({ haySesion, cerrarSesion }) => {
+const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
   // useLocation devuelve un objeto con la ubicacion actual; pathname es la
   // ruta. Sirve para pintar de otro color el link de la vista en la que estoy.
   const location = useLocation();
@@ -89,6 +89,12 @@ const Navigation = ({ haySesion, cerrarSesion }) => {
                 }
               >
                 Mi Perfil
+              </Link>
+            )}
+            {/* Solo los admin ven el acceso al panel. */}
+            {esAdmin && (
+              <Link to="/admin/dashboard" className="nav__link">
+                Panel admin
               </Link>
             )}
           </nav>

@@ -1,6 +1,6 @@
 // tema.css va primero: asi los estilos de cada componente pueden pisarlo.
 import './tema.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Cartelera from './views/Cartelera';
@@ -18,90 +18,91 @@ import AdminKioscoView from './views/admin/AdminKioscoView';
 import AdminOrdenesView from './views/admin/AdminOrdenesView';
 
 
-const leerPayloadToken = (token) => {
-  if (typeof token !== 'string') return null;
+// Averigua el rol sin tocar el back: ni el token ni GET /users/me traen el
+// rol, asi que se le pide algo que solo puede ver un admin. GET /ordenes
+// (todas las ordenes) esta restringido a ADMIN en el SecurityConfig:
+//   200 -> es ADMIN
+//   403 -> esta logueado pero no es admin (USER)
+//   401 -> el token vencio o no sirve: hay que volver al login
+// Ojo: si algun dia cambian los permisos de GET /ordenes, esto hay que revisarlo.
+const obtenerRol = async (token, signal) => {
+  const res = await fetch('/ordenes', {
+    headers: { Authorization: `Bearer ${token}` },
+    signal,
+  });
 
-  const partes = token.split('.');
-  if (partes.length !== 3 || !partes[1]) return null;
-
-  try {
-    const payloadBase64 = partes[1]
-      .replace(/-/g, '+')
-      .replace(/_/g, '/')
-      .padEnd(Math.ceil(partes[1].length / 4) * 4, '=');
-    const bytes = Uint8Array.from(atob(payloadBase64), (caracter) =>
-      caracter.charCodeAt(0)
-    );
-    const payload = JSON.parse(new TextDecoder().decode(bytes));
-
-    if (
-      payload.exp !== undefined &&
-      (!Number.isFinite(Number(payload.exp)) ||
-        Number(payload.exp) <= Date.now() / 1000)
-    ) {
-      return null;
-    }
-
-    return payload;
-  } catch {
-    return null;
+  if (res.status === 401) {
+    throw new Error('SESION_VENCIDA');
   }
-};
-
-const tieneRolAdmin = (payload) => {
-  if (!payload) return false;
-
-  // Agregamos 'scope' a la lista de búsqueda
-  const roles = [payload?.rol, payload?.role, payload?.roles, payload?.authorities, payload?.scope]
-    .flatMap((valor) => {
-      if (typeof valor === 'string') return valor.split(' '); // Separa si viene "read ROLE_ADMIN"
-      if (Array.isArray(valor)) return valor;
-      return [valor];
-    })
-    .map((valor) =>
-      typeof valor === 'string' ? valor : valor?.authority ?? valor?.name
-    )
-    .filter((rol) => typeof rol === 'string')
-    .map((rol) => rol.toUpperCase());
-
-  return roles.some((rol) => rol === 'ADMIN' || rol === 'ROLE_ADMIN');
+  if (res.status === 403) {
+    return 'USER';
+  }
+  if (!res.ok) {
+    throw new Error(`Error ${res.status} al consultar el rol`);
+  }
+  return 'ADMIN';
 };
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
+  // null = todavia no se sabe (se esta consultando); '' = sin rol.
+  const [rol, setRol] = useState(null);
   const navigate = useNavigate();
   const location = useLocation(); // Agregado para saber en qué URL estamos
 
-  const iniciarSesion = (nuevoToken) => {
-    const payload = leerPayloadToken(nuevoToken);
-    if (!payload) {
-      setToken('');
-      console.error('El inicio de sesión no devolvió un token JWT válido y vigente.');
-      navigate('/login');
+  const esAdmin = rol === 'ADMIN';
+
+  // Al cerrar sesion se borran el token y el rol.
+  const cerrarSesion = (destino = '/') => {
+    setToken('');
+    setRol(null);
+    localStorage.removeItem('token');
+    navigate(destino);
+  };
+
+  // Si hay que preguntar el rol y el back dice 401, la sesion no sirve mas:
+  // se borra todo y se manda al login. Cualquier otro error deja al usuario
+  // como cliente comun (sin acceso al admin).
+  const manejarErrorRol = (err) => {
+    if (err.message === 'SESION_VENCIDA') {
+      cerrarSesion('/login');
       return;
     }
+    console.error(err);
+    setRol('');
+  };
 
-    // 1. Guardamos en React y en el Navegador
+  // Despues del login se pide el rol y, segun cual sea, se elige a donde ir.
+  const iniciarSesion = async (nuevoToken) => {
     setToken(nuevoToken);
     localStorage.setItem('token', nuevoToken);
 
-    // 2. Imprimimos el payload para espiar qué manda tu backend
-    console.log("Datos que llegan de Spring Boot:", payload);
-
-    // 3. Verificamos y redirigimos
-    if (tieneRolAdmin(payload)) {
-      navigate('/admin/dashboard');
-      return;
+    try {
+      const rolNuevo = await obtenerRol(nuevoToken);
+      setRol(rolNuevo);
+      navigate(rolNuevo === 'ADMIN' ? '/admin/dashboard' : '/');
+    } catch (err) {
+      manejarErrorRol(err);
+      if (err.message !== 'SESION_VENCIDA') navigate('/');
     }
-
-    navigate('/');
   };
 
-  const cerrarSesion = () => {
-    setToken('');
-    localStorage.removeItem('token');
-    navigate('/');
-  };
+  // MONTAJE: si al abrir la app ya habia un token guardado (por ejemplo,
+  // despues de recargar la pagina), se pregunta el rol una sola vez.
+  useEffect(() => {
+    if (token === '') return;
+
+    const controller = new AbortController();
+    obtenerRol(token, controller.signal)
+      .then(setRol)
+      .catch((err) => {
+        if (err.name !== 'AbortError') manejarErrorRol(err);
+      });
+
+    // DESMONTAJE: si App se desmonta antes de la respuesta, se cancela.
+    return () => controller.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const irAEntradas = () => {
     navigate('/mis-entradas');
@@ -109,12 +110,25 @@ function App() {
 
   // Verificamos si estamos en una ruta de administrador
   const esRutaAdmin = location.pathname.startsWith('/admin');
-  const tieneAccesoAdmin = tieneRolAdmin(leerPayloadToken(token));
+
+  // Que mostrar en /admin/*: sin sesion, al login; con sesion pero todavia
+  // sin saber el rol, un aviso; sin rol ADMIN (por ejemplo, alguien que
+  // escribio la URL a mano), al inicio.
+  let rutaAdmin;
+  if (token === '') {
+    rutaAdmin = <Navigate to="/login" replace />;
+  } else if (rol === null) {
+    rutaAdmin = <p className="pagina__mensaje">Verificando permisos...</p>;
+  } else if (esAdmin) {
+    rutaAdmin = <AdminLayout onLogout={() => cerrarSesion()} />;
+  } else {
+    rutaAdmin = <Navigate to="/" replace />;
+  }
 
   return (
     <>
       {/* Solo renderiza la barra del cliente si NO estamos en el admin */}
-      {!esRutaAdmin && <Navigation haySesion={token !== ''} cerrarSesion={cerrarSesion} />}
+      {!esRutaAdmin && <Navigation haySesion={token !== ''} esAdmin={esAdmin} cerrarSesion={() => cerrarSesion()} />}
 
       <Routes>
         <Route path="/" element={<Cartelera />} />
@@ -125,13 +139,7 @@ function App() {
         
         <Route
           path="/admin"
-          element={
-            tieneAccesoAdmin ? (
-              <AdminLayout onLogout={cerrarSesion} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
+          element={rutaAdmin}
         >
           <Route index element={<AdminDashboardView />} />
           <Route path="dashboard" element={<AdminDashboardView />} />
@@ -146,7 +154,7 @@ function App() {
           path="/perfil"
           element={
             token !== '' ? (
-              <PerfilView token={token} onLogout={cerrarSesion} onIrAEntradas={irAEntradas} />
+              <PerfilView token={token} onLogout={() => cerrarSesion()} onIrAEntradas={irAEntradas} />
             ) : (
               <Navigate to="/login" replace />
             )
