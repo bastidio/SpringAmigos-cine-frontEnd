@@ -1,0 +1,192 @@
+.entradas {
+  width: 100%;
+  max-width: 1248px;
+  margin: 0 auto;
+  padding: 24px 48px 96px;
+}
+
+.entradas__encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.entradas__titulo {
+  font-family: var(--titulos);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  color: var(--texto);
+}
+
+.entradas__bajada {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+  margin-top: 4px;
+}
+
+.entradas__reintentar {
+  margin-top: 16px;
+}
+
+.entradas__contador {
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin-bottom: 16px;
+}
+
+.entradas__grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.entrada-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: var(--superficie);
+  border: 1px solid var(--borde);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.entrada-card:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.entrada-card__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.entrada-card__horario {
+  font-size: 12px;
+  color: var(--texto-suave);
+  text-align: right;
+}
+
+.entrada-card__cuerpo {
+  margin-bottom: 16px;
+}
+
+.entrada-card__pelicula {
+  font-family: var(--titulos);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+  color: var(--texto);
+}
+
+.entrada-card__sala {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.entrada-card__separador {
+  height: 1px;
+  border: none;
+  margin: 0 0 16px;
+  background: linear-gradient(to right, transparent, var(--dorado), transparent);
+  opacity: 0.35;
+}
+
+.entrada-card__datos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.entrada-card__dato {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.entrada-card__dato--derecha {
+  text-align: right;
+}
+
+.entrada-card__etiqueta {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--texto-suave);
+}
+
+.entrada-card__valor {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.entrada-card__precio {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dorado);
+}
+
+.entradas__vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  max-width: 560px;
+  margin: 24px auto 0;
+  padding: 48px 24px;
+  border-radius: 12px;
+  background-color: var(--superficie);
+  border: 1px solid var(--borde);
+}
+
+.entradas__vacio-titulo {
+  font-family: var(--titulos);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.entradas__vacio-texto {
+  max-width: 420px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+  margin-bottom: 8px;
+}
+
+@media (max-width: 1023px) {
+  .entradas {
+    padding: 24px 24px 80px;
+  }
+}
+
+@media (max-width: 639px) {
+  .entradas {
+    padding: 24px 16px 64px;
+  }
+
+  .entradas__encabezado {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .entradas__encabezado .boton {
+    width: 100%;
+  }
+
+  .entradas__grilla {
+    grid-template-columns: 1fr;
+  }
+}
