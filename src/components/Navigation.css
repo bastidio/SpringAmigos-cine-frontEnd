@@ -85,13 +85,42 @@
   color: var(--morado);
 }
 
+.nav__acciones {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav__carrito {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  color: var(--texto-suave);
+  text-decoration: none;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.nav__carrito:hover {
+  color: var(--texto);
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+.nav__carrito--activo,
+.nav__carrito--activo:hover {
+  color: var(--morado);
+}
+
 .nav__boton {
   padding: 8px 16px;
   font-size: 13.6px;
 }
 
 .nav__marca:focus-visible,
-.nav__link:focus-visible {
+.nav__link:focus-visible,
+.nav__carrito:focus-visible {
   outline: 2px solid var(--morado);
   outline-offset: 4px;
   border-radius: 4px;
