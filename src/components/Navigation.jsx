@@ -59,8 +59,8 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
         </button>
 
         {/* En celular es un panel que cae debajo de la barra. En desktop,
-            md:contents hace que este div "desaparezca" y los links y el boton
-            queden como estaban, repartidos por el justify-between. */}
+            md:contents hace que este div "desaparezca" y los links y las acciones
+            queden repartidos por el justify-between. */}
         <div
           id="nav-menu"
           className={`md:contents max-md:absolute max-md:inset-x-0 max-md:top-full max-md:flex-col max-md:gap-4 max-md:px-6 max-md:py-4 max-md:bg-[var(--fondo)] max-md:border-b max-md:border-[var(--borde)] ${menuAbierto ? 'max-md:flex' : 'max-md:hidden'}`}
@@ -99,15 +99,53 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
             )}
           </nav>
 
-          {haySesion ? (
-            <button type="button" className="boton boton--secundario nav__boton max-md:w-full" onClick={cerrarSesion}>
-              Cerrar sesión
-            </button>
-          ) : (
-            <button type="button" className="boton boton--primario nav__boton max-md:w-full" onClick={handleIngresar}>
-              Ingresar
-            </button>
-          )}
+          <div className="nav__acciones max-md:w-full">
+            <Link
+              to="/carrito"
+              className={
+                location.pathname === '/carrito'
+                  ? 'nav__carrito nav__carrito--activo'
+                  : 'nav__carrito'
+              }
+              aria-label="Ir al carrito"
+              title="Carrito"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+            </Link>
+
+            {haySesion ? (
+              <button
+                type="button"
+                className="boton boton--secundario nav__boton max-md:flex-1"
+                onClick={cerrarSesion}
+              >
+                Cerrar sesión
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="boton boton--primario nav__boton max-md:flex-1"
+                onClick={handleIngresar}
+              >
+                Ingresar
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </header>
