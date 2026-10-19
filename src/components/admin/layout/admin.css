@@ -1,0 +1,1004 @@
+/* Variables del Admin conectadas con la paleta compartida de tema.css. */
+.admin-container {
+  --admin-bg: var(--fondo);
+  --admin-panel: var(--superficie);
+  --admin-panel-raised: var(--elevado);
+  --admin-border: var(--borde);
+  --admin-text: var(--texto);
+  --admin-text-muted: var(--texto-suave);
+  --admin-primary: var(--morado);
+  --admin-primary-hover: var(--morado-profundo);
+  --admin-gold: var(--dorado);
+  --admin-font: var(--cuerpo);
+  --admin-font-title: var(--titulos);
+
+  display: flex;
+  height: 100vh;
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
+  font-family: var(--admin-font);
+  overflow: hidden;
+  text-align: left;
+}
+
+.admin-container h1,
+.admin-container h2 {
+  margin: 0;
+  color: var(--admin-text);
+  font-family: var(--admin-font-title);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: normal;
+}
+
+/* ---------- Sidebar ---------- */
+.admin-sidebar {
+  width: 250px;
+  background-color: var(--admin-panel);
+  border-right: 1px solid var(--admin-border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+}
+
+.admin-sidebar__logo,
+.admin-sidebar > h2 {
+  font-family: var(--admin-font-title);
+  color: var(--admin-gold);
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 32px;
+  letter-spacing: 0.1em;
+}
+
+.admin-sidebar__nav,
+.admin-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 16px;
+}
+
+.admin-sidebar__link,
+.admin-sidebar nav a {
+  color: var(--admin-text-muted);
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.admin-sidebar__link:hover,
+.admin-sidebar__link.active,
+.admin-sidebar nav a:hover,
+.admin-sidebar nav a.active {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: var(--admin-primary);
+}
+
+/* ---------- Área Principal ---------- */
+.admin-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Header ---------- */
+.admin-header {
+  height: 70px;
+  background-color: var(--admin-panel);
+  border-bottom: 1px solid var(--admin-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 32px;
+}
+
+.admin-header__btn-logout,
+.admin-header__btn-cartelera,
+.admin-header button {
+  background: transparent;
+  color: var(--admin-text-muted);
+  border: 1px solid var(--admin-border);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--admin-font);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.admin-header__btn-logout:hover,
+.admin-header__btn-cartelera:hover,
+.admin-header button:hover {
+  border-color: var(--admin-primary);
+  color: var(--admin-primary);
+}
+
+/* ---------- Contenedor de Vistas ---------- */
+.admin-content {
+  padding: 32px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+/* Títulos dentro de las vistas admin */
+.admin-view-title {
+  font-family: var(--admin-font-title);
+  font-size: 32px;
+  color: var(--admin-text);
+  margin: 0 0 24px;
+}
+
+.admin-view-count {
+  color: var(--admin-text-muted);
+  font-size: 14px;
+}
+
+/* --- UI GENÉRICA ADMIN --- */
+
+/* Badge de Estado */
+.admin-container .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.admin-container .badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.admin-container .badge-positivo {
+  background-color: rgba(16, 185, 129, 0.1); /* Verde suave */
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.2);
+}
+.admin-container .badge-positivo .badge-dot { background-color: #10b981; }
+
+.admin-container .badge-alerta {
+  background-color: rgba(245, 158, 11, 0.1); /* Naranja suave */
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.2);
+}
+.admin-container .badge-alerta .badge-dot { background-color: #f59e0b; }
+
+/* Botones Admin */
+.admin-container .btn-admin {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.admin-container .btn-primario {
+  background-color: var(--admin-primary);
+  color: #fff;
+  border: none;
+}
+.admin-container .btn-primario:hover { background-color: var(--admin-primary-hover); }
+
+.admin-container .btn-secundario {
+  background-color: transparent;
+  color: var(--admin-text-muted);
+  border: 1px solid var(--admin-border);
+}
+.admin-container .btn-secundario:hover { border-color: var(--admin-primary); color: var(--admin-primary); }
+
+/* Filtro Botón (Grupo) */
+.admin-container .filtro-grupo {
+  display: inline-flex;
+  background-color: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 4px;
+}
+.admin-container .filtro-item {
+  background: transparent;
+  border: none;
+  color: var(--admin-text-muted);
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+.admin-container .filtro-item:hover { color: var(--admin-text); }
+.admin-container .filtro-item.activo {
+  background-color: var(--admin-primary);
+  color: #fff;
+}
+
+
+/* --- TABLAS ADMIN --- */
+.admin-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.admin-table-container {
+  background-color: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--admin-text-muted);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  padding: 16px;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--admin-border);
+  color: var(--admin-text);
+  font-size: 14px;
+}
+
+.admin-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-container .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.admin-container .modal-content {
+  background: var(--admin-panel);
+  padding: 24px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid var(--admin-border);
+}
+
+.admin-container .modal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.admin-container .modal-title {
+  margin: 0;
+  font-size: 20px;
+  color: var(--admin-text);
+}
+
+.admin-container .modal-close {
+  background: none;
+  border: none;
+  color: var(--admin-text-muted);
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+.admin-container .modal-close:hover {
+  color: var(--admin-primary);
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-family: inherit;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+}
+
+.admin-textarea {
+  resize: none;
+}
+
+.admin-form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.admin-form-row .admin-input {
+  flex: 1;
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.admin-header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.admin-search {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-panel);
+  color: var(--admin-text);
+  font-family: inherit;
+}
+
+.admin-search:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+}
+.admin-table-empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--admin-text-muted);
+}
+
+.admin-table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-salas-contenedor {
+  display: flex;
+  gap: 24px;
+  height: 100%;
+}
+
+/* Columna Izquierda */
+.salas-sidebar {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.salas-header {
+  margin-bottom: 8px;
+}
+
+.salas-subtitulo {
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.salas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tarjeta-sala {
+  background: var(--bg-panel);
+  border: 1px solid transparent;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tarjeta-sala.activa {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.tarjeta-sala-titulo {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: var(--text-main);
+}
+
+.tarjeta-sala-detalle {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.tarjeta-sala-vip {
+  margin: 0;
+  font-size: 12px;
+  color: #eab308;
+}
+
+/* Columna Derecha */
+.salas-detalle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.detalle-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.btn-nueva-sala {
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.panel-mapa {
+  background: var(--bg-panel);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
+}
+
+.panel-mapa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.panel-mapa-titulo {
+  margin: 0 0 8px 0;
+  color: var(--text-main);
+}
+
+.panel-mapa-subtitulo {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.btn-editar-config {
+  background: transparent;
+  color: #8b5cf6;
+  border: 1px solid #8b5cf6;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mapa-placeholder {
+  padding: 40px;
+  border: 2px dashed #8b5cf6;
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 24px;
+  color: var(--text-muted);
+}
+
+/* Información de la celda del producto */
+.celda-producto-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.celda-producto-nombre {
+  color: var(--text-main);
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.celda-producto-desc {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+/* Controles de Stock Inline */
+.control-stock-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-panel);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  width: fit-content;
+}
+
+.control-stock-btn {
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border: none;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-stock-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-stock-valor {
+  min-width: 24px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Filtros de Categorías */
+.filtros-categorias-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+/* Etiqueta de Estado Inactivo */
+.etiqueta--inactiva {
+  background: #ef4444;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* ... (Mantén lo que ya tenías de CeldaProductoInfo y ControlStockInline) ... */
+
+/* Filtros de Categorías */
+.filtros-categorias-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+/* Si no tenías .btn-filtro-dia de otra vista, agrégalo aquí */
+.btn-filtro-dia {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-filtro-dia:hover {
+  background: var(--bg-panel);
+}
+
+.btn-filtro-dia.activo {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+  border-color: #8b5cf6;
+}
+
+/* Etiquetas de Estado (Ahora son clickeables) */
+.etiqueta-estado-btn {
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  text-transform: uppercase;
+}
+
+.etiqueta-estado-btn:hover {
+  opacity: 0.8;
+}
+
+.etiqueta--activa {
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd; /* Un violeta clarito para que contraste */
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.etiqueta--inactiva {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Corrección de alineación para la columna de Acciones */
+.admin-table-actions {
+  display: flex;
+  justify-content: flex-end; /* Alinea los botones a la derecha */
+  align-items: center;       /* Centra verticalmente */
+  height: 100%;              /* Asegura que ocupe el alto de la celda */
+  gap: 8px;
+  padding-right: 16px;       /* Un poco de aire al final */
+}
+
+/* Para asegurar que la celda que contiene las acciones no rompa el diseño */
+.admin-table td.acciones-celda {
+  vertical-align: middle;
+}
+
+/* Tabla Kiosco */
+.kiosco-tabla-vacia {
+  margin-top: 20px;
+}
+
+.th-acciones {
+  text-align: right;
+  padding-right: 24px;
+}
+
+/* Formulario Kiosco - Checkbox de Estado */
+.kiosco-checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.kiosco-checkbox-input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.kiosco-checkbox-label {
+  color: var(--text-main);
+  cursor: pointer;
+}
+/* Subtítulo de la vista Kiosco */
+.kiosco-subtitulo {
+  color: var(--text-muted);
+  margin: 0;
+}
+/* Grupos de formulario con leyenda */
+.kiosco-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.kiosco-form-label {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Fila de 3 columnas para Precio, Stock y Descuento */
+.kiosco-form-row {
+  display: grid;
+  /* minmax(0, 1fr) es la magia que le permite a las columnas achicarse */
+  grid-template-columns: repeat(3, minmax(0, 1fr)); 
+  gap: 12px; /* Reduje a 12px para que queden un poco más compactos */
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+/* Obligamos a los inputs dentro de esa fila a respetar su contenedor exacto */
+.kiosco-form-row .admin-input {
+  width: 100%;
+  min-width: 0; /* Clave para que no rompan el grid */
+  box-sizing: border-box;
+}
+/* Tarjetas Resumen */
+.tarjetas-resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Tarjetas Resumen - Rediseño Violeta */
+.tarjetas-resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.tarjeta-resumen {
+  /* Degradado violeta oscuro elegante */
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(76, 29, 149, 0.4) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Cambio de fuente para destacar (usa una del sistema más geométrica si no tenés importada otra) */
+  font-family: 'Montserrat', 'Segoe UI', Helvetica, sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tarjeta-resumen:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.15);
+}
+
+.tarjeta-resumen-titulo {
+  color: #c4b5fd; /* Un violeta muy clarito para el subtítulo */
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.tarjeta-resumen-valor {
+  color: #ffffff; /* Blanco puro para el número */
+  font-size: 28px;
+  font-weight: 800;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Barra de Búsqueda */
+.barra-busqueda-container {
+  margin-bottom: 16px;
+}
+
+.barra-busqueda-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--text-main);
+}
+
+/* Panel Detalle Orden */
+.detalle-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.detalle-label {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.detalle-titulo {
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.panel-detalle-lista {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel-detalle-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+}
+
+.detalle-item-precio {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.detalle-item-total {
+  align-self: center;
+}
+
+.detalle-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  margin-top: 24px;
+}
+
+.detalle-total-valor {
+  color: #8b5cf6;
+}
+
+/* Tabla y Estados */
+.th-acciones {
+  text-align: right;
+  padding-right: 24px;
+}
+
+.estado-pendiente { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+.estado-completada { color: #34d399; background: rgba(52, 211, 153, 0.1); }
+.estado-cancelada { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+
+.etiqueta-estado-fija {
+  cursor: default;
+}
+
+.btn-cancelar-orden {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.btn-cancelar-orden:hover {
+  opacity: 0.8;
+}
+
+/* Formulario */
+.orden-form-group {
+  margin-bottom: 24px;
+}
+
+.orden-form-label {
+  display: block;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+/* Modal de confirmación */
+.modal-confirmacion-texto {
+  color: var(--text-main);
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+
+.btn-peligro {
+  background: #ef4444;
+  color: white;
+  border: 1px solid #ef4444;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-peligro:hover {
+  opacity: 0.8;
+}
+
+/* Layout Principal del Dashboard */
+.dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Fila dividida (Funciones y Stock) */
+.dashboard-fila-dividida {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Funciones ocupa el doble que Stock */
+  gap: 24px;
+}
+
+/* Widgets (Cajas blancas/oscuras del dashboard) */
+.dashboard-widget {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.dashboard-widget-titulo {
+  color: var(--text-main);
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Lista de Alerta de Stock */
+.stock-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stock-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border-left: 4px solid #ef4444; /* Borde rojo de alerta */
+}
+
+.stock-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stock-item-nombre {
+  color: var(--text-main);
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.stock-item-cantidad {
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* Tablas simplificadas para el Dashboard */
+.tabla-dashboard {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-dashboard th {
+  text-align: left;
+  padding: 12px 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabla-dashboard td {
+  padding: 12px 8px;
+  color: var(--text-main);
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabla-dashboard tr:last-child td {
+  border-bottom: none;
+}
+/* Utilidad para celdas vacías en tablas */
+.tabla-celda-centrada {
+  text-align: center;
+}
