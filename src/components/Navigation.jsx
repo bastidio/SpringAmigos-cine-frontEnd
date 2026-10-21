@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import logo from '../assets/lumiere-logo.svg';
+import logotipo from '../assets/lumiere-logotipo.png';
 import './Navigation.css';
 
 // Barra de arriba. App la renderiza afuera de Routes, por eso aparece en
@@ -32,11 +34,8 @@ const Navigation = ({ haySesion, esAdmin, perfil }) => {
     <header className="nav">
       <div className="nav_contenido">
         <Link to="/" className="nav_marca" onClick={cerrarMenu}>
-          <span className="nav_rombo">◈</span>
-          <span className="nav_nombre">
-            Spring<span className="nav_nombre-acento">Amigos</span>
-          </span>
-          <span className="nav_cine">Cine</span>
+          <img className="nav_logo" src={logo} alt="Lumière" />
+          <img className="nav_logotipo" src={logotipo} alt="" />
         </Link>
 
         {/* Boton hamburguesa: solo se ve en pantallas chicas. Las tres rayas

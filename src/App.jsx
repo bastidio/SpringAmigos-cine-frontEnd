@@ -3,6 +3,7 @@ import './tema.css';
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
+import Footer from './components/Footer';
 import Cartelera from './views/Cartelera';
 import DetallePelicula from './views/DetallePelicula';
 import Butacas from './views/Butacas';
@@ -171,6 +172,8 @@ function App() {
             entra a /perfil (un link viejo), va al inicio. */}
         <Route path="/perfil" element={<Navigate to="/" replace />} />
       </Routes>
+
+      {!esRutaAdmin && location.pathname !== '/login' && <Footer />}
     </>
   );
 }
