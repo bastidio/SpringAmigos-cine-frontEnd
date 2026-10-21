@@ -28,35 +28,20 @@
 .nav_marca {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 15px;
   text-decoration: none;
 }
 
-.nav_rombo {
-  font-size: 24px;
-  line-height: 32px;
-  color: var(--dorado);
+.nav_logo {
+  display: block;
+  height: 40px;
+  width: auto;
 }
 
-.nav_nombre {
-  font-family: var(--titulos);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 28px;
-  color: var(--texto);
-}
-
-.nav_nombre-acento {
-  color: var(--morado);
-}
-
-.nav_cine {
-  margin-left: 4px;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--texto-suave);
+.nav_logotipo {
+  display: block;
+  height: 44px;
+  width: auto;
 }
 
 .nav_links {
