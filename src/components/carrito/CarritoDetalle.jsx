@@ -16,6 +16,10 @@ const CarritoDetalle = () => {
   const [carrito, setCarrito] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  // Error de una accion (quitar, cambiar cantidad, vaciar): se muestra arriba
+  // de la lista sin tapar el carrito.
+  const [errorAccion, setErrorAccion] = useState(null);
+  const [ocupado, setOcupado] = useState(false);
 
   const cargarCarrito = useCallback(async () => {
     setCargando(true);
@@ -55,6 +59,35 @@ const CarritoDetalle = () => {
       activo = false;
     };
   }, []);
+
+  // Despues de cada cambio se vuelve a pedir el carrito: el back responde con
+  // la entidad Carrito, que no trae los items ni el total.
+  const ejecutarAccion = async (accion) => {
+    setOcupado(true);
+    setErrorAccion(null);
+    try {
+      await accion();
+    } catch (err) {
+      setErrorAccion(err.message);
+    }
+    try {
+      setCarrito(await apiFetch('/api/carritos'));
+    } catch (err) {
+      setErrorAccion(err.message);
+    } finally {
+      setOcupado(false);
+    }
+  };
+
+  const quitarItem = (item) =>
+    ejecutarAccion(() => apiFetch(`/api/carritos/items/${item.itemId}`, { method: 'DELETE' }));
+
+  const cambiarCantidad = (item, cantidad) =>
+    ejecutarAccion(() =>
+      apiFetch(`/api/carritos/items/${item.itemId}`, { method: 'PUT', body: { cantidad } })
+    );
+
+  const vaciarCarrito = () => ejecutarAccion(() => apiFetch('/api/carritos', { method: 'DELETE' }));
 
   if (cargando) {
     return <p className="pagina_mensaje">Cargando carrito...</p>;
@@ -98,6 +131,26 @@ const CarritoDetalle = () => {
         )}
       </div>
 
+      {carrito?.vencido && (
+        <p role="alert" className="pagina_mensaje pagina_mensaje--error carrito__aviso">
+          Pasaron más de 5 minutos sin confirmar la compra y el carrito se vació. Volvé a elegir tus
+          butacas y productos.
+        </p>
+      )}
+
+      {errorAccion !== null && (
+        <p role="alert" className="pagina_mensaje pagina_mensaje--error carrito__aviso">
+          {errorAccion}
+        </p>
+      )}
+
+      {items.length > 0 && carrito.expiraEn && (
+        <p className="carrito__aviso">
+          Las butacas quedan reservadas hasta las{' '}
+          {carrito.expiraEn.slice(11, 16)} hs. Confirmá la compra antes de esa hora.
+        </p>
+      )}
+
       {items.length === 0 ? (
         <div className="carrito__vacio">
           <span className="etiqueta">Carrito vacío</span>
@@ -113,8 +166,24 @@ const CarritoDetalle = () => {
         <div className="carrito__cuerpo">
           <div className="carrito__lista">
             {items.map((item) => (
-              <CarritoItem key={item.itemId} item={item} formatearMoneda={moneda} />
+              <CarritoItem
+                key={item.itemId}
+                item={item}
+                formatearMoneda={moneda}
+                onQuitar={quitarItem}
+                onCambiarCantidad={cambiarCantidad}
+                ocupado={ocupado}
+              />
             ))}
+
+            <button
+              type="button"
+              className="boton boton--secundario carrito__vaciar"
+              onClick={vaciarCarrito}
+              disabled={ocupado}
+            >
+              Vaciar carrito
+            </button>
           </div>
 
           <PanelResumenCarrito
@@ -128,4 +197,4 @@ const CarritoDetalle = () => {
   );
 };
 
-export default CarritoDetalle;
+export default CarritoDetalle;

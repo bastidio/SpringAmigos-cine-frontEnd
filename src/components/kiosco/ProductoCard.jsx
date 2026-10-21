@@ -1,7 +1,18 @@
 import { useState } from 'react';
 
 
-const ProductoCard = ({ nombre, descripcion, categoria, precio, descuento, stock, imagen }) => {
+const ProductoCard = ({
+  nombre,
+  descripcion,
+  categoria,
+  precio,
+  descuento,
+  stock,
+  imagen,
+  onAgregar,
+  agregando = false,
+  agregado = false,
+}) => {
   // Si la URL no carga (onError), se muestra el placeholder en su lugar.
   const [imagenFallo, setImagenFallo] = useState(false);
 
@@ -50,9 +61,13 @@ const ProductoCard = ({ nombre, descripcion, categoria, precio, descuento, stock
           {stock > 0 && stock < 5 && <p className="producto-card_ultimas">¡Últimas {stock}!</p>}
         </div>
 
-        {/* Todavia no esta conectado al carrito: por eso queda deshabilitado. */}
-        <button type="button" className="boton boton--primario producto-card_agregar" disabled>
-          {stock > 0 ? 'Agregar' : 'Sin stock'}
+        <button
+          type="button"
+          className="boton boton--primario producto-card_agregar"
+          onClick={onAgregar}
+          disabled={stock <= 0 || agregando}
+        >
+          {stock <= 0 ? 'Sin stock' : agregando ? 'Agregando...' : agregado ? '¡Agregado! +1' : 'Agregar'}
         </button>
       </div>
     </article>

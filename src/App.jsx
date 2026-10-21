@@ -7,6 +7,9 @@ import Cartelera from './views/Cartelera';
 import DetallePelicula from './views/DetallePelicula';
 import Butacas from './views/Butacas';
 import Kiosco from './views/Kiosco';
+import Carrito from './views/Carrito';
+import Checkout from './views/Checkout';
+import MisEntradas from './views/MisEntradas';
 import Login from './views/Login';
 import PerfilView from './views/PerfilView';
 import AdminLayout from './components/admin/layout/AdminLayout';
@@ -136,6 +139,14 @@ function App() {
         <Route path="/funcion/:id/butacas" element={<Butacas />} />
         <Route path="/kiosco" element={<Kiosco />} />
         <Route path="/login" element={<Login onAutenticado={iniciarSesion} />} />
+
+        {/* Carrito, checkout y entradas son del usuario logueado: sin token, al login. */}
+        <Route path="/carrito" element={token !== '' ? <Carrito /> : <Navigate to="/login" replace />} />
+        <Route path="/checkout" element={token !== '' ? <Checkout /> : <Navigate to="/login" replace />} />
+        <Route
+          path="/mis-entradas"
+          element={token !== '' ? <MisEntradas /> : <Navigate to="/login" replace />}
+        />
         
         <Route
           path="/admin"

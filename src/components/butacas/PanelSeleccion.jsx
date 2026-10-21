@@ -1,4 +1,4 @@
-const PanelSeleccion = ({ elegidas, precio, quitar, irAlKiosco, irAlCarrito }) => {
+const PanelSeleccion = ({ elegidas, precio, quitar, irAlKiosco, irAlCarrito, agregando = false }) => {
   const sinSeleccion = elegidas.length === 0;
 
   return (
@@ -44,15 +44,15 @@ const PanelSeleccion = ({ elegidas, precio, quitar, irAlKiosco, irAlCarrito }) =
         type="button"
         className="boton boton--primario panel_boton"
         onClick={irAlKiosco}
-        disabled={sinSeleccion}
+        disabled={sinSeleccion || agregando}
       >
-        Continuar al kiosco
+        {agregando ? 'Agregando al carrito...' : 'Continuar al kiosco'}
       </button>
       <button
         type="button"
         className="boton boton--secundario panel_boton panel_boton--chico"
         onClick={irAlCarrito}
-        disabled={sinSeleccion}
+        disabled={sinSeleccion || agregando}
       >
         Ir directo al carrito
       </button>

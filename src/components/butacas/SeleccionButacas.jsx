@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import MapaButacas from './MapaButacas';
 import PanelSeleccion from './PanelSeleccion';
+import { apiFetch } from '../../services/api';
 import './Butacas.css';
 
 const pedir = (url) => {
@@ -21,6 +22,8 @@ const SeleccionButacas = () => {
   const [butacas, setButacas] = useState([]);
   const [seleccionadas, setSeleccionadas] = useState([]);
   const [error, setError] = useState(null);
+  const [errorCarrito, setErrorCarrito] = useState(null);
+  const [agregando, setAgregando] = useState(false);
 
   useEffect(() => {
     Promise.all([pedir(`/funciones/${id}`), pedir('/asientos'), pedir(`/entradas/funcion/${id}`)])
@@ -68,6 +71,50 @@ const SeleccionButacas = () => {
 
   const elegidas = butacas.filter((butaca) => seleccionadas.includes(butaca.id));
 
+  // Manda las butacas elegidas al carrito del back y despues navega. El carrito
+  // necesita sesion: sin token, primero al login.
+  const agregarAlCarritoEIr = async (destino) => {
+    if (!localStorage.getItem('token')) {
+      navigate('/login');
+      return;
+    }
+
+    setAgregando(true);
+    setErrorCarrito(null);
+    try {
+      // El back rechaza la misma butaca dos veces: se saltean las que ya estan
+      // (por ejemplo, si el usuario volvio desde el kiosco).
+      const carrito = await apiFetch('/api/carritos');
+      const yaEnCarrito = (carrito?.items ?? [])
+        .filter((item) => item.tipo === 'BUTACA')
+        .map((item) => item.referenciaId);
+
+      if (yaEnCarrito.length > 0 && carrito.funcionId !== funcion.id) {
+        throw new Error(
+          'Tu carrito ya tiene butacas de otra función. Quitalas desde el carrito para elegir estas.'
+        );
+      }
+
+      for (const butaca of elegidas) {
+        if (!yaEnCarrito.includes(butaca.id)) {
+          await apiFetch('/api/carritos/items', {
+            method: 'POST',
+            body: { asientoId: butaca.id, funcionId: funcion.id, cantidad: 1 },
+          });
+        }
+      }
+      navigate(destino);
+    } catch (err) {
+      if (err.status === 401) {
+        navigate('/login');
+        return;
+      }
+      setErrorCarrito(err.message);
+    } finally {
+      setAgregando(false);
+    }
+  };
+
   const dia = funcion.horario.slice(8, 10) + '/' + funcion.horario.slice(5, 7);
   const hora = funcion.horario.slice(11, 16);
 
@@ -91,6 +138,12 @@ const SeleccionButacas = () => {
         </span>
       </div>
 
+      {errorCarrito !== null && (
+        <p role="alert" className="pagina_mensaje pagina_mensaje--error">
+          {errorCarrito}
+        </p>
+      )}
+
       <div className="butacas_cuerpo">
         {butacas.length === 0 ? (
           <p className="pagina_mensaje butacas_sin-butacas">
@@ -104,8 +157,9 @@ const SeleccionButacas = () => {
           elegidas={elegidas}
           precio={funcion.precio_base}
           quitar={alternarButaca}
-          irAlKiosco={() => navigate('/kiosco')}
-          irAlCarrito={() => navigate('/carrito')}
+          irAlKiosco={() => agregarAlCarritoEIr('/kiosco')}
+          irAlCarrito={() => agregarAlCarritoEIr('/carrito')}
+          agregando={agregando}
         />
       </div>
     </div>
