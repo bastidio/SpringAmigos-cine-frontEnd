@@ -8,7 +8,8 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
     categoria_id: '', 
     precio: '', 
     stock: '', 
-    descuento: 0, 
+    descuento: 0,
+    posterProducto: '',
     activo: true // Lo mantenemos en memoria para no enviar 'null' al backend al editar
   });
 
@@ -16,7 +17,9 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
     if (productoAEditar) {
       setFormData({
         ...productoAEditar,
-        categoria_id: productoAEditar.categoria?.id || ''
+        categoria_id: productoAEditar.categoria?.id || '',
+        // Puede venir null del back; el input necesita un string.
+        posterProducto: productoAEditar.posterProducto || ''
       });
     }
   }, [productoAEditar]);
@@ -28,7 +31,8 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onGuardar(formData);
+    // La imagen es opcional: si quedo vacia se manda null.
+    onGuardar({ ...formData, posterProducto: formData.posterProducto.trim() || null });
   };
 
   return (
@@ -54,7 +58,22 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
           placeholder="Detalle corto del producto..." 
           value={formData.descripcion} 
           onChange={handleChange} 
-          rows="2" 
+          rows="2"
+        />
+      </div>
+
+      <div className="kiosco-form-group">
+        <label className="kiosco-form-label">URL de imagen (opcional)</label>
+        {/* pattern: el navegador no deja guardar si no empieza con http:// o https:// */}
+        <input
+          className="admin-input"
+          name="posterProducto"
+          type="url"
+          placeholder="https://..."
+          pattern="https?://.+"
+          title="La URL tiene que empezar con http:// o https://"
+          value={formData.posterProducto}
+          onChange={handleChange}
         />
       </div>
 

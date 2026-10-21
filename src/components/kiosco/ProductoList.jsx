@@ -3,6 +3,13 @@ import CategoriaTabs from './CategoriaTabs';
 import ProductoCard from './ProductoCard';
 import './Kiosco.css';
 
+const elegirImagen = (producto) => {
+  if (producto.posterProducto) {
+    return producto.posterProducto;
+  }
+  return producto.imagenes?.length > 0 ? producto.imagenes[0].url : null;
+};
+
 // Componente padre del kiosco: es el unico que tiene estado y logica.
 // Le pide los productos al backend, los guarda en un estado local y se los
 // pasa a los hijos por props.
@@ -74,7 +81,7 @@ const ProductoList = () => {
               precio={producto.precio}
               descuento={producto.descuento}
               stock={producto.stock}
-              imagen={producto.imagenes.length > 0 ? producto.imagenes[0].url : null}
+              imagen={elegirImagen(producto)}
             />
           ))}
         </div>

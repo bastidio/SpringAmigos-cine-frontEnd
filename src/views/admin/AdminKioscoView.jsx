@@ -10,6 +10,7 @@ const AdminKioscoView = () => {
   const [categoriaActivaId, setCategoriaActivaId] = useState('Todos');
   const [modalAbierto, setModalAbierto] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
+  const [errorGuardar, setErrorGuardar] = useState(null);
 
   const cargarDatos = async () => {
     try {
@@ -73,17 +74,16 @@ const AdminKioscoView = () => {
   };
 
   const manejarGuardar = async (formData) => {
-    const payload = {
-      ...formData,
-      categoria: { id: formData.categoria_id } 
-    };
+    const { categoria_id, categoria, ...resto } = formData;
+    const payload = { ...resto, categoriaId: categoria_id };
 
+    setErrorGuardar(null);
     try {
       const url = productoEditando ? `/productos/${productoEditando.id}` : '/productos';
       const method = productoEditando ? 'PUT' : 'POST';
       const token = localStorage.getItem('token');
 
-      await fetch(url, {
+      const response = await fetch(url, {
         method: method,
         headers: { 
           'Content-Type': 'application/json',
@@ -92,20 +92,33 @@ const AdminKioscoView = () => {
         body: JSON.stringify(payload)
       });
 
+      if (!response.ok) {
+        const datos = await response.json().catch(() => null);
+        const motivos = datos?.validationErrors ? Object.values(datos.validationErrors) : [];
+        const mensaje = motivos.length > 0
+          ? motivos.join(', ')
+          : datos?.message || `No se pudo guardar el producto (${response.status})`;
+        setErrorGuardar(mensaje);
+        return;
+      }
+
       cerrarModal();
       cargarDatos();
     } catch (error) {
       console.error("Error guardando producto:", error);
+      setErrorGuardar('No se pudo conectar con el servidor.');
     }
   };
 
   const abrirModal = (producto = null) => {
     setProductoEditando(producto);
+    setErrorGuardar(null);
     setModalAbierto(true);
   };
 
   const cerrarModal = () => {
     setProductoEditando(null);
+    setErrorGuardar(null);
     setModalAbierto(false);
   };
 
@@ -150,6 +163,9 @@ const AdminKioscoView = () => {
       />
 
       <AdminModal isOpen={modalAbierto} onClose={cerrarModal} titulo={productoEditando ? 'Editar Producto' : 'Nuevo Producto'}>
+        {errorGuardar && (
+          <p role="alert" className="pagina_mensaje pagina_mensaje--error">{errorGuardar}</p>
+        )}
         <KioscoForm 
           productoAEditar={productoEditando} 
           categorias={categorias} 

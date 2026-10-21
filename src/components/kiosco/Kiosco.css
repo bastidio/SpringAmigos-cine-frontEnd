@@ -94,7 +94,7 @@
 .producto-card_marco {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1;
   background-color: var(--elevado);
 }
 

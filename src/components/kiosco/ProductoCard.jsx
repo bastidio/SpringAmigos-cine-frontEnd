@@ -1,6 +1,10 @@
-// Componente "tonto": la tarjeta de UN producto del kiosco.
-// ProductoList la renderiza una vez por producto.
+import { useState } from 'react';
+
+
 const ProductoCard = ({ nombre, descripcion, categoria, precio, descuento, stock, imagen }) => {
+  // Si la URL no carga (onError), se muestra el placeholder en su lugar.
+  const [imagenFallo, setImagenFallo] = useState(false);
+
   // El back guarda el descuento como porcentaje (0 a 100).
   const tieneDescuento = descuento > 0;
   const precioFinal = tieneDescuento ? precio - (precio * descuento) / 100 : precio;
@@ -11,8 +15,14 @@ const ProductoCard = ({ nombre, descripcion, categoria, precio, descuento, stock
   return (
     <article className="producto-card">
       <div className="producto-card_marco">
-        {imagen ? (
-          <img className="producto-card_imagen" src={imagen} alt="" />
+        {imagen && !imagenFallo ? (
+          <img
+            className="producto-card_imagen"
+            src={imagen}
+            alt={nombre}
+            loading="lazy"
+            onError={() => setImagenFallo(true)}
+          />
         ) : (
           <span className="producto-card_imagen sin-imagen">Sin imagen</span>
         )}
