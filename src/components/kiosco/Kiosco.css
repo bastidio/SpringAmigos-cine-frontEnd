@@ -4,6 +4,7 @@
   max-width: 1152px;
   margin: 0 auto;
   padding: 32px 24px 96px;
+  text-align: center;
 }
 
 .kiosco_titulo {
@@ -17,9 +18,9 @@
 .kiosco_bajada {
   font-size: 14px;
   line-height: 20px;
-  color: var(--texto-suave);
+  color: var(--dorado);
   margin-top: 4px;
-  margin-bottom: 24px;
+  margin: 24px;
 }
 
 /* ---------- Categorias ---------- */
@@ -28,7 +29,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 24px;
+  margin: 35px 0;
+  justify-content: center;
 }
 
 .tab {

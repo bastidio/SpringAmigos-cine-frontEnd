@@ -64,7 +64,7 @@ const ProductoList = () => {
   return (
     <div className="kiosco">
       <h1 className="kiosco_titulo">Kiosco & Candy Bar</h1>
-      <p className="kiosco_bajada">Armá tu combo perfecto antes de entrar a la sala.</p>
+      <p className="kiosco_bajada">Armá tu combo perfecto antes de entrar a la sala</p>
 
       <CategoriaTabs categorias={categorias} seleccionada={categoria} cambiar={setCategoria} />
 
