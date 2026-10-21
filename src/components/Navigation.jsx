@@ -4,7 +4,9 @@ import './Navigation.css';
 
 // Barra de arriba. App la renderiza afuera de Routes, por eso aparece en
 // todas las vistas. Para las palabras usa Link; para los botones, useNavigate.
-const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
+// "perfil" es el menu desplegable de Mi Perfil (lo arma App); va en el lugar
+// donde antes estaba "Cerrar sesion", que ahora esta adentro del perfil.
+const Navigation = ({ haySesion, esAdmin, perfil }) => {
   // useLocation devuelve un objeto con la ubicacion actual; pathname es la
   // ruta. Sirve para pintar de otro color el link de la vista en la que estoy.
   const location = useLocation();
@@ -81,16 +83,6 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
             >
               Kiosco
             </Link>
-            {haySesion && (
-              <Link
-                to="/perfil"
-                className={
-                  location.pathname === '/perfil' ? 'nav_link nav_link--activo' : 'nav_link'
-                }
-              >
-                Mi Perfil
-              </Link>
-            )}
             {/* Solo los admin ven el acceso al panel. */}
             {esAdmin && (
               <Link to="/admin/dashboard" className="nav_link">
@@ -129,13 +121,7 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
             </Link>
 
             {haySesion ? (
-              <button
-                type="button"
-                className="boton boton--secundario nav_boton max-md:flex-1"
-                onClick={cerrarSesion}
-              >
-                Cerrar sesión
-              </button>
+              perfil
             ) : (
               <button
                 type="button"

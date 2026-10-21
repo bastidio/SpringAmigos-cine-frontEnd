@@ -131,7 +131,13 @@ function App() {
   return (
     <>
       {/* Solo renderiza la barra del cliente si NO estamos en el admin */}
-      {!esRutaAdmin && <Navigation haySesion={token !== ''} esAdmin={esAdmin} cerrarSesion={() => cerrarSesion()} />}
+      {!esRutaAdmin && (
+        <Navigation
+          haySesion={token !== ''}
+          esAdmin={esAdmin}
+          perfil={<PerfilView token={token} onLogout={() => cerrarSesion()} onIrAEntradas={irAEntradas} />}
+        />
+      )}
 
       <Routes>
         <Route path="/" element={<Cartelera />} />
@@ -160,17 +166,10 @@ function App() {
           <Route path="kiosco" element={<AdminKioscoView />} />
           <Route path="ordenes" element={<AdminOrdenesView />} />
         </Route>
-        
-        <Route
-          path="/perfil"
-          element={
-            token !== '' ? (
-              <PerfilView token={token} onLogout={() => cerrarSesion()} onIrAEntradas={irAEntradas} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+
+        {/* Mi Perfil ya no es una pagina: es el desplegable del nav. Si alguien
+            entra a /perfil (un link viejo), va al inicio. */}
+        <Route path="/perfil" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
