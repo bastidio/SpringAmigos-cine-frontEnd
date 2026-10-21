@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../../services/api';
 import CategoriaTabs from './CategoriaTabs';
 import ProductoCard from './ProductoCard';
 import './Kiosco.css';
@@ -18,6 +20,42 @@ const ProductoList = () => {
   const [categoria, setCategoria] = useState('Todo');
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  // Id del producto que se esta agregando y del ultimo que se agrego bien.
+  const [agregandoId, setAgregandoId] = useState(null);
+  const [agregadoId, setAgregadoId] = useState(null);
+  const [errorCarrito, setErrorCarrito] = useState(null);
+
+  // Suma una unidad del producto al carrito del back. Si ya estaba, el back
+  // acumula la cantidad. Sin sesion, al login.
+  const agregarAlCarrito = async (producto) => {
+    if (!localStorage.getItem('token')) {
+      navigate('/login');
+      return;
+    }
+
+    setAgregandoId(producto.id);
+    setErrorCarrito(null);
+    try {
+      await apiFetch('/api/carritos/items', {
+        method: 'POST',
+        body: { productoId: producto.id, cantidad: 1 },
+      });
+      setAgregadoId(producto.id);
+    } catch (err) {
+      if (err.status === 401) {
+        navigate('/login');
+        return;
+      }
+      setErrorCarrito(
+        err.status === 400 || err.status === 409
+          ? `No se pudo agregar ${producto.nombre}: no hay stock suficiente o el carrito venció.`
+          : err.message
+      );
+    } finally {
+      setAgregandoId(null);
+    }
+  };
 
   // Efecto secundario: pedirle los productos al back. Array de dependencias
   // vacio: se ejecuta una sola vez, cuando el componente se monta.
@@ -66,6 +104,12 @@ const ProductoList = () => {
       <h1 className="kiosco_titulo">Kiosco & Candy Bar</h1>
       <p className="kiosco_bajada">Armá tu combo perfecto antes de entrar a la sala.</p>
 
+      {errorCarrito !== null && (
+        <p role="alert" className="pagina_mensaje pagina_mensaje--error">
+          {errorCarrito}
+        </p>
+      )}
+
       <CategoriaTabs categorias={categorias} seleccionada={categoria} cambiar={setCategoria} />
 
       {visibles.length === 0 ? (
@@ -82,6 +126,9 @@ const ProductoList = () => {
               descuento={producto.descuento}
               stock={producto.stock}
               imagen={elegirImagen(producto)}
+              onAgregar={() => agregarAlCarrito(producto)}
+              agregando={agregandoId === producto.id}
+              agregado={agregadoId === producto.id}
             />
           ))}
         </div>
