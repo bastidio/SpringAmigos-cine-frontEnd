@@ -1,0 +1,125 @@
+.footer {
+  margin-top: auto;
+  background-color: var(--fondo);
+  border-top: 1px solid var(--borde);
+  font-family: var(--cuerpo);
+  letter-spacing: normal;
+  text-align: left;
+  color: var(--texto-suave);
+}
+
+.footer,
+.footer * {
+  box-sizing: border-box;
+}
+
+.footer::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+  opacity: 0.6;
+}
+
+.footer_contenido {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 24px 32px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+}
+
+.footer_logos {
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+}
+
+.footer_logo {
+  display: block;
+  height: 40px;
+  width: auto;
+}
+
+.footer_logotipo {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
+.footer_lema {
+  margin: 16px 0 0;
+  max-width: 320px;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.footer_columna {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer_titulo {
+  margin: 0 0 4px;
+  font-family: var(--titulos);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--dorado);
+}
+
+.footer_link {
+  width: fit-content;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--texto-suave);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footer_link:hover {
+  color: var(--morado);
+}
+
+.footer_logos:focus-visible,
+.footer_link:focus-visible {
+  outline: 2px solid var(--morado);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.footer_base {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px 24px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--borde);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.footer_base p {
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .footer_contenido {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 24px;
+    padding-top: 40px;
+  }
+
+  .footer_marca {
+    grid-column: 1 / -1;
+  }
+
+  .footer_base {
+    flex-direction: column;
+  }
+}
