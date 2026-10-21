@@ -16,6 +16,8 @@ export default defineConfig({
       '/peliculas': 'http://localhost:4002',
       '/funciones': 'http://localhost:4002',
       '/productos': 'http://localhost:4002',
+      '/asientos': 'http://localhost:4002',
+      '/entradas': 'http://localhost:4002',
       // Perfil del usuario logueado (GET /users/me). La vista del front es
       // /perfil, que no choca con esta ruta.
       '/users': 'http://localhost:4002',

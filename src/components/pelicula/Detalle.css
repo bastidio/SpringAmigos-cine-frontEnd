@@ -1,5 +1,4 @@
-/* Estilos de la vista Detalle de pelicula: ficha y funciones por dia.
-   Medidas y efectos del Figma (pantalla "Pelicula"). */
+/* Estilos de la vista Detalle de pelicula: ficha y funciones por dia. */
 
 /* ---------- Detalle de una pelicula ---------- */
 
@@ -8,20 +7,20 @@
 }
 
 /* Franja de arriba: el poster de fondo, fundido hacia el color de la pagina. */
-.detalle__fondo {
+.detalle_fondo {
   position: relative;
   height: 320px;
   overflow: hidden;
 }
 
-.detalle__fondo img {
+.detalle_fondo img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.detalle__fondo::after {
+.detalle_fondo::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -29,7 +28,7 @@
 }
 
 /* Link para volver, apoyado arriba a la izquierda sobre la franja. */
-.detalle__volver {
+.detalle_volver {
   position: absolute;
   top: 20px;
   left: max(24px, calc((100% - 1152px) / 2 + 24px));
@@ -44,16 +43,16 @@
   transition: color 0.15s ease;
 }
 
-.detalle__volver:hover {
+.detalle_volver:hover {
   color: var(--texto);
 }
 
-.detalle__volver:focus-visible {
+.detalle_volver:focus-visible {
   outline: 2px solid var(--morado);
   outline-offset: 2px;
 }
 
-.detalle__contenido {
+.detalle_contenido {
   position: relative;
   z-index: 1;
   max-width: 1152px;
@@ -61,12 +60,12 @@
   padding: 0 24px;
 }
 
-.detalle__ficha {
+.detalle_ficha {
   display: flex;
   gap: 32px;
 }
 
-.detalle__poster {
+.detalle_poster {
   flex-shrink: 0;
   width: 208px;
   align-self: flex-start;
@@ -76,30 +75,30 @@
   box-shadow: 0 0 24px rgba(139, 92, 246, 0.12);
 }
 
-.detalle__poster img {
+.detalle_poster img {
   display: block;
   width: 100%;
   background-color: var(--superficie);
 }
 
-.detalle__sin-poster {
+.detalle_sin-poster {
   width: 100%;
   aspect-ratio: 2 / 3;
 }
 
-.detalle__info {
+.detalle_info {
   flex: 1;
   padding-top: 8px;
 }
 
-.detalle__etiquetas {
+.detalle_etiquetas {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 12px;
 }
 
-.detalle__titulo {
+.detalle_titulo {
   font-family: var(--titulos);
   font-size: 36px;
   font-weight: 700;
@@ -108,7 +107,7 @@
   margin-bottom: 12px;
 }
 
-.detalle__resumen {
+.detalle_resumen {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -117,7 +116,7 @@
   margin-bottom: 16px;
 }
 
-.detalle__datos {
+.detalle_datos {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -125,8 +124,8 @@
   margin-bottom: 20px;
 }
 
-.detalle__datos dt,
-.detalle__subtitulo {
+.detalle_datos dt,
+.detalle_subtitulo {
   font-size: 10px;
   font-weight: 600;
   line-height: 1.5;
@@ -135,29 +134,29 @@
   color: var(--texto-suave);
 }
 
-.detalle__datos dt {
+.detalle_datos dt {
   margin-bottom: 2px;
 }
 
-.detalle__datos dd {
+.detalle_datos dd {
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
   color: var(--texto);
 }
 
-.detalle__subtitulo {
+.detalle_subtitulo {
   margin-bottom: 8px;
 }
 
-.detalle__sinopsis {
+.detalle_sinopsis {
   font-size: 14px;
   line-height: 1.625;
   color: var(--texto-suave);
 }
 
 /* Linea fina dorada que separa la ficha de las funciones. */
-.detalle__separador {
+.detalle_separador {
   height: 1px;
   border: none;
   margin: 40px 0;
@@ -165,7 +164,7 @@
   opacity: 0.35;
 }
 
-.detalle__funciones-titulo {
+.detalle_funciones-titulo {
   font-family: var(--titulos);
   font-size: 24px;
   font-weight: 700;
@@ -174,16 +173,16 @@
   margin-bottom: 24px;
 }
 
-.detalle__dia {
+.detalle_dia {
   margin-bottom: 32px;
 }
 
-.detalle__dia:last-child {
+.detalle_dia:last-child {
   margin-bottom: 0;
   padding-bottom: 64px;
 }
 
-.detalle__dia-titulo {
+.detalle_dia-titulo {
   font-size: 14px;
   font-weight: 600;
   line-height: 20px;
@@ -195,13 +194,13 @@
   margin-bottom: 16px;
 }
 
-.detalle__funciones {
+.detalle_funciones {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
-.detalle__contenido > .pagina__mensaje {
+.detalle_contenido > .pagina_mensaje {
   padding-bottom: 64px;
 }
 
@@ -230,27 +229,27 @@
   outline-offset: 2px;
 }
 
-.funcion-card__arriba {
+.funcion-card_arriba {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 12px;
 }
 
-.funcion-card__hora {
+.funcion-card_hora {
   font-size: 24px;
   font-weight: 700;
   line-height: 32px;
   color: var(--texto);
 }
 
-.funcion-card__hs {
+.funcion-card_hs {
   font-size: 12px;
   color: var(--texto-suave);
   margin-left: 4px;
 }
 
-.funcion-card__formato {
+.funcion-card_formato {
   font-size: 12px;
   font-weight: 700;
   line-height: 16px;
@@ -260,22 +259,22 @@
   color: var(--morado);
 }
 
-.funcion-card__sala,
-.funcion-card__idioma {
+.funcion-card_sala,
+.funcion-card_idioma {
   font-size: 12px;
   line-height: 16px;
   color: var(--texto-suave);
 }
 
-.funcion-card__sala {
+.funcion-card_sala {
   margin-bottom: 4px;
 }
 
-.funcion-card__idioma {
+.funcion-card_idioma {
   margin-bottom: 12px;
 }
 
-.funcion-card__precio {
+.funcion-card_precio {
   font-weight: 700;
   color: var(--dorado);
 }

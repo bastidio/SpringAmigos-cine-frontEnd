@@ -39,9 +39,9 @@ function Login({ onAutenticado, onIrARegistro }) {
 
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
-      <h2 className="auth-form__titulo">Iniciar sesión</h2>
+      <h2 className="auth-form_titulo">Iniciar sesión</h2>
 
-      <label className="auth-form__campo">
+      <label className="auth-form_campo">
         <span>Email</span>
         <input
           type="email"
@@ -51,7 +51,7 @@ function Login({ onAutenticado, onIrARegistro }) {
         />
       </label>
 
-      <label className="auth-form__campo">
+      <label className="auth-form_campo">
         <span>Contraseña</span>
         <input
           type="password"
@@ -61,15 +61,15 @@ function Login({ onAutenticado, onIrARegistro }) {
         />
       </label>
 
-      {error && <p className="auth-form__error">{error}</p>}
+      {error && <p className="auth-form_error">{error}</p>}
 
-      <button type="submit" className="auth-form__boton" disabled={enviando}>
+      <button type="submit" className="auth-form_boton" disabled={enviando}>
         {enviando ? 'Ingresando...' : 'Ingresar'}
       </button>
 
-      <p className="auth-form__link">
+      <p className="auth-form_link">
         ¿No tenés cuenta?{' '}
-        <button type="button" className="auth-form__link-boton" onClick={onIrARegistro}>
+        <button type="button" className="auth-form_link-boton" onClick={onIrARegistro}>
           Creá una
         </button>
       </p>

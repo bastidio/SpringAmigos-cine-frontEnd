@@ -1,10 +1,5 @@
-/* Estilos compartidos por todas las vistas: tipografias, paleta, botones y
-   etiquetas. Los valores salen del Figma. Se importa una sola vez, en App.jsx. */
-
-/* Tipografias del Figma: Playfair Display para titulos, Inter para el resto. */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Paleta del Figma, guardada en variables para no repetir los colores. */
 :root {
   --fondo: #0b0710;
   --superficie: #16101f;
@@ -20,7 +15,6 @@
   --cuerpo: 'Inter', system-ui, sans-serif;
 }
 
-/* Base de cada vista: fondo oscuro, letra y texto alineado a la izquierda. */
 .pagina {
   flex-grow: 1;
   min-height: 100vh;
@@ -38,8 +32,6 @@
   box-sizing: border-box;
 }
 
-/* Saca los margenes y tamanos que index.css les pone a titulos y parrafos.
-   :where() hace que cualquier clase de un componente pueda pisar esto. */
 :where(.pagina) :where(p, h1, h2, h3, dl, dd) {
   margin: 0;
   font-size: inherit;
@@ -49,22 +41,21 @@
   color: inherit;
 }
 
-/* Cargando / error / sin datos. */
-.pagina__mensaje {
+.pagina_mensaje {
   font-size: 14px;
   line-height: 20px;
   color: var(--texto-suave);
 }
 
-.pagina > .pagina__mensaje {
+.pagina > .pagina_mensaje {
   padding: 40px 24px;
 }
 
-.pagina__mensaje--error {
+.pagina_mensaje--error {
   color: var(--error);
 }
 
-/* ---------- Botones ---------- */
+/*Botones*/
 
 .boton {
   display: inline-flex;
@@ -120,7 +111,7 @@
   outline-offset: 2px;
 }
 
-/* ---------- Etiquetas (clasificacion, descuento) ---------- */
+/*Etiquetas (clasificacion, descuento)*/
 
 .etiqueta {
   display: inline-block;
@@ -144,7 +135,7 @@
   letter-spacing: 0.06em;
 }
 
-/* ---------- Hueco cuando no hay imagen cargada ---------- */
+/*Hueco cuando no hay imagen cargada*/
 
 .sin-imagen {
   display: flex;
@@ -155,8 +146,6 @@
   background-color: var(--superficie);
 }
 
-/* Etiqueta apoyada sobre una foto: lleva un fondo oscuro atras para que se
-   lea aunque la imagen sea clara. */
 .etiqueta--sobre-imagen {
   position: absolute;
   z-index: 1;

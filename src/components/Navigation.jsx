@@ -28,13 +28,13 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
 
   return (
     <header className="nav">
-      <div className="nav__contenido">
-        <Link to="/" className="nav__marca" onClick={cerrarMenu}>
-          <span className="nav__rombo">◈</span>
-          <span className="nav__nombre">
-            Spring<span className="nav__nombre-acento">Amigos</span>
+      <div className="nav_contenido">
+        <Link to="/" className="nav_marca" onClick={cerrarMenu}>
+          <span className="nav_rombo">◈</span>
+          <span className="nav_nombre">
+            Spring<span className="nav_nombre-acento">Amigos</span>
           </span>
-          <span className="nav__cine">Cine</span>
+          <span className="nav_cine">Cine</span>
         </Link>
 
         {/* Boton hamburguesa: solo se ve en pantallas chicas. Las tres rayas
@@ -66,17 +66,17 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
           className={`md:contents max-md:absolute max-md:inset-x-0 max-md:top-full max-md:flex-col max-md:gap-4 max-md:px-6 max-md:py-4 max-md:bg-[var(--fondo)] max-md:border-b max-md:border-[var(--borde)] ${menuAbierto ? 'max-md:flex' : 'max-md:hidden'}`}
           onClick={cerrarMenu}
         >
-          <nav className="nav__links max-md:flex-col max-md:items-start max-md:gap-4">
+          <nav className="nav_links max-md:flex-col max-md:items-start max-md:gap-4">
             <Link
               to="/"
-              className={location.pathname === '/' ? 'nav__link nav__link--activo' : 'nav__link'}
+              className={location.pathname === '/' ? 'nav_link nav_link--activo' : 'nav_link'}
             >
               Cartelera
             </Link>
             <Link
               to="/kiosco"
               className={
-                location.pathname === '/kiosco' ? 'nav__link nav__link--activo' : 'nav__link'
+                location.pathname === '/kiosco' ? 'nav_link nav_link--activo' : 'nav_link'
               }
             >
               Kiosco
@@ -85,7 +85,7 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
               <Link
                 to="/perfil"
                 className={
-                  location.pathname === '/perfil' ? 'nav__link nav__link--activo' : 'nav__link'
+                  location.pathname === '/perfil' ? 'nav_link nav_link--activo' : 'nav_link'
                 }
               >
                 Mi Perfil
@@ -93,19 +93,19 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
             )}
             {/* Solo los admin ven el acceso al panel. */}
             {esAdmin && (
-              <Link to="/admin/dashboard" className="nav__link">
+              <Link to="/admin/dashboard" className="nav_link">
                 Panel admin
               </Link>
             )}
           </nav>
 
-          <div className="nav__acciones max-md:w-full">
+          <div className="nav_acciones max-md:w-full">
             <Link
               to="/carrito"
               className={
                 location.pathname === '/carrito'
-                  ? 'nav__carrito nav__carrito--activo'
-                  : 'nav__carrito'
+                  ? 'nav_carrito nav_carrito--activo'
+                  : 'nav_carrito'
               }
               aria-label="Ir al carrito"
               title="Carrito"
@@ -131,7 +131,7 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
             {haySesion ? (
               <button
                 type="button"
-                className="boton boton--secundario nav__boton max-md:flex-1"
+                className="boton boton--secundario nav_boton max-md:flex-1"
                 onClick={cerrarSesion}
               >
                 Cerrar sesión
@@ -139,7 +139,7 @@ const Navigation = ({ haySesion, esAdmin, cerrarSesion }) => {
             ) : (
               <button
                 type="button"
-                className="boton boton--primario nav__boton max-md:flex-1"
+                className="boton boton--primario nav_boton max-md:flex-1"
                 onClick={handleIngresar}
               >
                 Ingresar

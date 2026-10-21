@@ -118,7 +118,7 @@ function App() {
   if (token === '') {
     rutaAdmin = <Navigate to="/login" replace />;
   } else if (rol === null) {
-    rutaAdmin = <p className="pagina__mensaje">Verificando permisos...</p>;
+    rutaAdmin = <p className="pagina_mensaje">Verificando permisos...</p>;
   } else if (esAdmin) {
     rutaAdmin = <AdminLayout onLogout={() => cerrarSesion()} />;
   } else {

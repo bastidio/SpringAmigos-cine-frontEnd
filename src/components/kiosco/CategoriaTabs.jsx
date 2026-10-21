@@ -3,7 +3,7 @@
 // por props; al hacer click en un boton se le avisa al padre con cambiar.
 const CategoriaTabs = ({ categorias, seleccionada, cambiar }) => {
   return (
-    <div className="kiosco__tabs">
+    <div className="kiosco_tabs">
       <button
         type="button"
         className={seleccionada === 'Todo' ? 'tab tab--activa' : 'tab'}

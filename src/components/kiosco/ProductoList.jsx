@@ -37,11 +37,11 @@ const ProductoList = () => {
 
   // Primero "por las malas": cargando y error.
   if (cargando) {
-    return <p className="pagina__mensaje">Cargando kiosco...</p>;
+    return <p className="pagina_mensaje">Cargando kiosco...</p>;
   }
 
   if (error !== null) {
-    return <p className="pagina__mensaje pagina__mensaje--error">{error}</p>;
+    return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
   }
 
   // Las categorias salen de los productos que mando el back.
@@ -56,15 +56,15 @@ const ProductoList = () => {
 
   return (
     <div className="kiosco">
-      <h1 className="kiosco__titulo">Kiosco & Candy Bar</h1>
-      <p className="kiosco__bajada">Armá tu combo perfecto antes de entrar a la sala.</p>
+      <h1 className="kiosco_titulo">Kiosco & Candy Bar</h1>
+      <p className="kiosco_bajada">Armá tu combo perfecto antes de entrar a la sala.</p>
 
       <CategoriaTabs categorias={categorias} seleccionada={categoria} cambiar={setCategoria} />
 
       {visibles.length === 0 ? (
-        <p className="pagina__mensaje">Todavía no hay productos para mostrar.</p>
+        <p className="pagina_mensaje">Todavía no hay productos para mostrar.</p>
       ) : (
-        <div className="kiosco__grid">
+        <div className="kiosco_grid">
           {visibles.map((producto) => (
             <ProductoCard
               key={producto.id}

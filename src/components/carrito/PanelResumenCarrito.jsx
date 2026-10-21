@@ -24,4 +24,4 @@ const PanelResumenCarrito = ({ cantidadArticulos, total, formatearMoneda }) => {
   );
 };
 
-export default PanelResumenCarrito;
+export default PanelResumenCarrito;

@@ -10,38 +10,38 @@ const ProductoCard = ({ nombre, descripcion, categoria, precio, descuento, stock
 
   return (
     <article className="producto-card">
-      <div className="producto-card__marco">
+      <div className="producto-card_marco">
         {imagen ? (
-          <img className="producto-card__imagen" src={imagen} alt="" />
+          <img className="producto-card_imagen" src={imagen} alt="" />
         ) : (
-          <span className="producto-card__imagen sin-imagen">Sin imagen</span>
+          <span className="producto-card_imagen sin-imagen">Sin imagen</span>
         )}
         {tieneDescuento && (
-          <span className="etiqueta etiqueta--dorada etiqueta--sobre-imagen producto-card__descuento">
+          <span className="etiqueta etiqueta--dorada etiqueta--sobre-imagen producto-card_descuento">
             {descuento}% off
           </span>
         )}
       </div>
 
-      <div className="producto-card__contenido">
-        <p className="producto-card__categoria">{categoria}</p>
-        <h3 className="producto-card__nombre">{nombre}</h3>
-        <p className="producto-card__descripcion">{descripcion}</p>
+      <div className="producto-card_contenido">
+        <p className="producto-card_categoria">{categoria}</p>
+        <h3 className="producto-card_nombre">{nombre}</h3>
+        <p className="producto-card_descripcion">{descripcion}</p>
 
-        <div className="producto-card__fila">
-          <p className="producto-card__precio">
+        <div className="producto-card_fila">
+          <p className="producto-card_precio">
             ${precioFinal.toLocaleString('es-AR', formato)}
             {tieneDescuento && (
-              <span className="producto-card__precio-anterior">
+              <span className="producto-card_precio-anterior">
                 ${precio.toLocaleString('es-AR', formato)}
               </span>
             )}
           </p>
-          {stock > 0 && stock < 5 && <p className="producto-card__ultimas">¡Últimas {stock}!</p>}
+          {stock > 0 && stock < 5 && <p className="producto-card_ultimas">¡Últimas {stock}!</p>}
         </div>
 
         {/* Todavia no esta conectado al carrito: por eso queda deshabilitado. */}
-        <button type="button" className="boton boton--primario producto-card__agregar" disabled>
+        <button type="button" className="boton boton--primario producto-card_agregar" disabled>
           {stock > 0 ? 'Agregar' : 'Sin stock'}
         </button>
       </div>

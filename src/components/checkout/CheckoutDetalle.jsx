@@ -67,7 +67,7 @@ const CheckoutDetalle = () => {
   };
 
   if (cargando) {
-    return <p className="pagina__mensaje">Preparando checkout...</p>;
+    return <p className="pagina_mensaje">Preparando checkout...</p>;
   }
 
   if (orden !== null) {
@@ -99,7 +99,7 @@ const CheckoutDetalle = () => {
       </div>
 
       {error !== null && (
-        <p role="alert" className="pagina__mensaje pagina__mensaje--error checkout__alerta">
+        <p role="alert" className="pagina_mensaje pagina_mensaje--error checkout__alerta">
           {error}
         </p>
       )}
@@ -143,4 +143,4 @@ const CheckoutDetalle = () => {
   );
 };
 
-export default CheckoutDetalle;
+export default CheckoutDetalle;
