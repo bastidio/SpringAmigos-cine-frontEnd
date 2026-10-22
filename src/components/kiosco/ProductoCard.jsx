@@ -9,9 +9,10 @@ const ProductoCard = ({
   descuento,
   stock,
   imagen,
+  cantidad = 0,
+  ocupado = false,
   onAgregar,
-  agregando = false,
-  agregado = false,
+  onCambiarCantidad,
 }) => {
   // Si la URL no carga (onError), se muestra el placeholder en su lugar.
   const [imagenFallo, setImagenFallo] = useState(false);
@@ -61,14 +62,40 @@ const ProductoCard = ({
           {stock > 0 && stock < 5 && <p className="producto-card_ultimas">¡Últimas {stock}!</p>}
         </div>
 
-        <button
-          type="button"
-          className="boton boton--primario producto-card_agregar"
-          onClick={onAgregar}
-          disabled={stock <= 0 || agregando}
-        >
-          {stock <= 0 ? 'Sin stock' : agregando ? 'Agregando...' : agregado ? '¡Agregado! +1' : 'Agregar'}
-        </button>
+        {cantidad > 0 ? (
+          <div className="producto-card_contador" role="group" aria-label={`Cantidad de ${nombre} en el carrito`}>
+            <button
+              type="button"
+              className="producto-card_contador-boton"
+              onClick={() => onCambiarCantidad(cantidad - 1)}
+              disabled={ocupado}
+              aria-label={cantidad === 1 ? `Quitar ${nombre} del carrito` : `Restar una unidad de ${nombre}`}
+            >
+              −
+            </button>
+            <span className="producto-card_contador-numero" aria-live="polite">
+              {cantidad}
+            </span>
+            <button
+              type="button"
+              className="producto-card_contador-boton"
+              onClick={() => onCambiarCantidad(cantidad + 1)}
+              disabled={ocupado || cantidad >= stock}
+              aria-label={`Sumar una unidad de ${nombre}`}
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="boton boton--primario producto-card_agregar"
+            onClick={onAgregar}
+            disabled={stock <= 0 || ocupado}
+          >
+            {stock <= 0 ? 'Sin stock' : ocupado ? 'Agregando...' : 'Agregar'}
+          </button>
+        )}
       </div>
     </article>
   );

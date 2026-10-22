@@ -16,37 +16,38 @@ const elegirImagen = (producto) => {
 // Componente padre del kiosco: es el unico que tiene estado y logica.
 // Le pide los productos al backend, los guarda en un estado local y se los
 // pasa a los hijos por props.
-const ProductoList = () => {
-  // Para avisarle al nav que cambio el carrito (el numero del icono).
-  const { refrescarCantidad } = useCarrito();
+const ProductoList = ({ token }) => {
+  const { refrescarCantidad, version } = useCarrito();
   const [productos, setProductos] = useState([]);
   const [categoria, setCategoria] = useState('Todo');
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  // Id del producto que se esta agregando y del ultimo que se agrego bien.
-  const [agregandoId, setAgregandoId] = useState(null);
-  const [agregadoId, setAgregadoId] = useState(null);
+
+  const [carrito, setCarrito] = useState(null);
+  const [ocupadoId, setOcupadoId] = useState(null);
   const [errorCarrito, setErrorCarrito] = useState(null);
 
-  // Suma una unidad del producto al carrito del back. Si ya estaba, el back
-  // acumula la cantidad. Sin sesion, al login.
-  const agregarAlCarrito = async (producto) => {
-    if (!localStorage.getItem('token')) {
+  const itemDe = (producto) => {
+    if (token === '') return undefined;
+    return (carrito?.items ?? []).find(
+      (item) => item.tipo === 'PRODUCTO' && item.referenciaId === producto.id
+    );
+  };
+
+  const cambiarCarrito = async (producto, pedido) => {
+    if (token === '') {
       navigate('/login');
       return;
     }
 
-    setAgregandoId(producto.id);
+    setOcupadoId(producto.id);
     setErrorCarrito(null);
     try {
-      await apiFetch('/api/carritos/items', {
-        method: 'POST',
-        body: { productoId: producto.id, cantidad: 1 },
-      });
-      setAgregadoId(producto.id);
+      await pedido();
       refrescarCantidad();
     } catch (err) {
+      setOcupadoId(null);
       if (err.status === 401) {
         navigate('/login');
         return;
@@ -56,10 +57,51 @@ const ProductoList = () => {
           ? `No se pudo agregar ${producto.nombre}: no hay stock suficiente o el carrito venció.`
           : err.message
       );
-    } finally {
-      setAgregandoId(null);
     }
   };
+
+  const agregar = (producto) => {
+    cambiarCarrito(producto, () =>
+      apiFetch('/api/carritos/items', {
+        method: 'POST',
+        body: { productoId: producto.id, cantidad: 1 },
+        token,
+      })
+    );
+  };
+
+  const cambiarCantidad = (producto, cantidad) => {
+    const item = itemDe(producto);
+    if (item === undefined) return;
+
+    cambiarCarrito(producto, () =>
+      cantidad === 0
+        ? apiFetch(`/api/carritos/items/${item.itemId}`, { method: 'DELETE', token })
+        : apiFetch(`/api/carritos/items/${item.itemId}`, {
+            method: 'PUT',
+            body: { cantidad },
+            token,
+          })
+    );
+  };
+
+  useEffect(() => {
+    if (token === '') return;
+
+    const controller = new AbortController();
+    apiFetch('/api/carritos', { token, signal: controller.signal })
+      .then((data) => {
+        setCarrito(data);
+        setOcupadoId(null);
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') return;
+        console.error('No se pudo cargar el carrito en el kiosco', err);
+        setOcupadoId(null);
+      });
+
+    return () => controller.abort();
+  }, [token, version]);
 
   // Efecto secundario: pedirle los productos al back. Array de dependencias
   // vacio: se ejecuta una sola vez, cuando el componente se monta.
@@ -130,9 +172,10 @@ const ProductoList = () => {
               descuento={producto.descuento}
               stock={producto.stock}
               imagen={elegirImagen(producto)}
-              onAgregar={() => agregarAlCarrito(producto)}
-              agregando={agregandoId === producto.id}
-              agregado={agregadoId === producto.id}
+              cantidad={itemDe(producto)?.cantidad ?? 0}
+              ocupado={ocupadoId === producto.id}
+              onAgregar={() => agregar(producto)}
+              onCambiarCantidad={(cantidad) => cambiarCantidad(producto, cantidad)}
             />
           ))}
         </div>
