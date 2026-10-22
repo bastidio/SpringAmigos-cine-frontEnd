@@ -8,7 +8,8 @@ import './Navigation.css';
 // todas las vistas. Para las palabras usa Link; para los botones, useNavigate.
 // "perfil" es el menu desplegable de Mi Perfil (lo arma App); va en el lugar
 // donde antes estaba "Cerrar sesion", que ahora esta adentro del perfil.
-const Navigation = ({ haySesion, esAdmin, perfil }) => {
+// "carrito" es el menu desplegable del carrito (tambien lo arma App).
+const Navigation = ({ haySesion, esAdmin, perfil, carrito }) => {
   // useLocation devuelve un objeto con la ubicacion actual; pathname es la
   // ruta. Sirve para pintar de otro color el link de la vista en la que estoy.
   const location = useLocation();
@@ -91,33 +92,7 @@ const Navigation = ({ haySesion, esAdmin, perfil }) => {
           </nav>
 
           <div className="nav_acciones max-md:w-full">
-            <Link
-              to="/carrito"
-              className={
-                location.pathname === '/carrito'
-                  ? 'nav_carrito nav_carrito--activo'
-                  : 'nav_carrito'
-              }
-              aria-label="Ir al carrito"
-              title="Carrito"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="9" cy="21" r="1" />
-                <circle cx="20" cy="21" r="1" />
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-              </svg>
-            </Link>
+            {carrito}
 
             {haySesion ? (
               perfil

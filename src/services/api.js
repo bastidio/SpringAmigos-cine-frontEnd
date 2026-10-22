@@ -13,8 +13,9 @@ const mensajesPorEstado = {
   409: 'El carrito venció o una butaca ya fue ocupada. Volvé a elegir.',
 };
 
-export const apiFetch = async (url, { body, headers, ...opciones } = {}) => {
-  const token = localStorage.getItem('token');
+// "token" es opcional: si el componente lo recibe por props (el carrito) lo
+// pasa aca; si no, se usa el guardado en el login, como hasta ahora.
+export const apiFetch = async (url, { body, headers, token = localStorage.getItem('token'), ...opciones } = {}) => {
 
   const res = await fetch(url, {
     ...opciones,

@@ -9,6 +9,7 @@ import DetallePelicula from './views/DetallePelicula';
 import Butacas from './views/Butacas';
 import Kiosco from './views/Kiosco';
 import Carrito from './views/Carrito';
+import CarritoView from './views/CarritoView';
 import Checkout from './views/Checkout';
 import MisEntradas from './views/MisEntradas';
 import Login from './views/Login';
@@ -51,6 +52,9 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   // null = todavia no se sabe (se esta consultando); '' = sin rol.
   const [rol, setRol] = useState(null);
+  // Si el desplegable del carrito esta abierto. Vive aca (y no en el menu)
+  // porque el carrito se puede abrir desde otras vistas, no solo del nav.
+  const [carritoAbierto, setCarritoAbierto] = useState(false);
   const navigate = useNavigate();
   const location = useLocation(); // Agregado para saber en qué URL estamos
 
@@ -60,6 +64,7 @@ function App() {
   const cerrarSesion = (destino = '/') => {
     setToken('');
     setRol(null);
+    setCarritoAbierto(false);
     localStorage.removeItem('token');
     navigate(destino);
   };
@@ -112,6 +117,25 @@ function App() {
     navigate('/mis-entradas');
   };
 
+  // Icono del carrito: sin sesion va al login; con sesion abre o cierra el desplegable.
+  const alternarCarrito = () => {
+    if (token === '') {
+      navigate('/login');
+      return;
+    }
+    setCarritoAbierto(!carritoAbierto);
+  };
+
+  const cerrarCarrito = () => {
+    setCarritoAbierto(false);
+  };
+
+  // Desde el carrito (ir a pagar, ver cartelera): se cierra y se navega.
+  const navegarDesdeCarrito = (destino) => {
+    setCarritoAbierto(false);
+    navigate(destino);
+  };
+
   // Verificamos si estamos en una ruta de administrador
   const esRutaAdmin = location.pathname.startsWith('/admin');
 
@@ -137,6 +161,15 @@ function App() {
           haySesion={token !== ''}
           esAdmin={esAdmin}
           perfil={<PerfilView token={token} onLogout={() => cerrarSesion()} onIrAEntradas={irAEntradas} />}
+          carrito={
+            <CarritoView
+              token={token}
+              abierto={carritoAbierto}
+              onAlternar={alternarCarrito}
+              onCerrar={cerrarCarrito}
+              onNavegar={navegarDesdeCarrito}
+            />
+          }
         />
       )}
 
@@ -148,7 +181,16 @@ function App() {
         <Route path="/login" element={<Login onAutenticado={iniciarSesion} />} />
 
         {/* Carrito, checkout y entradas son del usuario logueado: sin token, al login. */}
-        <Route path="/carrito" element={token !== '' ? <Carrito /> : <Navigate to="/login" replace />} />
+        <Route
+          path="/carrito"
+          element={
+            token !== '' ? (
+              <Carrito token={token} onNavegar={navigate} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
         <Route path="/checkout" element={token !== '' ? <Checkout /> : <Navigate to="/login" replace />} />
         <Route
           path="/mis-entradas"
