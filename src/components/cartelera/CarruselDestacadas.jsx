@@ -106,7 +106,13 @@ const CarruselDestacadas = ({ peliculas, verDetalle }) => {
       ))}
 
       {cantidad > 1 && (
-        <CarruselControles cantidad={cantidad} indice={indice} onIrA={setIndice} />
+        <CarruselControles
+          cantidad={cantidad}
+          indice={indice}
+          onAnterior={anterior}
+          onSiguiente={siguiente}
+          onIrA={setIndice}
+        />
       )}
     </section>
   );
