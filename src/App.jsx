@@ -184,7 +184,7 @@ function App() {
   }
 
   return (
-    <CarritoContext.Provider value={{ refrescarCantidad }}>
+    <CarritoContext.Provider value={{ refrescarCantidad, version: avisosCarrito }}>
       {/* Solo renderiza la barra del cliente si NO estamos en el admin */}
       {!esRutaAdmin && (
         <Navigation
@@ -208,7 +208,7 @@ function App() {
         <Route path="/" element={<Cartelera />} />
         <Route path="/pelicula/:id" element={<DetallePelicula />} />
         <Route path="/funcion/:id/butacas" element={<Butacas />} />
-        <Route path="/kiosco" element={<Kiosco />} />
+        <Route path="/kiosco" element={<Kiosco token={token} />} />
         <Route path="/login" element={<Login onAutenticado={iniciarSesion} />} />
 
         {/* Carrito, checkout y entradas son del usuario logueado: sin token, al login. */}

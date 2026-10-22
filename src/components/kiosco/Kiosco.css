@@ -62,19 +62,19 @@
 
 .kiosco_grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 16px;
 }
 
 @media (max-width: 1023px) {
   .kiosco_grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 767px) {
   .kiosco_grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -152,13 +152,12 @@
   font-size: 12px;
   line-height: 1.625;
   color: var(--texto-suave);
-  margin-bottom: 12px;
 }
 
 .producto-card_fila {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 8px;
   margin-bottom: 12px;
 }
@@ -188,4 +187,56 @@
   width: 100%;
   padding: 6.4px 12px;
   font-size: 12.8px;
+}
+
+/* Contador que reemplaza al boton "Agregar" cuando el producto ya esta en el
+   carrito. Mide lo mismo que el boton para que la tarjeta no cambie de alto. */
+.producto-card_contador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 3px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background-color: var(--elevado);
+  border: 1px solid var(--morado);
+}
+
+.producto-card_contador-boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--cuerpo);
+  font-size: 16px;
+  line-height: 1;
+  color: var(--texto);
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.producto-card_contador-boton:hover:not(:disabled) {
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.45);
+}
+
+.producto-card_contador-boton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.producto-card_contador-boton:focus-visible {
+  outline: 2px solid var(--dorado);
+  outline-offset: 2px;
+}
+
+.producto-card_contador-numero {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--texto);
 }
