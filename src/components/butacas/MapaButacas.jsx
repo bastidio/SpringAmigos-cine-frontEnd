@@ -13,20 +13,20 @@ const MapaButacas = ({ butacas, seleccionadas, alternar }) => {
 
   return (
     <div className="mapa">
-      <div className="mapa__pantalla">
-        <div className="mapa__pantalla-luz" />
-        <div className="mapa__pantalla-linea" />
-        <p className="mapa__pantalla-texto">Pantalla</p>
+      <div className="mapa_pantalla">
+        <div className="mapa_pantalla-luz" />
+        <div className="mapa_pantalla-linea" />
+        <p className="mapa_pantalla-texto">Pantalla</p>
       </div>
 
-      <div className="mapa__filas">
+      <div className="mapa_filas">
         {filas.map((fila) => {
           const butacasDeLaFila = butacas.filter((butaca) => butaca.fila === fila);
           const mitad = Math.ceil(butacasDeLaFila.length / 2);
 
           return (
-            <div key={fila} className="mapa__fila">
-              <span className="mapa__letra">{fila}</span>
+            <div key={fila} className="mapa_fila">
+              <span className="mapa_letra">{fila}</span>
 
               {butacasDeLaFila.map((butaca, i) => (
                 <button
@@ -43,21 +43,21 @@ const MapaButacas = ({ butacas, seleccionadas, alternar }) => {
                 />
               ))}
 
-              <span className="mapa__letra mapa__letra--derecha">{fila}</span>
+              <span className="mapa_letra mapa_letra--derecha">{fila}</span>
             </div>
           );
         })}
       </div>
 
-      <div className="mapa__leyenda">
-        <span className="mapa__leyenda-item">
-          <span className="butaca butaca--libre butaca--muestra" /> Libre
+      <div className="mapa_leyenda">
+        <span className="mapa_leyenda-item">
+          <span className="butaca butaca--libre" /> Libre
         </span>
-        <span className="mapa__leyenda-item">
-          <span className="butaca butaca--seleccionada butaca--muestra" /> Seleccionada
+        <span className="mapa_leyenda-item">
+          <span className="butaca butaca--seleccionada" /> Seleccionada
         </span>
-        <span className="mapa__leyenda-item">
-          <span className="butaca butaca--ocupada butaca--muestra" /> Ocupada
+        <span className="mapa_leyenda-item">
+          <span className="butaca butaca--ocupada" /> Ocupada
         </span>
       </div>
     </div>

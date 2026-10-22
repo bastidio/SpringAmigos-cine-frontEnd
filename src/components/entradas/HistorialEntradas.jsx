@@ -69,13 +69,13 @@ const HistorialEntradas = () => {
   }, []);
 
   if (cargando) {
-    return <p className="pagina__mensaje">Cargando historial de entradas...</p>;
+    return <p className="pagina_mensaje">Cargando historial de entradas...</p>;
   }
 
   if (error !== null) {
     return (
       <div className="entradas">
-        <p role="alert" className="pagina__mensaje pagina__mensaje--error">
+        <p role="alert" className="pagina_mensaje pagina_mensaje--error">
           {error}
         </p>
         <button
@@ -135,4 +135,4 @@ const HistorialEntradas = () => {
   );
 };
 
-export default HistorialEntradas;
+export default HistorialEntradas;

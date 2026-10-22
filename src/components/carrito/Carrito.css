@@ -108,6 +108,57 @@
   color: var(--texto-suave);
 }
 
+.carrito-item__acciones {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+.carrito-item__cantidad {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--texto);
+}
+.carrito-item__boton {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  background-color: var(--elevado);
+  color: var(--texto);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.carrito-item__boton:hover:not(:disabled) {
+  border-color: var(--morado);
+}
+.carrito-item__quitar {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 14px;
+  color: var(--error);
+  cursor: pointer;
+}
+.carrito-item__quitar:hover:not(:disabled) {
+  text-decoration: underline;
+}
+.carrito-item__boton:disabled,
+.carrito-item__quitar:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.carrito__aviso {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+.carrito__vaciar {
+  align-self: flex-start;
+}
 .carrito-item__subtotal {
   flex-shrink: 0;
   text-align: right;

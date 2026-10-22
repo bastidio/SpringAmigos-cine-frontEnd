@@ -1,21 +1,21 @@
-const PanelSeleccion = ({ elegidas, precio, total, quitar, irAlKiosco, irAlCarrito }) => {
+const PanelSeleccion = ({ elegidas, precio, quitar, irAlKiosco, irAlCarrito, agregando = false }) => {
   const sinSeleccion = elegidas.length === 0;
 
   return (
     <aside className="panel">
-      <h2 className="panel__titulo">Tu selección</h2>
+      <h2 className="panel_titulo">Tu selección</h2>
 
       {sinSeleccion ? (
-        <p className="panel__vacio">Elegí tus butacas en el mapa</p>
+        <p className="panel_vacio">Elegí tus butacas en el mapa</p>
       ) : (
         <>
-          <ul className="panel__butacas">
+          <ul className="panel_butacas">
             {elegidas.map((butaca) => (
-              <li key={butaca.id} className="panel__butaca">
+              <li key={butaca.id} className="panel_butaca">
                 {butaca.nombre}
                 <button
                   type="button"
-                  className="panel__quitar"
+                  className="panel_quitar"
                   onClick={() => quitar(butaca)}
                   aria-label={'Quitar butaca ' + butaca.nombre}
                 >
@@ -25,34 +25,34 @@ const PanelSeleccion = ({ elegidas, precio, total, quitar, irAlKiosco, irAlCarri
             ))}
           </ul>
 
-          <hr className="panel__separador" />
+          <hr className="panel_separador" />
 
-          <p className="panel__renglon">
+          <p className="panel_renglon">
             <span>
               {elegidas.length} {elegidas.length === 1 ? 'butaca' : 'butacas'}
             </span>
             <span>${precio.toLocaleString('es-AR')} c/u</span>
           </p>
-          <p className="panel__renglon panel__renglon--total">
+          <p className="panel_renglon panel_renglon--total">
             <span>Total entradas</span>
-            <span className="panel__total">${total.toLocaleString('es-AR')}</span>
+            <span className="panel_total">${(elegidas.length * precio).toLocaleString('es-AR')}</span>
           </p>
         </>
       )}
 
       <button
         type="button"
-        className="boton boton--primario panel__boton"
+        className="boton boton--primario panel_boton"
         onClick={irAlKiosco}
-        disabled={sinSeleccion}
+        disabled={sinSeleccion || agregando}
       >
-        Continuar al kiosco
+        {agregando ? 'Agregando al carrito...' : 'Continuar al kiosco'}
       </button>
       <button
         type="button"
-        className="boton boton--secundario panel__boton panel__boton--chico"
+        className="boton boton--secundario panel_boton panel_boton--chico"
         onClick={irAlCarrito}
-        disabled={sinSeleccion}
+        disabled={sinSeleccion || agregando}
       >
         Ir directo al carrito
       </button>

@@ -14,9 +14,10 @@ const PerfilDetalle = ({ token, onLogout, onIrAEntradas }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // MONTAJE: un unico GET. En el array de dependencias va token: mientras
-  // este componente esta montado no cambia (al cerrar sesion App lo desmonta),
-  // asi que en la practica se ejecuta una sola vez.
+  // MONTAJE: un unico GET. PerfilMenu monta este componente cada vez que se
+  // abre el desplegable, asi que los datos se piden frescos en cada apertura.
+  // En el array de dependencias va token: mientras esta montado no cambia
+  // (al cerrar sesion App lo desmonta).
   useEffect(() => {
     const controller = new AbortController();
 

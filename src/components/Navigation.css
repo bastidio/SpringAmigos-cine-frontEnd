@@ -1,5 +1,3 @@
-/* Barra de navegacion. Medidas y colores del Figma (componente "Navbar"). */
-
 .nav {
   position: sticky;
   top: 0;
@@ -17,7 +15,7 @@
   box-sizing: border-box;
 }
 
-.nav__contenido {
+.nav_contenido {
   max-width: 1280px;
   height: 64px;
   margin: 0 auto;
@@ -27,47 +25,32 @@
   justify-content: space-between;
 }
 
-.nav__marca {
+.nav_marca {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 15px;
   text-decoration: none;
 }
 
-.nav__rombo {
-  font-size: 24px;
-  line-height: 32px;
-  color: var(--dorado);
+.nav_logo {
+  display: block;
+  height: 40px;
+  width: auto;
 }
 
-.nav__nombre {
-  font-family: var(--titulos);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 28px;
-  color: var(--texto);
+.nav_logotipo {
+  display: block;
+  height: 44px;
+  width: auto;
 }
 
-.nav__nombre-acento {
-  color: var(--morado);
-}
-
-.nav__cine {
-  margin-left: 4px;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--texto-suave);
-}
-
-.nav__links {
+.nav_links {
   display: flex;
   align-items: center;
   gap: 24px;
 }
 
-.nav__link {
+.nav_link {
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
@@ -76,22 +59,22 @@
   transition: color 0.15s ease;
 }
 
-.nav__link:hover {
+.nav_link:hover {
   color: var(--texto);
 }
 
-.nav__link--activo,
-.nav__link--activo:hover {
+.nav_link--activo,
+.nav_link--activo:hover {
   color: var(--morado);
 }
 
-.nav__acciones {
+.nav_acciones {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.nav__carrito {
+.nav_carrito {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -103,24 +86,24 @@
   transition: color 0.15s ease, background-color 0.15s ease;
 }
 
-.nav__carrito:hover {
+.nav_carrito:hover {
   color: var(--texto);
   background-color: rgba(139, 92, 246, 0.1);
 }
 
-.nav__carrito--activo,
-.nav__carrito--activo:hover {
+.nav_carrito--activo,
+.nav_carrito--activo:hover {
   color: var(--morado);
 }
 
-.nav__boton {
+.nav_boton {
   padding: 8px 16px;
   font-size: 13.6px;
 }
 
-.nav__marca:focus-visible,
-.nav__link:focus-visible,
-.nav__carrito:focus-visible {
+.nav_marca:focus-visible,
+.nav_link:focus-visible,
+.nav_carrito:focus-visible {
   outline: 2px solid var(--morado);
   outline-offset: 4px;
   border-radius: 4px;

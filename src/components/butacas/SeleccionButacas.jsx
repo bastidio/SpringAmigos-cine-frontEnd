@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import MapaButacas from './MapaButacas';
 import PanelSeleccion from './PanelSeleccion';
+import { apiFetch } from '../../services/api';
 import './Butacas.css';
 
 const pedir = (url) => {
@@ -13,10 +14,6 @@ const pedir = (url) => {
   });
 };
 
-const letraDeFila = (fila) => {
-  return fila >= 1 && fila <= 26 ? String.fromCharCode(64 + fila) : String(fila);
-};
-
 const SeleccionButacas = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -25,6 +22,8 @@ const SeleccionButacas = () => {
   const [butacas, setButacas] = useState([]);
   const [seleccionadas, setSeleccionadas] = useState([]);
   const [error, setError] = useState(null);
+  const [errorCarrito, setErrorCarrito] = useState(null);
+  const [agregando, setAgregando] = useState(false);
 
   useEffect(() => {
     Promise.all([pedir(`/funciones/${id}`), pedir('/asientos'), pedir(`/entradas/funcion/${id}`)])
@@ -32,13 +31,16 @@ const SeleccionButacas = () => {
         const butacasDeLaSala = asientos
           .filter((asiento) => asiento.sala.id === funcionData.sala.id)
           .sort((a, b) => a.fila - b.fila || a.numero - b.numero)
-          .map((asiento) => ({
-            id: asiento.id,
-            fila: letraDeFila(asiento.fila),
-            numero: asiento.numero,
-            nombre: letraDeFila(asiento.fila) + asiento.numero,
-            estado: ocupacion.asientosOcupados.includes(asiento.id) ? 'OCUPADA' : 'LIBRE',
-          }));
+          .map((asiento) => {
+            // El back manda la fila como numero: 1 es la A, 2 la B...
+            const fila = String.fromCharCode(64 + asiento.fila);
+            return {
+              id: asiento.id,
+              fila,
+              nombre: fila + asiento.numero,
+              estado: ocupacion.asientosOcupados.includes(asiento.id) ? 'OCUPADA' : 'LIBRE',
+            };
+          });
 
         setFuncion(funcionData);
         setButacas(butacasDeLaSala);
@@ -52,18 +54,14 @@ const SeleccionButacas = () => {
   }, [id]);
 
   if (error !== null) {
-    return <p className="pagina__mensaje pagina__mensaje--error">{error}</p>;
+    return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
   }
 
   if (funcion === null) {
-    return <p className="pagina__mensaje">Cargando butacas...</p>;
+    return <p className="pagina_mensaje">Cargando butacas...</p>;
   }
 
   const alternarButaca = (butaca) => {
-    if (butaca.estado === 'OCUPADA') {
-      return;
-    }
-
     if (seleccionadas.includes(butaca.id)) {
       setSeleccionadas(seleccionadas.filter((idButaca) => idButaca !== butaca.id));
     } else {
@@ -72,31 +70,83 @@ const SeleccionButacas = () => {
   };
 
   const elegidas = butacas.filter((butaca) => seleccionadas.includes(butaca.id));
-  const total = elegidas.length * funcion.precio_base;
+
+  // Manda las butacas elegidas al carrito del back y despues navega. El carrito
+  // necesita sesion: sin token, primero al login.
+  const agregarAlCarritoEIr = async (destino) => {
+    if (!localStorage.getItem('token')) {
+      navigate('/login');
+      return;
+    }
+
+    setAgregando(true);
+    setErrorCarrito(null);
+    try {
+      // El back rechaza la misma butaca dos veces: se saltean las que ya estan
+      // (por ejemplo, si el usuario volvio desde el kiosco).
+      const carrito = await apiFetch('/api/carritos');
+      const yaEnCarrito = (carrito?.items ?? [])
+        .filter((item) => item.tipo === 'BUTACA')
+        .map((item) => item.referenciaId);
+
+      if (yaEnCarrito.length > 0 && carrito.funcionId !== funcion.id) {
+        throw new Error(
+          'Tu carrito ya tiene butacas de otra función. Quitalas desde el carrito para elegir estas.'
+        );
+      }
+
+      for (const butaca of elegidas) {
+        if (!yaEnCarrito.includes(butaca.id)) {
+          await apiFetch('/api/carritos/items', {
+            method: 'POST',
+            body: { asientoId: butaca.id, funcionId: funcion.id, cantidad: 1 },
+          });
+        }
+      }
+      navigate(destino);
+    } catch (err) {
+      if (err.status === 401) {
+        navigate('/login');
+        return;
+      }
+      setErrorCarrito(err.message);
+    } finally {
+      setAgregando(false);
+    }
+  };
 
   const dia = funcion.horario.slice(8, 10) + '/' + funcion.horario.slice(5, 7);
   const hora = funcion.horario.slice(11, 16);
-  const datos = [`${dia}, ${hora} hs`, funcion.sala.nombre, funcion.formato, funcion.idioma];
 
   return (
     <div className="butacas">
-      <Link to={`/pelicula/${funcion.pelicula.id}`} className="butacas__volver">
+      <Link to={`/pelicula/${funcion.pelicula.id}`} className="butacas_volver">
         ← Volver al detalle
       </Link>
 
-      <div className="butacas__encabezado">
+      <div className="butacas_encabezado">
         <div>
-          <h1 className="butacas__titulo">{funcion.pelicula.titulo}</h1>
-          <p className="butacas__bajada">{datos.filter(Boolean).join(' — ')}</p>
+          <h1 className="butacas_titulo">{funcion.pelicula.titulo}</h1>
+          <p className="butacas_bajada">
+            {[`${dia}, ${hora} hs`, funcion.sala.nombre, funcion.formato, funcion.idioma]
+              .filter(Boolean)
+              .join(' — ')}
+          </p>
         </div>
-        <span className="etiqueta etiqueta--dorada butacas__precio">
+        <span className="etiqueta etiqueta--dorada butacas_precio">
           ${funcion.precio_base.toLocaleString('es-AR')} / butaca
         </span>
       </div>
 
-      <div className="butacas__cuerpo">
+      {errorCarrito !== null && (
+        <p role="alert" className="pagina_mensaje pagina_mensaje--error">
+          {errorCarrito}
+        </p>
+      )}
+
+      <div className="butacas_cuerpo">
         {butacas.length === 0 ? (
-          <p className="pagina__mensaje butacas__sin-butacas">
+          <p className="pagina_mensaje butacas_sin-butacas">
             Esta sala todavía no tiene butacas cargadas.
           </p>
         ) : (
@@ -106,10 +156,10 @@ const SeleccionButacas = () => {
         <PanelSeleccion
           elegidas={elegidas}
           precio={funcion.precio_base}
-          total={total}
           quitar={alternarButaca}
-          irAlKiosco={() => navigate('/kiosco')}
-          irAlCarrito={() => navigate('/carrito')}
+          irAlKiosco={() => agregarAlCarritoEIr('/kiosco')}
+          irAlCarrito={() => agregarAlCarritoEIr('/carrito')}
+          agregando={agregando}
         />
       </div>
     </div>

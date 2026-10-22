@@ -52,11 +52,11 @@ const PeliculaDetalle = () => {
 
   // Primero "por las malas": error y cargando.
   if (error !== null) {
-    return <p className="pagina__mensaje pagina__mensaje--error">{error}</p>;
+    return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
   }
 
   if (pelicula === null) {
-    return <p className="pagina__mensaje">Cargando película...</p>;
+    return <p className="pagina_mensaje">Cargando película...</p>;
   }
 
   // De todas las funciones, me quedo con las de esta pelicula y las ordeno
@@ -72,24 +72,24 @@ const PeliculaDetalle = () => {
 
   return (
     <div className="detalle">
-      <div className="detalle__fondo">
+      <div className="detalle_fondo">
         {pelicula.poster_url && <img src={pelicula.poster_url} alt="" />}
       </div>
 
       {/* Es una palabra y no un boton: para volver se usa Link. */}
-      <Link to="/" className="detalle__volver">
+      <Link to="/" className="detalle_volver">
         ← Volver a la cartelera
       </Link>
 
-      <div className="detalle__contenido">
+      <div className="detalle_contenido">
         <PeliculaFicha pelicula={pelicula} />
 
-        <hr className="detalle__separador" />
+        <hr className="detalle_separador" />
 
-        <h2 className="detalle__funciones-titulo">Funciones disponibles</h2>
+        <h2 className="detalle_funciones-titulo">Funciones disponibles</h2>
 
         {funcionesDeLaPelicula.length === 0 && (
-          <p className="pagina__mensaje">Todavía no hay funciones para esta película.</p>
+          <p className="pagina_mensaje">Todavía no hay funciones para esta película.</p>
         )}
 
         {dias.map((dia) => {
@@ -99,12 +99,12 @@ const PeliculaDetalle = () => {
           );
 
           return (
-            <div key={dia} className="detalle__dia">
-              <h3 className="detalle__dia-titulo">
+            <div key={dia} className="detalle_dia">
+              <h3 className="detalle_dia-titulo">
                 {dia.slice(8, 10)}/{dia.slice(5, 7)}
               </h3>
 
-              <div className="detalle__funciones">
+              <div className="detalle_funciones">
                 {funcionesDelDia.map((funcion) => (
                   <FuncionCard
                     key={funcion.id}

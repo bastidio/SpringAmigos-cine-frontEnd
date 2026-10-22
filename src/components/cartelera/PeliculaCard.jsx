@@ -5,16 +5,16 @@
 const PeliculaCard = ({ id, titulo, poster_url, duracion, clasificacion, idioma, verDetalle }) => {
   return (
     <button type="button" className="pelicula-card" onClick={() => verDetalle(id)}>
-      <span className="pelicula-card__marco">
+      <span className="pelicula-card_marco">
         {poster_url ? (
-          <img className="pelicula-card__poster" src={poster_url} alt="" />
+          <img className="pelicula-card_poster" src={poster_url} alt="" />
         ) : (
-          <span className="pelicula-card__poster sin-imagen">Sin póster</span>
+          <span className="pelicula-card_poster sin-imagen">Sin póster</span>
         )}
-        <span className="etiqueta etiqueta--sobre-imagen pelicula-card__clasificacion">{clasificacion}</span>
+        <span className="etiqueta etiqueta--sobre-imagen pelicula-card_clasificacion">{clasificacion}</span>
       </span>
-      <span className="pelicula-card__titulo">{titulo}</span>
-      <span className="pelicula-card__datos">
+      <span className="pelicula-card_titulo">{titulo}</span>
+      <span className="pelicula-card_datos">
         {duracion} min · {idioma}
       </span>
     </button>

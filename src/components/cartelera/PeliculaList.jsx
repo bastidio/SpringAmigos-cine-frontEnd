@@ -51,15 +51,15 @@ const PeliculaList = () => {
 
   // Primero "por las malas": cargando, error, lista vacia.
   if (cargando) {
-    return <p className="pagina__mensaje">Cargando cartelera...</p>;
+    return <p className="pagina_mensaje">Cargando cartelera...</p>;
   }
 
   if (error !== null) {
-    return <p className="pagina__mensaje pagina__mensaje--error">{error}</p>;
+    return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
   }
 
   if (peliculas.length === 0) {
-    return <p className="pagina__mensaje">Todavía no hay películas en cartelera.</p>;
+    return <p className="pagina_mensaje">Todavía no hay películas en cartelera.</p>;
   }
 
   // Opciones de los filtros: salen de las peliculas que mando el back.
@@ -82,14 +82,14 @@ const PeliculaList = () => {
     <>
       <PeliculaDestacada pelicula={peliculas[0]} verDetalle={verDetalle} />
 
-      <div className="cartelera__contenido">
-        <div className="cartelera__encabezado">
+      <div className="cartelera_contenido">
+        <div className="cartelera_encabezado">
           <div>
-            <h2 className="cartelera__titulo">En cartelera</h2>
-            <p className="cartelera__cantidad">{visibles.length} películas disponibles</p>
+            <h2 className="cartelera_titulo">En cartelera</h2>
+            <p className="cartelera_cantidad">{visibles.length} películas disponibles</p>
           </div>
 
-          <div className="cartelera__filtros">
+          <div className="cartelera_filtros">
             <Filtro
               etiqueta="Clasificación"
               valor={clasificacion}
@@ -101,9 +101,9 @@ const PeliculaList = () => {
         </div>
 
         {visibles.length === 0 ? (
-          <p className="cartelera__sin-resultados">No hay películas con esos filtros.</p>
+          <p className="cartelera_sin-resultados">No hay películas con esos filtros.</p>
         ) : (
-          <div className="cartelera__grid">
+          <div className="cartelera_grid">
             {visibles.map((pelicula) => (
               <PeliculaCard
                 key={pelicula.id}

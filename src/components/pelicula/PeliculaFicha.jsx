@@ -2,28 +2,28 @@
 // Recibe el objeto pelicula por props y lo muestra.
 const PeliculaFicha = ({ pelicula }) => {
   return (
-    <div className="detalle__ficha">
-      <div className="detalle__poster">
+    <div className="detalle_ficha">
+      <div className="detalle_poster">
         {pelicula.poster_url ? (
           <img src={pelicula.poster_url} alt="" />
         ) : (
-          <span className="detalle__sin-poster sin-imagen">Sin póster</span>
+          <span className="detalle_sin-poster sin-imagen">Sin póster</span>
         )}
       </div>
 
-      <div className="detalle__info">
-        <p className="detalle__etiquetas">
+      <div className="detalle_info">
+        <p className="detalle_etiquetas">
           <span className="etiqueta">{pelicula.clasificacion}</span>
         </p>
 
-        <h1 className="detalle__titulo">{pelicula.titulo}</h1>
+        <h1 className="detalle_titulo">{pelicula.titulo}</h1>
 
-        <p className="detalle__resumen">
+        <p className="detalle_resumen">
           <span>{pelicula.duracion} min</span>
           <span>{pelicula.idioma}</span>
         </p>
 
-        <dl className="detalle__datos">
+        <dl className="detalle_datos">
           <div>
             <dt>Idioma</dt>
             <dd>{pelicula.idioma}</dd>
@@ -38,8 +38,8 @@ const PeliculaFicha = ({ pelicula }) => {
           </div>
         </dl>
 
-        <p className="detalle__subtitulo">Sinopsis</p>
-        <p className="detalle__sinopsis">{pelicula.sinopsis}</p>
+        <p className="detalle_subtitulo">Sinopsis</p>
+        <p className="detalle_sinopsis">{pelicula.sinopsis}</p>
       </div>
     </div>
   );

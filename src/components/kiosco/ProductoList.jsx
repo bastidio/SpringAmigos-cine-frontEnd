@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../../services/api';
 import CategoriaTabs from './CategoriaTabs';
 import ProductoCard from './ProductoCard';
 import './Kiosco.css';
+
+const elegirImagen = (producto) => {
+  if (producto.posterProducto) {
+    return producto.posterProducto;
+  }
+  return producto.imagenes?.length > 0 ? producto.imagenes[0].url : null;
+};
 
 // Componente padre del kiosco: es el unico que tiene estado y logica.
 // Le pide los productos al backend, los guarda en un estado local y se los
@@ -11,6 +20,42 @@ const ProductoList = () => {
   const [categoria, setCategoria] = useState('Todo');
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  // Id del producto que se esta agregando y del ultimo que se agrego bien.
+  const [agregandoId, setAgregandoId] = useState(null);
+  const [agregadoId, setAgregadoId] = useState(null);
+  const [errorCarrito, setErrorCarrito] = useState(null);
+
+  // Suma una unidad del producto al carrito del back. Si ya estaba, el back
+  // acumula la cantidad. Sin sesion, al login.
+  const agregarAlCarrito = async (producto) => {
+    if (!localStorage.getItem('token')) {
+      navigate('/login');
+      return;
+    }
+
+    setAgregandoId(producto.id);
+    setErrorCarrito(null);
+    try {
+      await apiFetch('/api/carritos/items', {
+        method: 'POST',
+        body: { productoId: producto.id, cantidad: 1 },
+      });
+      setAgregadoId(producto.id);
+    } catch (err) {
+      if (err.status === 401) {
+        navigate('/login');
+        return;
+      }
+      setErrorCarrito(
+        err.status === 400 || err.status === 409
+          ? `No se pudo agregar ${producto.nombre}: no hay stock suficiente o el carrito venció.`
+          : err.message
+      );
+    } finally {
+      setAgregandoId(null);
+    }
+  };
 
   // Efecto secundario: pedirle los productos al back. Array de dependencias
   // vacio: se ejecuta una sola vez, cuando el componente se monta.
@@ -37,11 +82,11 @@ const ProductoList = () => {
 
   // Primero "por las malas": cargando y error.
   if (cargando) {
-    return <p className="pagina__mensaje">Cargando kiosco...</p>;
+    return <p className="pagina_mensaje">Cargando kiosco...</p>;
   }
 
   if (error !== null) {
-    return <p className="pagina__mensaje pagina__mensaje--error">{error}</p>;
+    return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
   }
 
   // Las categorias salen de los productos que mando el back.
@@ -56,15 +101,21 @@ const ProductoList = () => {
 
   return (
     <div className="kiosco">
-      <h1 className="kiosco__titulo">Kiosco & Candy Bar</h1>
-      <p className="kiosco__bajada">Armá tu combo perfecto antes de entrar a la sala.</p>
+      <h1 className="kiosco_titulo">Kiosco & Candy Bar</h1>
+      <p className="kiosco_bajada">Armá tu combo perfecto antes de entrar a la sala</p>
+
+      {errorCarrito !== null && (
+        <p role="alert" className="pagina_mensaje pagina_mensaje--error">
+          {errorCarrito}
+        </p>
+      )}
 
       <CategoriaTabs categorias={categorias} seleccionada={categoria} cambiar={setCategoria} />
 
       {visibles.length === 0 ? (
-        <p className="pagina__mensaje">Todavía no hay productos para mostrar.</p>
+        <p className="pagina_mensaje">Todavía no hay productos para mostrar.</p>
       ) : (
-        <div className="kiosco__grid">
+        <div className="kiosco_grid">
           {visibles.map((producto) => (
             <ProductoCard
               key={producto.id}
@@ -74,7 +125,10 @@ const ProductoList = () => {
               precio={producto.precio}
               descuento={producto.descuento}
               stock={producto.stock}
-              imagen={producto.imagenes.length > 0 ? producto.imagenes[0].url : null}
+              imagen={elegirImagen(producto)}
+              onAgregar={() => agregarAlCarrito(producto)}
+              agregando={agregandoId === producto.id}
+              agregado={agregadoId === producto.id}
             />
           ))}
         </div>

@@ -12,13 +12,13 @@ function Auth({ onAutenticado }) {
 
   return (
     <div className="auth">
-      <div className="auth__marca">
-        <img className="auth__emblema" src={logo} alt="" />
-        <h1 className="auth__logo">LUMIÈRE</h1>
-        <p className="auth__logo-sub">CINE</p>
+      <div className="auth_marca">
+        <img className="auth_emblema" src={logo} alt="" />
+        <h1 className="auth_logo">LUMIÈRE</h1>
+        <p className="auth_logo-sub">CINE</p>
       </div>
 
-      <div className="auth__panel">
+      <div className="auth_panel">
         {modo === 'login' ? (
           <Login
             onAutenticado={onAutenticado}

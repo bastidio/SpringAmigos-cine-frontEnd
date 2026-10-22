@@ -4,22 +4,22 @@ const PeliculaDestacada = ({ pelicula, verDetalle }) => {
   return (
     <section className="destacada">
       {pelicula.poster_url && (
-        <img className="destacada__fondo" src={pelicula.poster_url} alt="" />
+        <img className="destacada_fondo" src={pelicula.poster_url} alt="" />
       )}
 
-      <div className="destacada__contenido">
-        <div className="destacada__texto">
-          <h1 className="destacada__titulo">{pelicula.titulo}</h1>
+      <div className="destacada_contenido">
+        <div className="destacada_texto">
+          <h1 className="destacada_titulo">{pelicula.titulo}</h1>
 
-          <p className="destacada__datos">
+          <p className="destacada_datos">
             <span className="etiqueta">{pelicula.clasificacion}</span>
             <span>{pelicula.duracion} min</span>
             <span>{pelicula.idioma}</span>
           </p>
 
-          <p className="destacada__sinopsis">{pelicula.sinopsis}</p>
+          <p className="destacada_sinopsis">{pelicula.sinopsis}</p>
 
-          <div className="destacada__botones">
+          <div className="destacada_botones">
             <button
               type="button"
               className="boton boton--primario"

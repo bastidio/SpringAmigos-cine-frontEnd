@@ -3,10 +3,14 @@ import './tema.css';
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
+import Footer from './components/Footer';
 import Cartelera from './views/Cartelera';
 import DetallePelicula from './views/DetallePelicula';
 import Butacas from './views/Butacas';
 import Kiosco from './views/Kiosco';
+import Carrito from './views/Carrito';
+import Checkout from './views/Checkout';
+import MisEntradas from './views/MisEntradas';
 import Login from './views/Login';
 import PerfilView from './views/PerfilView';
 import AdminLayout from './components/admin/layout/AdminLayout';
@@ -118,7 +122,7 @@ function App() {
   if (token === '') {
     rutaAdmin = <Navigate to="/login" replace />;
   } else if (rol === null) {
-    rutaAdmin = <p className="pagina__mensaje">Verificando permisos...</p>;
+    rutaAdmin = <p className="pagina_mensaje">Verificando permisos...</p>;
   } else if (esAdmin) {
     rutaAdmin = <AdminLayout onLogout={() => cerrarSesion()} />;
   } else {
@@ -128,7 +132,13 @@ function App() {
   return (
     <>
       {/* Solo renderiza la barra del cliente si NO estamos en el admin */}
-      {!esRutaAdmin && <Navigation haySesion={token !== ''} esAdmin={esAdmin} cerrarSesion={() => cerrarSesion()} />}
+      {!esRutaAdmin && (
+        <Navigation
+          haySesion={token !== ''}
+          esAdmin={esAdmin}
+          perfil={<PerfilView token={token} onLogout={() => cerrarSesion()} onIrAEntradas={irAEntradas} />}
+        />
+      )}
 
       <Routes>
         <Route path="/" element={<Cartelera />} />
@@ -136,6 +146,14 @@ function App() {
         <Route path="/funcion/:id/butacas" element={<Butacas />} />
         <Route path="/kiosco" element={<Kiosco />} />
         <Route path="/login" element={<Login onAutenticado={iniciarSesion} />} />
+
+        {/* Carrito, checkout y entradas son del usuario logueado: sin token, al login. */}
+        <Route path="/carrito" element={token !== '' ? <Carrito /> : <Navigate to="/login" replace />} />
+        <Route path="/checkout" element={token !== '' ? <Checkout /> : <Navigate to="/login" replace />} />
+        <Route
+          path="/mis-entradas"
+          element={token !== '' ? <MisEntradas /> : <Navigate to="/login" replace />}
+        />
         
         <Route
           path="/admin"
@@ -149,18 +167,13 @@ function App() {
           <Route path="kiosco" element={<AdminKioscoView />} />
           <Route path="ordenes" element={<AdminOrdenesView />} />
         </Route>
-        
-        <Route
-          path="/perfil"
-          element={
-            token !== '' ? (
-              <PerfilView token={token} onLogout={() => cerrarSesion()} onIrAEntradas={irAEntradas} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+
+        {/* Mi Perfil ya no es una pagina: es el desplegable del nav. Si alguien
+            entra a /perfil (un link viejo), va al inicio. */}
+        <Route path="/perfil" element={<Navigate to="/" replace />} />
       </Routes>
+
+      {!esRutaAdmin && location.pathname !== '/login' && <Footer />}
     </>
   );
 }

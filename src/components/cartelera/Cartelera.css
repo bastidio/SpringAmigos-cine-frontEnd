@@ -1,5 +1,4 @@
-/* Estilos de la vista Cartelera: bloque destacado, filtros y grilla.
-   Medidas y efectos del Figma (pantalla "Cartelera"). */
+/* Estilos de la vista Cartelera: bloque destacado, filtros y grilla. */
 
 /* ---------- Pelicula destacada (bloque de arriba) ---------- */
 
@@ -10,7 +9,7 @@
   overflow: hidden;
 }
 
-.destacada__fondo {
+.destacada_fondo {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -34,7 +33,7 @@
     );
 }
 
-.destacada__contenido {
+.destacada_contenido {
   position: relative;
   z-index: 1;
   height: 100%;
@@ -46,11 +45,11 @@
   justify-content: center;
 }
 
-.destacada__texto {
+.destacada_texto {
   max-width: 576px;
 }
 
-.destacada__titulo {
+.destacada_titulo {
   font-family: var(--titulos);
   font-size: 60px;
   font-weight: 700;
@@ -59,7 +58,7 @@
   margin-bottom: 16px;
 }
 
-.destacada__datos {
+.destacada_datos {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -70,7 +69,7 @@
   margin-bottom: 16px;
 }
 
-.destacada__sinopsis {
+.destacada_sinopsis {
   font-size: 14px;
   line-height: 1.625;
   color: var(--texto-suave);
@@ -83,20 +82,20 @@
   overflow: hidden;
 }
 
-.destacada__botones {
+.destacada_botones {
   display: flex;
   gap: 12px;
 }
 
 /* ---------- Encabezado de la grilla y filtros ---------- */
 
-.cartelera__contenido {
+.cartelera_contenido {
   max-width: 1280px;
   margin: 0 auto;
   padding: 40px 24px;
 }
 
-.cartelera__encabezado {
+.cartelera_encabezado {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -104,7 +103,7 @@
   margin-bottom: 32px;
 }
 
-.cartelera__titulo {
+.cartelera_titulo {
   font-family: var(--titulos);
   font-size: 24px;
   font-weight: 700;
@@ -112,14 +111,14 @@
   color: var(--texto);
 }
 
-.cartelera__cantidad {
+.cartelera_cantidad {
   font-size: 14px;
   line-height: 20px;
   color: var(--texto-suave);
   margin-top: 4px;
 }
 
-.cartelera__filtros {
+.cartelera_filtros {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -137,7 +136,7 @@
   cursor: pointer;
 }
 
-.cartelera__sin-resultados {
+.cartelera_sin-resultados {
   text-align: center;
   padding: 80px 0;
   color: var(--texto-suave);
@@ -145,20 +144,20 @@
 
 /* ---------- Grilla de peliculas ---------- */
 
-.cartelera__grid {
+.cartelera_grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 16px;
 }
 
 @media (max-width: 1023px) {
-  .cartelera__grid {
+  .cartelera_grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 767px) {
-  .cartelera__grid {
+  .cartelera_grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -180,7 +179,7 @@
   transform: translateY(-4px);
 }
 
-.pelicula-card__marco {
+.pelicula-card_marco {
   position: relative;
   display: block;
   overflow: hidden;
@@ -189,11 +188,11 @@
   transition: box-shadow 0.2s ease;
 }
 
-.pelicula-card:hover .pelicula-card__marco {
+.pelicula-card:hover .pelicula-card_marco {
   box-shadow: 0 0 32px rgba(139, 92, 246, 0.22);
 }
 
-.pelicula-card__poster {
+.pelicula-card_poster {
   display: block;
   width: 100%;
   aspect-ratio: 2 / 3;
@@ -203,16 +202,16 @@
   transition: transform 0.3s ease;
 }
 
-.pelicula-card:hover .pelicula-card__poster {
+.pelicula-card:hover .pelicula-card_poster {
   transform: scale(1.04);
 }
 
-.pelicula-card__poster.sin-imagen {
+.pelicula-card_poster.sin-imagen {
   display: flex;
 }
 
 /* Velo oscuro que aparece desde abajo al pasar el mouse. */
-.pelicula-card__marco::after {
+.pelicula-card_marco::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -221,17 +220,17 @@
   transition: opacity 0.3s ease;
 }
 
-.pelicula-card:hover .pelicula-card__marco::after {
+.pelicula-card:hover .pelicula-card_marco::after {
   opacity: 1;
 }
 
-.pelicula-card__clasificacion {
+.pelicula-card_clasificacion {
   top: 8px;
   right: 8px;
   font-size: 9.6px;
 }
 
-.pelicula-card__titulo {
+.pelicula-card_titulo {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -244,7 +243,7 @@
   margin-bottom: 4px;
 }
 
-.pelicula-card__datos {
+.pelicula-card_datos {
   display: block;
   font-size: 10px;
   line-height: 1.5;

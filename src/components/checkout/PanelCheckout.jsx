@@ -43,4 +43,4 @@ const PanelCheckout = ({
   );
 };
 
-export default PanelCheckout;
+export default PanelCheckout;

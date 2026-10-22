@@ -1,6 +1,21 @@
-// Componente "tonto": la tarjeta de UN producto del kiosco.
-// ProductoList la renderiza una vez por producto.
-const ProductoCard = ({ nombre, descripcion, categoria, precio, descuento, stock, imagen }) => {
+import { useState } from 'react';
+
+
+const ProductoCard = ({
+  nombre,
+  descripcion,
+  categoria,
+  precio,
+  descuento,
+  stock,
+  imagen,
+  onAgregar,
+  agregando = false,
+  agregado = false,
+}) => {
+  // Si la URL no carga (onError), se muestra el placeholder en su lugar.
+  const [imagenFallo, setImagenFallo] = useState(false);
+
   // El back guarda el descuento como porcentaje (0 a 100).
   const tieneDescuento = descuento > 0;
   const precioFinal = tieneDescuento ? precio - (precio * descuento) / 100 : precio;
@@ -10,39 +25,49 @@ const ProductoCard = ({ nombre, descripcion, categoria, precio, descuento, stock
 
   return (
     <article className="producto-card">
-      <div className="producto-card__marco">
-        {imagen ? (
-          <img className="producto-card__imagen" src={imagen} alt="" />
+      <div className="producto-card_marco">
+        {imagen && !imagenFallo ? (
+          <img
+            className="producto-card_imagen"
+            src={imagen}
+            alt={nombre}
+            loading="lazy"
+            onError={() => setImagenFallo(true)}
+          />
         ) : (
-          <span className="producto-card__imagen sin-imagen">Sin imagen</span>
+          <span className="producto-card_imagen sin-imagen">Sin imagen</span>
         )}
         {tieneDescuento && (
-          <span className="etiqueta etiqueta--dorada etiqueta--sobre-imagen producto-card__descuento">
+          <span className="etiqueta etiqueta--dorada etiqueta--sobre-imagen producto-card_descuento">
             {descuento}% off
           </span>
         )}
       </div>
 
-      <div className="producto-card__contenido">
-        <p className="producto-card__categoria">{categoria}</p>
-        <h3 className="producto-card__nombre">{nombre}</h3>
-        <p className="producto-card__descripcion">{descripcion}</p>
+      <div className="producto-card_contenido">
+        <p className="producto-card_categoria">{categoria}</p>
+        <h3 className="producto-card_nombre">{nombre}</h3>
+        <p className="producto-card_descripcion">{descripcion}</p>
 
-        <div className="producto-card__fila">
-          <p className="producto-card__precio">
+        <div className="producto-card_fila">
+          <p className="producto-card_precio">
             ${precioFinal.toLocaleString('es-AR', formato)}
             {tieneDescuento && (
-              <span className="producto-card__precio-anterior">
+              <span className="producto-card_precio-anterior">
                 ${precio.toLocaleString('es-AR', formato)}
               </span>
             )}
           </p>
-          {stock > 0 && stock < 5 && <p className="producto-card__ultimas">¡Últimas {stock}!</p>}
+          {stock > 0 && stock < 5 && <p className="producto-card_ultimas">¡Últimas {stock}!</p>}
         </div>
 
-        {/* Todavia no esta conectado al carrito: por eso queda deshabilitado. */}
-        <button type="button" className="boton boton--primario producto-card__agregar" disabled>
-          {stock > 0 ? 'Agregar' : 'Sin stock'}
+        <button
+          type="button"
+          className="boton boton--primario producto-card_agregar"
+          onClick={onAgregar}
+          disabled={stock <= 0 || agregando}
+        >
+          {stock <= 0 ? 'Sin stock' : agregando ? 'Agregando...' : agregado ? '¡Agregado! +1' : 'Agregar'}
         </button>
       </div>
     </article>

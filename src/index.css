@@ -1,6 +1,3 @@
-/* Tailwind sin preflight (su reset global) para no cambiar el resto de la app.
-   "important" hace que las utilidades le ganen a las clases de los .css
-   propios (por ejemplo .nav__links { display: flex }). */
 @layer theme, base, components, utilities;
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities) important;
