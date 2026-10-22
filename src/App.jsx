@@ -1,7 +1,9 @@
 // tema.css va primero: asi los estilos de cada componente pueden pisarlo.
 import './tema.css';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { apiFetch } from './services/api';
+import { CarritoContext } from './context/CarritoContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import Cartelera from './views/Cartelera';
@@ -55,8 +57,36 @@ function App() {
   // Si el desplegable del carrito esta abierto. Vive aca (y no en el menu)
   // porque el carrito se puede abrir desde otras vistas, no solo del nav.
   const [carritoAbierto, setCarritoAbierto] = useState(false);
+  // Cuantos productos hay en el carrito (el numero del icono del nav).
+  const [cantidadCarrito, setCantidadCarrito] = useState(0);
   const navigate = useNavigate();
   const location = useLocation(); // Agregado para saber en qué URL estamos
+
+  // Suma 1 cada vez que alguien avisa que el carrito cambio (ver CarritoContext). Como el efecto de abajo depende de este numero, avisar alcanza para que se vuelva a pedir la cantidad.
+  const [avisosCarrito, setAvisosCarrito] = useState(0);
+  const refrescarCantidad = useCallback(() => {
+    setAvisosCarrito((avisos) => avisos + 1);
+  }, []);
+
+  // MONTAJE / ACTUALIZACION: al abrir la app, al loguearse, al cambiar de pantalla y cuando alguien avisa, se pide el carrito y se cuentan las unidades (cada butaca cuenta 1). Cambiar de pantalla cubre lo que no avisa nadie: el carrito que vence a los 5 minutos. Si falla, el numero queda como estaba: el icono nunca rompe la pagina.
+  useEffect(() => {
+    if (token === '') return;
+
+    const controller = new AbortController();
+    apiFetch('/api/carritos', { token, signal: controller.signal })
+      .then((data) => {
+        setCantidadCarrito((data?.items ?? []).reduce((total, item) => total + (item.cantidad ?? 1), 0));
+      })
+      .catch((err) => {
+        if (err.name !== 'AbortError') console.error('No se pudo actualizar el contador del carrito', err);
+      });
+
+    // DESMONTAJE (o un aviso nuevo): se cancela el pedido en curso.
+    return () => controller.abort();
+  }, [token, location.pathname, avisosCarrito]);
+
+  // Sin sesion el carrito no existe: se muestra 0 sin esperar a ningun pedido.
+  const cantidadVisible = token === '' ? 0 : cantidadCarrito;
 
   const esAdmin = rol === 'ADMIN';
 
@@ -154,7 +184,7 @@ function App() {
   }
 
   return (
-    <>
+    <CarritoContext.Provider value={{ refrescarCantidad }}>
       {/* Solo renderiza la barra del cliente si NO estamos en el admin */}
       {!esRutaAdmin && (
         <Navigation
@@ -165,6 +195,7 @@ function App() {
             <CarritoView
               token={token}
               abierto={carritoAbierto}
+              cantidad={cantidadVisible}
               onAlternar={alternarCarrito}
               onCerrar={cerrarCarrito}
               onNavegar={navegarDesdeCarrito}
@@ -216,7 +247,7 @@ function App() {
       </Routes>
 
       {!esRutaAdmin && location.pathname !== '/login' && <Footer />}
-    </>
+    </CarritoContext.Provider>
   );
 }
 

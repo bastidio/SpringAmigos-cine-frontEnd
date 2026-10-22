@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import MapaButacas from './MapaButacas';
 import PanelSeleccion from './PanelSeleccion';
 import { apiFetch } from '../../services/api';
+import { useCarrito } from '../../context/CarritoContext';
 import './Butacas.css';
 
 const pedir = (url) => {
@@ -17,6 +18,7 @@ const pedir = (url) => {
 const SeleccionButacas = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { refrescarCantidad } = useCarrito();
 
   const [funcion, setFuncion] = useState(null);
   const [butacas, setButacas] = useState([]);
@@ -111,6 +113,8 @@ const SeleccionButacas = () => {
       }
       setErrorCarrito(err.message);
     } finally {
+      // Tambien si fallo a mitad: alguna butaca pudo haberse agregado igual.
+      refrescarCantidad();
       setAgregando(false);
     }
   };

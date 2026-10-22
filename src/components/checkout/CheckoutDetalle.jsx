@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../services/api';
+import { useCarrito } from '../../context/CarritoContext';
 import CarritoItem from '../carrito/CarritoItem';
 import OrdenConfirmada from './OrdenConfirmada';
 import PanelCheckout from './PanelCheckout';
@@ -20,6 +21,8 @@ const CheckoutDetalle = () => {
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
   const navigate = useNavigate();
+  // Para avisarle al nav que cambio el carrito (el numero del icono).
+  const { refrescarCantidad } = useCarrito();
 
   useEffect(() => {
     let activo = true;
@@ -56,6 +59,8 @@ const CheckoutDetalle = () => {
         method: 'POST',
       });
       setOrden(compra);
+      // La compra vacia el carrito: el numero del nav vuelve a 0.
+      refrescarCantidad();
     } catch (err) {
       setError(
         err.message ||

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../services/api';
+import { useCarrito } from '../../context/CarritoContext';
 import CategoriaTabs from './CategoriaTabs';
 import ProductoCard from './ProductoCard';
 import './Kiosco.css';
@@ -16,6 +17,8 @@ const elegirImagen = (producto) => {
 // Le pide los productos al backend, los guarda en un estado local y se los
 // pasa a los hijos por props.
 const ProductoList = () => {
+  // Para avisarle al nav que cambio el carrito (el numero del icono).
+  const { refrescarCantidad } = useCarrito();
   const [productos, setProductos] = useState([]);
   const [categoria, setCategoria] = useState('Todo');
   const [cargando, setCargando] = useState(true);
@@ -42,6 +45,7 @@ const ProductoList = () => {
         body: { productoId: producto.id, cantidad: 1 },
       });
       setAgregadoId(producto.id);
+      refrescarCantidad();
     } catch (err) {
       if (err.status === 401) {
         navigate('/login');

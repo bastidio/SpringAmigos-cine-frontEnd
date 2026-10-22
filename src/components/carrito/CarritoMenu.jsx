@@ -8,7 +8,7 @@ import CarritoDetalle from './CarritoDetalle';
 // recien cuando se abre el menu (y se desmonta al cerrarlo).
 // Todo con eventos de React: no se escucha nada en document ni se lee el DOM
 // con refs.
-const CarritoMenu = ({ token, abierto, onAlternar, onCerrar, onNavegar }) => {
+const CarritoMenu = ({ token, abierto, cantidad, onAlternar, onCerrar, onNavegar }) => {
   // El foco se fue a otro elemento fuera del contenedor (por ejemplo, con Tab).
   // relatedTarget es a donde fue el foco. Si es null no se cierra: pasa cuando
   // un boton se deshabilita o desaparece (al tocar +, - o quitar), y el click
@@ -38,7 +38,7 @@ const CarritoMenu = ({ token, abierto, onAlternar, onCerrar, onNavegar }) => {
     >
       {/* z-50: el icono queda por encima del fondo, para poder cerrar tocandolo. */}
       <div className="relative z-50">
-        <CarritoBoton abierto={abierto} onClick={onAlternar} />
+        <CarritoBoton abierto={abierto} cantidad={cantidad} onClick={onAlternar} />
       </div>
 
       {/* Fondo transparente: un click en cualquier lugar de la pantalla cierra el

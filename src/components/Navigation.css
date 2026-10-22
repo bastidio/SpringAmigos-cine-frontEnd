@@ -81,19 +81,20 @@
   width: 38px;
   height: 38px;
   border-radius: 8px;
-  color: var(--texto-suave);
+  color: var(--dorado);
   text-decoration: none;
   transition: color 0.15s ease, background-color 0.15s ease;
 }
 
 .nav_carrito:hover {
-  color: var(--texto);
-  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--dorado);
+  background-color: rgba(212, 175, 55, 0.12);
 }
 
 .nav_carrito--activo,
 .nav_carrito--activo:hover {
-  color: var(--morado);
+  color: var(--dorado);
+  background-color: rgba(212, 175, 55, 0.12);
 }
 
 .nav_boton {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../services/api';
+import { useCarrito } from '../../context/CarritoContext';
 import BotonVaciar from './BotonVaciar';
 import CarritoItem from './CarritoItem';
 import PanelResumenCarrito from './PanelResumenCarrito';
@@ -53,6 +54,8 @@ const borrar = async (url, opciones) => {
 // pide el carrito al back, maneja carrito/cargando/error y se lo pasa a los
 // hijos por props. Para cambiar de vista avisa con onNavegar (lo decide App).
 const CarritoDetalle = ({ token, onNavegar }) => {
+  // Para avisarle al nav que cambio el carrito (el numero del icono).
+  const { refrescarCantidad } = useCarrito();
   // El carrito tal como lo mando el back la ultima vez.
   const [carrito, setCarrito] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -129,6 +132,8 @@ const CarritoDetalle = ({ token, onNavegar }) => {
 
       try {
         setCarrito(await apiFetch('/api/carritos', { token, signal }));
+        // El back ya tiene los cambios: se actualiza el numero del nav.
+        refrescarCantidad();
       } catch (err) {
         if (err.name === 'AbortError') return;
         setErrorAccion(err.message);
@@ -141,7 +146,7 @@ const CarritoDetalle = ({ token, onNavegar }) => {
 
     // DESMONTAJE (o un click nuevo): se cancela el envio en curso.
     return () => controller.abort();
-  }, [cambios, token]);
+  }, [cambios, token, refrescarCantidad]);
 
   const cambiarCantidad = (item, cantidad) => {
     setCambios({ ...cambios, cantidades: { ...cambios.cantidades, [item.itemId]: cantidad } });
