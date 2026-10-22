@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PeliculaDestacada from './PeliculaDestacada';
+import CarruselDestacadas from './CarruselDestacadas';
 import PeliculaCard from './PeliculaCard';
 import Filtro from './Filtro';
 import './Cartelera.css';
@@ -80,7 +80,8 @@ const PeliculaList = () => {
 
   return (
     <>
-      <PeliculaDestacada pelicula={peliculas[0]} verDetalle={verDetalle} />
+      {/* Carrusel con las primeras 5 peliculas (antes era solo la primera). */}
+      <CarruselDestacadas peliculas={peliculas.slice(0, 5)} verDetalle={verDetalle} />
 
       <div className="cartelera_contenido">
         <div className="cartelera_encabezado">
