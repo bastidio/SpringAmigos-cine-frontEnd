@@ -8,6 +8,7 @@ const AdminKioscoView = () => {
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [categoriaActivaId, setCategoriaActivaId] = useState('Todos');
+  
   const [modalAbierto, setModalAbierto] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
 
@@ -16,12 +17,16 @@ const AdminKioscoView = () => {
       const token = localStorage.getItem('token');
       const opciones = { headers: { 'Authorization': `Bearer ${token}` } };
 
-      const [resProd, resCat] = await Promise.all([
-        fetch('/productos', opciones),
-        fetch('/categorias', opciones)
+      const [resProd, resProdInactivos, resCat] = await Promise.all([
+        fetch('http://localhost:4002/productos', opciones),
+        fetch('http://localhost:4002/productos/inactivos', opciones),
+        fetch('http://localhost:4002/categorias', opciones)
       ]);
-      setProductos(await resProd.json());
+      
+      const activos = await resProd.json();
+      const inactivos = resProdInactivos.ok ? await resProdInactivos.json() : [];
       setCategorias(await resCat.json());
+      setProductos([...activos, ...inactivos]);
     } catch (error) {
       console.error("Error cargando base de datos:", error);
     }
@@ -34,7 +39,7 @@ const AdminKioscoView = () => {
   const manejarActualizacionStock = async (productoId, nuevoStock) => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`/productos/${productoId}/stock`, {
+      const response = await fetch(`http://localhost:4002/productos/${productoId}/stock`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
@@ -43,6 +48,8 @@ const AdminKioscoView = () => {
         body: JSON.stringify({ stock: nuevoStock })
       });
       
+      if (!response.ok) throw new Error("Error en servidor al actualizar stock");
+
       setProductos(productos.map(p => 
         p.id === productoId ? { ...p, stock: nuevoStock } : p
       ));
@@ -52,20 +59,22 @@ const AdminKioscoView = () => {
   };
 
   const manejarCambioEstado = async (producto) => {
-    const nuevoEstado = !producto.activo;
     try {
       const token = localStorage.getItem('token');
-      await fetch(`/productos/${producto.id}/estado`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify({ activo: nuevoEstado })
+      const url = producto.activo 
+        ? `http://localhost:4002/productos/${producto.id}` 
+        : `http://localhost:4002/productos/${producto.id}/reactivar`;
+      const method = producto.activo ? 'DELETE' : 'PATCH';
+
+      const response = await fetch(url, {
+        method: method,
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       
+      if (!response.ok) throw new Error("Error en servidor al cambiar estado");
+
       setProductos(productos.map(p => 
-        p.id === producto.id ? { ...p, activo: nuevoEstado } : p
+        p.id === producto.id ? { ...p, activo: !producto.activo } : p
       ));
     } catch (error) {
       console.error("Error cambiando estado:", error);
@@ -74,16 +83,23 @@ const AdminKioscoView = () => {
 
   const manejarGuardar = async (formData) => {
     const payload = {
-      ...formData,
-      categoria: { id: formData.categoria_id } 
+      nombre: formData.nombre,
+      descripcion: formData.descripcion,
+      precio: Number(formData.precio) || 0,
+      stock: Number(formData.stock) || 0,
+      descuento: Number(formData.descuento) || 0,
+      categoriaId: Number(formData.categoria_id) || 0,
+      imagenes: formData.imagenUrl ? [formData.imagenUrl] : []
     };
 
     try {
-      const url = productoEditando ? `/productos/${productoEditando.id}` : '/productos';
+      const url = productoEditando 
+        ? `http://localhost:4002/productos/${productoEditando.id}` 
+        : 'http://localhost:4002/productos';
       const method = productoEditando ? 'PUT' : 'POST';
       const token = localStorage.getItem('token');
 
-      await fetch(url, {
+      const response = await fetch(url, {
         method: method,
         headers: { 
           'Content-Type': 'application/json',
@@ -91,6 +107,8 @@ const AdminKioscoView = () => {
         },
         body: JSON.stringify(payload)
       });
+
+      if (!response.ok) throw new Error("Error al guardar en servidor");
 
       cerrarModal();
       cargarDatos();

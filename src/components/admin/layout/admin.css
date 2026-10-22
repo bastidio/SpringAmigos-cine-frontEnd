@@ -373,10 +373,6 @@
   color: var(--admin-text-muted);
 }
 
-.admin-table-actions {
-  display: flex;
-  gap: 8px;
-}
 
 .admin-salas-contenedor {
   display: flex;
@@ -447,7 +443,7 @@
   flex-direction: column;
 }
 
-.detalle-header {
+.salas-acciones-header {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 24px;
@@ -506,26 +502,26 @@
 }
 
 /* Información de la celda del producto */
-.celda-producto-info {
+.kiosco-producto-info--compacto {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.celda-producto-nombre {
+.kiosco-producto-nombre--compacto {
   color: var(--text-main);
   font-size: 15px;
   font-weight: bold;
 }
 
-.celda-producto-desc {
+.kiosco-producto-desc--compacto {
   color: var(--text-muted);
   font-size: 13px;
   line-height: 1.2;
 }
 
 /* Controles de Stock Inline */
-.control-stock-container {
+.kiosco-stock-control--compacto {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -536,7 +532,7 @@
   width: fit-content;
 }
 
-.control-stock-btn {
+.kiosco-stock-control__boton--compacto {
   background: var(--bg-secondary);
   color: var(--text-main);
   border: none;
@@ -549,12 +545,13 @@
   justify-content: center;
 }
 
-.control-stock-btn:disabled {
+.kiosco-stock-control__boton--compacto:disabled,
+.kiosco-stock-control__boton--tabla:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.control-stock-valor {
+.kiosco-stock-control__valor--compacto {
   min-width: 24px;
   text-align: center;
   font-weight: bold;
@@ -568,7 +565,7 @@
 }
 
 /* Etiqueta de Estado Inactivo */
-.etiqueta--inactiva {
+.kiosco-etiqueta--inactiva {
   background: #ef4444;
   color: white;
   padding: 4px 8px;
@@ -577,14 +574,6 @@
 
 /* ... (Mantén lo que ya tenías de CeldaProductoInfo y ControlStockInline) ... */
 
-/* Filtros de Categorías */
-.filtros-categorias-container {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-
-/* Si no tenías .btn-filtro-dia de otra vista, agrégalo aquí */
 .btn-filtro-dia {
   background: transparent;
   color: var(--text-muted);
@@ -628,7 +617,7 @@
   border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
-.etiqueta--inactiva {
+.orden-etiqueta--inactiva {
   background: rgba(239, 68, 68, 0.2);
   color: #fca5a5;
   border: 1px solid rgba(239, 68, 68, 0.3);
@@ -714,14 +703,6 @@
   min-width: 0; /* Clave para que no rompan el grid */
   box-sizing: border-box;
 }
-/* Tarjetas Resumen */
-.tarjetas-resumen-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
 /* Tarjetas Resumen - Rediseño Violeta */
 .tarjetas-resumen-grid {
   display: grid;
@@ -781,7 +762,7 @@
 }
 
 /* Panel Detalle Orden */
-.detalle-header {
+.orden-detalle-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 16px;
@@ -836,11 +817,6 @@
 }
 
 /* Tabla y Estados */
-.th-acciones {
-  text-align: right;
-  padding-right: 24px;
-}
-
 .estado-pendiente { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
 .estado-completada { color: #34d399; background: rgba(52, 211, 153, 0.1); }
 .estado-cancelada { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
@@ -1001,4 +977,112 @@
 /* Utilidad para celdas vacías en tablas */
 .tabla-celda-centrada {
   text-align: center;
+}
+.filtros-fecha-container {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  align-items: center;
+}
+
+.input-fecha {
+  color-scheme: dark;
+  cursor: pointer;
+}
+
+.etiqueta-fija {
+  cursor: default;
+  pointer-events: none;
+}
+/* Celda de Producto */
+.kiosco-producto-info--con-imagen {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.celda-producto-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.celda-producto-img-placeholder {
+  width: 40px;
+  height: 40px;
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #a78bfa;
+}
+
+.celda-producto-texto {
+  display: flex;
+  flex-direction: column;
+}
+
+.kiosco-producto-nombre--con-imagen {
+  font-weight: bold;
+  font-size: 14px;
+  color: white;
+}
+
+.kiosco-producto-desc--con-imagen {
+  font-size: 12px;
+  color: #a1a1aa;
+}
+
+/* Control de Stock */
+.kiosco-stock-control--tabla {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: fit-content;
+}
+
+.kiosco-stock-control__boton--tabla {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+
+.kiosco-stock-control__valor--tabla {
+  font-weight: bold;
+  min-width: 25px;
+  text-align: center;
+  color: white;
+}
+.admin-celda-imagen-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.admin-celda-img.poster {
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: #2a2a36; /* Ajustalo al color de fondo secundario de tu panel */
+}
+.admin-celda-placeholder.poster {
+  width: 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2a2a36;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  color: #a0a0b0;
 }

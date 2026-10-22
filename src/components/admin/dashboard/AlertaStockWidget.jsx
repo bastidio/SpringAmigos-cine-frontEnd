@@ -7,7 +7,7 @@ const AlertaStockWidget = ({ productos }) => {
   return (
     <div className="dashboard-widget">
       <div className="dashboard-widget-header">
-        <h2 className="dashboard-widget-titulo">⚠️ Alertas de Stock</h2>
+        <h2 className="dashboard-widget-titulo">Alertas de Stock</h2>
       </div>
       
       {bajoStock.length === 0 ? (

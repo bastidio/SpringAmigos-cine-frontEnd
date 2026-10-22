@@ -9,24 +9,35 @@ const PeliculasTable = ({ peliculas, onEditar, onEliminar }) => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Título</th>
-            <th>Clasificación</th>
-            <th>Idioma</th>
-            <th>Duración</th>
-            <th>Acciones</th>
+            <th>TÍTULO</th>
+            <th>CLASIFICACIÓN</th>
+            <th>IDIOMA</th>
+            <th>DURACIÓN</th>
+            <th>ACCIONES</th>
           </tr>
         </thead>
         <tbody>
           {peliculas.map((p) => (
             <tr key={p.id}>
               <td>{p.id}</td>
-              <td><strong>{p.titulo}</strong></td>
+              <td>
+                <div className="admin-celda-imagen-wrapper">
+                  {p.poster_url ? (
+                    <img src={p.poster_url} alt={p.titulo} className="admin-celda-img poster" />
+                  ) : (
+                    <div className="admin-celda-placeholder poster">🎬</div>
+                  )}
+                  <strong>{p.titulo}</strong>
+                </div>
+              </td>
               <td>{p.clasificacion}</td>
               <td>{p.idioma}</td>
               <td>{p.duracion} min</td>
-              <td style={{ display: 'flex', gap: '8px' }}>
-                <BotonAccion variante="secundario" onClick={() => onEditar(p)}>Editar</BotonAccion>
-                <BotonAccion variante="secundario" onClick={() => onEliminar(p.id)}>Borrar</BotonAccion>
+              <td className="acciones-celda">
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <BotonAccion variante="secundario" onClick={() => onEditar(p)}>Editar</BotonAccion>
+                  <BotonAccion variante="secundario" onClick={() => onEliminar(p.id)}>Borrar</BotonAccion>
+                </div>
               </td>
             </tr>
           ))}

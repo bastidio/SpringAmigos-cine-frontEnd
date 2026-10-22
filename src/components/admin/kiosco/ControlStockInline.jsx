@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-
-const ControlStockInline = ({ productoId, stockInicial, onActualizarStock }) => {
+const ControlStockInline = ({ productoId, stockInicial, onActualizarStock, variante = 'compacto' }) => {
   const [stock, setStock] = useState(stockInicial);
   const [cargando, setCargando] = useState(false);
+
+  useEffect(() => {
+    setStock(stockInicial);
+  }, [stockInicial]);
 
   const manejarCambio = async (nuevoStock) => {
     if (nuevoStock < 0) return;
@@ -16,23 +19,23 @@ const ControlStockInline = ({ productoId, stockInicial, onActualizarStock }) => 
   };
 
   return (
-    <div className="control-stock-container">
+    <div className={`kiosco-stock-control--${variante}`}>
       <button 
-        disabled={cargando} 
+        disabled={cargando || stock <= 0} 
         onClick={() => manejarCambio(stock - 1)}
-        className="control-stock-btn"
+        className={`kiosco-stock-control__boton--${variante}`}
       >
         -
       </button>
       
-      <span className="control-stock-valor">
+      <span className={`kiosco-stock-control__valor--${variante}`}>
         {cargando ? '...' : stock}
       </span>
       
       <button 
         disabled={cargando} 
         onClick={() => manejarCambio(stock + 1)}
-        className="control-stock-btn"
+        className={`kiosco-stock-control__boton--${variante}`}
       >
         +
       </button>

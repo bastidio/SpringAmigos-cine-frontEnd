@@ -1,5 +1,3 @@
-
-
 const UltimasOrdenesWidget = ({ ordenes }) => {
   const ultimas = ordenes.slice(-5).reverse();
 
@@ -13,8 +11,7 @@ const UltimasOrdenesWidget = ({ ordenes }) => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Fecha</th>
-            <th>Cliente</th>
+            <th>Fecha y Hora</th>
             <th>Estado</th>
             <th>Total</th>
           </tr>
@@ -23,10 +20,14 @@ const UltimasOrdenesWidget = ({ ordenes }) => {
           {ultimas.map(o => (
             <tr key={o.id}>
               <td>#{o.id}</td>
-              <td>{new Date(o.fecha).toLocaleDateString()}</td>
-              <td>{o.usuario?.nombre || 'Usuario'}</td>
               <td>
-                <span className={`etiqueta-rol ${o.estado === 'PENDIENTE' ? 'estado-pendiente' : o.estado === 'COMPLETADA' ? 'estado-completada' : 'estado-cancelada'}`}>
+                {new Date(o.fecha).toLocaleString('es-AR', { 
+                  dateStyle: 'short', 
+                  timeStyle: 'short' 
+                })}
+              </td>
+              <td>
+                <span className={`etiqueta-estado-btn ${o.estado === 'CONFIRMADA' ? 'etiqueta--activa' : 'orden-etiqueta--inactiva'} etiqueta-fija`}>
                   {o.estado}
                 </span>
               </td>
@@ -35,7 +36,7 @@ const UltimasOrdenesWidget = ({ ordenes }) => {
           ))}
           {ultimas.length === 0 && (
             <tr>
-              <td colSpan="5" className="texto-muted tabla-celda-centrada">
+              <td colSpan="4" className="texto-muted tabla-celda-centrada">
                 No hay órdenes recientes.
               </td>
             </tr>
