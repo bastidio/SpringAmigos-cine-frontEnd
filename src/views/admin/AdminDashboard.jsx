@@ -66,7 +66,7 @@ const AdminDashboardView = () => {
 
       {/* 1. Tarjetas Superiores */}
       <div className="tarjetas-resumen-grid">
-        <TarjetaResumen titulo="Ingresos Totales" valor={`$${ingresosDelMes}`} />
+        <TarjetaResumen titulo="Ingresos Totales" valor={`$${ingresosDelMes.toLocaleString('es-AR')}`} />
         <TarjetaResumen titulo="Órdenes Pendientes" valor={ordenesPendientes} />
         <TarjetaResumen titulo="Productos en Kiosco" valor={datos.productos.length} />
       </div>

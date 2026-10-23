@@ -1,7 +1,13 @@
 import BotonAccion from '../ui/BotonAccion';
 
 const PeliculasTable = ({ peliculas, onEditar, onEliminar }) => {
-  if (peliculas.length === 0) return <p style={{ color: 'var(--text-muted)' }}>No hay películas registradas.</p>;
+  if (peliculas.length === 0) {
+    return (
+      <div className="admin-table-container admin-table-empty">
+        <p>No hay películas registradas.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-table-container">
@@ -13,7 +19,7 @@ const PeliculasTable = ({ peliculas, onEditar, onEliminar }) => {
             <th>Clasificación</th>
             <th>Idioma</th>
             <th>Duración</th>
-            <th>Acciones</th>
+            <th className="th-acciones">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -24,9 +30,11 @@ const PeliculasTable = ({ peliculas, onEditar, onEliminar }) => {
               <td>{p.clasificacion}</td>
               <td>{p.idioma}</td>
               <td>{p.duracion} min</td>
-              <td style={{ display: 'flex', gap: '8px' }}>
-                <BotonAccion variante="secundario" onClick={() => onEditar(p)}>Editar</BotonAccion>
-                <BotonAccion variante="secundario" onClick={() => onEliminar(p.id)}>Borrar</BotonAccion>
+              <td className="acciones-celda">
+                <div className="admin-table-actions">
+                  <BotonAccion variante="secundario" onClick={() => onEditar(p)}>Editar</BotonAccion>
+                  <BotonAccion variante="secundario" onClick={() => onEliminar(p.id)}>Borrar</BotonAccion>
+                </div>
               </td>
             </tr>
           ))}

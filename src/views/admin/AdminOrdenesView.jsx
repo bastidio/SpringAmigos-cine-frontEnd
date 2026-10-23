@@ -131,7 +131,7 @@ const AdminOrdenesView = () => {
       <div className="tarjetas-resumen-grid">
         <TarjetaResumen titulo="Total Órdenes" valor={ordenes.length} />
         <TarjetaResumen titulo="Pendientes" valor={pendientesCount} />
-        <TarjetaResumen titulo="Ingresos (Completadas)" valor={`$${totalIngresos}`} />
+        <TarjetaResumen titulo="Ingresos (Completadas)" valor={`$${totalIngresos.toLocaleString('es-AR')}`} />
       </div>
 
       <div className="barra-busqueda-container">
