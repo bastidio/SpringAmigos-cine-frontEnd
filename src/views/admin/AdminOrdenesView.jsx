@@ -118,7 +118,8 @@ const AdminOrdenesView = () => {
     return coincideEstado && coincideBusqueda;
   });
 
-  const totalIngresos = ordenes.filter(o => o.estado === 'COMPLETADA').reduce((acc, curr) => acc + curr.total, 0);
+  // Las ordenes del checkout quedan CONFIRMADA: cuentan como ingresos igual que COMPLETADA.
+  const totalIngresos = ordenes.filter(o => o.estado === 'COMPLETADA' || o.estado === 'CONFIRMADA').reduce((acc, curr) => acc + curr.total, 0);
   const pendientesCount = ordenes.filter(o => o.estado === 'PENDIENTE').length;
   return (
     <div>
@@ -131,7 +132,7 @@ const AdminOrdenesView = () => {
       <div className="tarjetas-resumen-grid">
         <TarjetaResumen titulo="Total Órdenes" valor={ordenes.length} />
         <TarjetaResumen titulo="Pendientes" valor={pendientesCount} />
-        <TarjetaResumen titulo="Ingresos (Completadas)" valor={`$${totalIngresos.toLocaleString('es-AR')}`} />
+        <TarjetaResumen titulo="Ingresos (Confirmadas)" valor={`$${totalIngresos.toLocaleString('es-AR')}`} />
       </div>
 
       <div className="barra-busqueda-container">
@@ -145,7 +146,7 @@ const AdminOrdenesView = () => {
       </div>
 
       <div className="filtros-categorias-container">
-        {['Todas', 'PENDIENTE', 'COMPLETADA', 'CANCELADA'].map(estado => (
+        {['Todas', 'PENDIENTE', 'CONFIRMADA', 'COMPLETADA', 'CANCELADA'].map(estado => (
           <button 
             key={estado}
             className={`btn-filtro-dia ${filtroEstado === estado ? 'activo' : ''}`}

@@ -51,7 +51,7 @@ const AdminDashboardView = () => {
 
   // Cálculos para las tarjetas superiores
   const ingresosDelMes = datos.ordenes
-    .filter(o => o.estado === 'COMPLETADA')
+    .filter(o => o.estado === 'COMPLETADA' || o.estado === 'CONFIRMADA')
     .reduce((acc, curr) => acc + curr.total, 0);
     
   const ordenesPendientes = datos.ordenes.filter(o => o.estado === 'PENDIENTE').length;

@@ -28,6 +28,7 @@ const OrdenForm = ({ ordenAEditar, onGuardar, onCancelar }) => {
           required
         >
           <option value="PENDIENTE">Pendiente</option>
+          <option value="CONFIRMADA">Confirmada</option>
           <option value="COMPLETADA">Completada</option>
           <option value="CANCELADA">Cancelada</option>
         </select>

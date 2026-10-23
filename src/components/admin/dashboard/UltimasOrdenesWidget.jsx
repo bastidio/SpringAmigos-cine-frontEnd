@@ -26,7 +26,7 @@ const UltimasOrdenesWidget = ({ ordenes }) => {
               <td>{new Date(o.fecha).toLocaleDateString()}</td>
               <td>{o.usuario?.nombre || 'Usuario'}</td>
               <td>
-                <span className={`etiqueta-rol ${o.estado === 'PENDIENTE' ? 'estado-pendiente' : o.estado === 'COMPLETADA' ? 'estado-completada' : 'estado-cancelada'}`}>
+                <span className={`etiqueta-rol ${o.estado === 'PENDIENTE' ? 'estado-pendiente' : (o.estado === 'COMPLETADA' || o.estado === 'CONFIRMADA') ? 'estado-completada' : 'estado-cancelada'}`}>
                   {o.estado}
                 </span>
               </td>

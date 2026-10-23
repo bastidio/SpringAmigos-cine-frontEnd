@@ -6,7 +6,7 @@ const OrdenesTable = ({ ordenes, onVerDetalle, onCancelarOrden, onEditar }) => {
 
   const getClaseEstado = (estado) => {
     if (estado === 'PENDIENTE') return 'estado-pendiente';
-    if (estado === 'COMPLETADA') return 'estado-completada';
+    if (estado === 'COMPLETADA' || estado === 'CONFIRMADA') return 'estado-completada';
     return 'estado-cancelada';
   };
 
