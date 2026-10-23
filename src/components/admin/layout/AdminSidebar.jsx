@@ -84,7 +84,7 @@ const AdminSidebar = () => {
 
   return (
     <aside className="admin-sidebar">
-      <Link to="/admin" className="admin-sidebar__marca" aria-label="Lumière Cine, ir al dashboard">
+      <Link to="/" className="admin-sidebar__marca" aria-label="Lumière Cine, ir a la cartelera">
         <img className="admin-sidebar__logo" src={logo} alt="" />
         <img className="admin-sidebar__logotipo" src={logotipo} alt="Lumière Cine" />
       </Link>

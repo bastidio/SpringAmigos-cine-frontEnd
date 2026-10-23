@@ -149,12 +149,10 @@
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* Iconos dorados, como el carrito del nav del cliente. */
 .admin-sidebar nav a svg {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  color: var(--admin-gold);
 }
 
 .admin-sidebar nav a:hover {
@@ -167,11 +165,6 @@
   background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
   color: var(--admin-text);
   font-weight: 600;
-}
-
-/* Sobre el violeta lleno, el icono va blanco para que se lea. */
-.admin-sidebar nav a.active svg {
-  color: var(--admin-text);
 }
 
 .admin-sidebar nav a:focus-visible {
@@ -214,41 +207,24 @@
   gap: 12px;
 }
 
-.admin-header__btn-cartelera,
-.admin-header button {
+.admin-header__btn-cartelera {
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 13.6px;
   line-height: 20px;
+  font-weight: 500;
   text-decoration: none;
-  cursor: pointer;
-  background: transparent;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-
-.admin-header__btn-cartelera {
   color: var(--admin-gold);
   border: 1px solid var(--admin-gold);
-  font-weight: 500;
+  background: transparent;
+  transition: background-color 0.15s ease;
 }
 
 .admin-header__btn-cartelera:hover {
   background-color: var(--admin-gold-brillo);
 }
 
-/* Cerrar sesion: rojo, igual que en el perfil del usuario. */
-.admin-header button {
-  color: var(--admin-rojo);
-  border: 1px solid var(--admin-rojo);
-  font-weight: 600;
-}
-
-.admin-header button:hover {
-  background-color: rgba(248, 113, 113, 0.1);
-}
-
-.admin-header__btn-cartelera:focus-visible,
-.admin-header button:focus-visible {
+.admin-header__btn-cartelera:focus-visible {
   outline: 2px solid var(--admin-primary);
   outline-offset: 2px;
 }
