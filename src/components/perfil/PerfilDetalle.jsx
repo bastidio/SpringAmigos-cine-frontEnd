@@ -88,6 +88,7 @@ const PerfilDetalle = ({ token, onLogout, onIrAEntradas }) => {
       <PerfilHeader
         nombre={usuario.nombre}
         email={usuario.email}
+        fotoPerfil={usuario.fotoPerfil}
         entradasActivas={usuario.entradasActivas}
       />
       <DatosPersonales

@@ -1,6 +1,10 @@
+import Avatar from './Avatar';
+
 // Componente "tonto": el icono redondo del nav que abre y cierra el menu del
 // perfil. No sabe si el menu esta abierto: se lo dice el padre por props.
-const PerfilAvatarBoton = ({ abierto, onClick }) => {
+// "usuario" ({ nombre, fotoPerfil }) es null mientras no llegaron los datos:
+// hasta entonces se ve el icono de usuario de siempre.
+const PerfilAvatarBoton = ({ abierto, usuario, onClick }) => {
   return (
     <button
       type="button"
@@ -16,21 +20,26 @@ const PerfilAvatarBoton = ({ abierto, onClick }) => {
           : 'border-white/15 text-[var(--texto-suave)] hover:bg-violet-500/10 hover:text-[var(--texto)]'
       }`}
     >
-      {/* Icono de usuario */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="h-5 w-5"
-        aria-hidden="true"
-      >
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 21a8 8 0 0 1 16 0" />
-      </svg>
+      {usuario !== null ? (
+        // 32px adentro del boton de 38px: queda un aro de 3px con el borde.
+        <Avatar fotoPerfil={usuario.fotoPerfil} nombre={usuario.nombre} tamano={32} />
+      ) : (
+        /* Icono de usuario */
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-5 w-5"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 21a8 8 0 0 1 16 0" />
+        </svg>
+      )}
     </button>
   );
 };
