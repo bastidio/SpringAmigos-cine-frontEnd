@@ -1,12 +1,19 @@
 
 
-const CeldaProductoInfo = ({ nombre, descripcion }) => {
+const CeldaProductoInfo = ({ nombre, descripcion, imagen, variante = 'compacto' }) => {
   return (
-    <div className="celda-producto-info">
-      <strong className="celda-producto-nombre">{nombre}</strong>
-      {descripcion && (
-        <span className="celda-producto-desc">{descripcion}</span>
+    <div className={`kiosco-producto-info--${variante}`}>
+      {imagen ? (
+        <img src={imagen} alt={nombre} className="celda-producto-img" />
+      ) : (
+        <div className="celda-producto-img-placeholder">Sin img</div>
       )}
+      <div className="celda-producto-texto">
+        <strong className={`kiosco-producto-nombre--${variante}`}>{nombre}</strong>
+        {descripcion && (
+          <span className={`kiosco-producto-desc--${variante}`}>{descripcion}</span>
+        )}
+      </div>
     </div>
   );
 };

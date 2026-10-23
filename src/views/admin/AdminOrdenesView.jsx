@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import TarjetaResumen from '../../components/admin/ordenes/TarjetaResumen';
 import OrdenesTable from '../../components/admin/ordenes/OrdenesTable';
-import OrdenForm from '../../components/admin/ordenes/OrdenForm';
 import PanelDetalleOrden from '../../components/admin/ordenes/PanelDetalleOrden';
 import BotonAccion from '../../components/admin/ui/BotonAccion';
 import AdminModal from '../../components/admin/ui/AdminModal';
@@ -11,36 +10,21 @@ const AdminOrdenesView = () => {
   const [filtroEstado, setFiltroEstado] = useState('Todas');
   const [busqueda, setBusqueda] = useState('');
   
-  const [modalFormAbierto, setModalFormAbierto] = useState(false);
   const [modalDetalleAbierto, setModalDetalleAbierto] = useState(false);
   const [ordenActiva, setOrdenActiva] = useState(null);
   
-  // NUEVO ESTADO: Guarda el ID de la orden que se quiere cancelar
-  const [ordenACancelar, setOrdenACancelar] = useState(null);
+  // Solo guardamos el ID para cancelar
+  const [ordenACancelar, setOrdenACancelar] = useState(null); 
 
   const cargarDatos = async () => {
     try {
       const token = localStorage.getItem('token');
-      
-      // 1. TIENE que ser la ruta absoluta a tu backend
       const response = await fetch('http://localhost:4002/ordenes', {
-        headers: {
-          'Authorization': `Bearer ${token}` 
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      // 2. Validación antibalas: Si no es JSON, frenamos el código
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("El servidor devolvió HTML. Asegurate de usar http://localhost:4002/ordenes");
-      }
-
-      // 3. Validamos que el backend no haya rechazado la petición (401, 403, 404)
-      if (!response.ok) {
-        throw new Error(`Error del servidor: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
       
-      // 4. Recién acá parseamos, ya seguros de que es un JSON válido
       const data = await response.json(); 
       setOrdenes(data);
     } catch (error) {
@@ -52,30 +36,22 @@ const AdminOrdenesView = () => {
     cargarDatos();
   }, []);
 
-  // 1. Abre el modal de confirmación en lugar del window.confirm
-  const solicitarCancelacion = (id) => {
-    setOrdenACancelar(id);
-  };
-
-  // 2. Ejecuta la cancelación real cuando se confirma en el modal
   const confirmarCancelacion = async () => {
     if (!ordenACancelar) return;
 
     try {
-      const token = localStorage.getItem('token'); // 1. Recuperamos el token
+      const token = localStorage.getItem('token');
 
-      const response = await fetch(`/ordenes/${ordenACancelar}/estado`, {
-        method: 'PATCH',
+      // Pegamos directo a tu endpoint de cancelar con PUT
+      const response = await fetch(`http://localhost:4002/ordenes/${ordenACancelar}/cancelar`, {
+        method: 'PUT',
         headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // 2. Agregamos el header
-        },
-        body: JSON.stringify({ estado: 'CANCELADA' })
+          'Authorization': `Bearer ${token}`
+        }
       });
 
-      if (!response.ok) throw new Error('Falló la actualización en el servidor');
+      if (!response.ok) throw new Error(`Falló la actualización: ${response.status}`);
 
-      // Solo si el backend responde bien, actualizamos la tabla y cerramos el modal
       setOrdenes(ordenes.map(o => o.id === ordenACancelar ? { ...o, estado: 'CANCELADA' } : o));
       setOrdenACancelar(null); 
     } catch (error) {
@@ -83,43 +59,15 @@ const AdminOrdenesView = () => {
     }
   };
 
-  const manejarGuardarFormulario = async (datosForm) => {
-    if (!ordenActiva) return;
-
-    try {
-      const token = localStorage.getItem('token'); // 1. Recuperamos el token
-
-      const response = await fetch(`/ordenes/${ordenActiva.id}/estado`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // 2. Agregamos el header
-        },
-        body: JSON.stringify({ estado: datosForm.estado })
-      });
-
-      if (!response.ok) throw new Error('Falló la actualización en el servidor');
-
-      // Solo si el backend responde bien, actualizamos la tabla y cerramos el modal
-      setOrdenes(ordenes.map(o => o.id === ordenActiva.id ? { ...o, estado: datosForm.estado } : o));
-      setModalFormAbierto(false);
-    } catch (error) {
-      console.error("Error guardando orden:", error);
-    }
-  };
-
   const ordenesFiltradas = ordenes.filter(o => {
     const coincideEstado = filtroEstado === 'Todas' || o.estado === filtroEstado;
-    const busquedaLower = busqueda.toLowerCase();
-    const coincideBusqueda = 
-      o.usuario?.nombre?.toLowerCase().includes(busquedaLower) || 
-      o.id.toString().includes(busquedaLower);
-    
+    const coincideBusqueda = o.id.toString().includes(busqueda);
     return coincideEstado && coincideBusqueda;
   });
 
-  const totalIngresos = ordenes.filter(o => o.estado === 'COMPLETADA').reduce((acc, curr) => acc + curr.total, 0);
-  const pendientesCount = ordenes.filter(o => o.estado === 'PENDIENTE').length;
+  const totalIngresos = ordenes.filter(o => o.estado === 'CONFIRMADA').reduce((acc, curr) => acc + curr.total, 0);
+  const confirmadasCount = ordenes.filter(o => o.estado === 'CONFIRMADA').length;
+
   return (
     <div>
       <div className="admin-view-header">
@@ -130,22 +78,22 @@ const AdminOrdenesView = () => {
 
       <div className="tarjetas-resumen-grid">
         <TarjetaResumen titulo="Total Órdenes" valor={ordenes.length} />
-        <TarjetaResumen titulo="Pendientes" valor={pendientesCount} />
-        <TarjetaResumen titulo="Ingresos (Completadas)" valor={`$${totalIngresos}`} />
+        <TarjetaResumen titulo="Confirmadas" valor={confirmadasCount} />
+        <TarjetaResumen titulo="Ingresos" valor={`$${totalIngresos}`} />
       </div>
 
       <div className="barra-busqueda-container">
         <input 
           type="text" 
           className="barra-busqueda-input" 
-          placeholder="Buscar por cliente o ID de orden..." 
+          placeholder="Buscar por ID de orden..." 
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
       </div>
 
       <div className="filtros-categorias-container">
-        {['Todas', 'PENDIENTE', 'COMPLETADA', 'CANCELADA'].map(estado => (
+        {['Todas', 'CONFIRMADA', 'CANCELADA'].map(estado => (
           <button 
             key={estado}
             className={`btn-filtro-dia ${filtroEstado === estado ? 'activo' : ''}`}
@@ -159,23 +107,13 @@ const AdminOrdenesView = () => {
       <OrdenesTable 
         ordenes={ordenesFiltradas} 
         onVerDetalle={(orden) => { setOrdenActiva(orden); setModalDetalleAbierto(true); }}
-        onEditar={(orden) => { setOrdenActiva(orden); setModalFormAbierto(true); }}
-        onCancelarOrden={solicitarCancelacion} // Pasamos la nueva función
+        onCancelarOrden={(id) => setOrdenACancelar(id)} 
       />
 
       <AdminModal isOpen={modalDetalleAbierto} onClose={() => setModalDetalleAbierto(false)} titulo={`Orden #${ordenActiva?.id}`}>
         <PanelDetalleOrden orden={ordenActiva} />
       </AdminModal>
 
-      <AdminModal isOpen={modalFormAbierto} onClose={() => setModalFormAbierto(false)} titulo="Editar Estado de Orden">
-        <OrdenForm 
-          ordenAEditar={ordenActiva} 
-          onGuardar={manejarGuardarFormulario}
-          onCancelar={() => setModalFormAbierto(false)} 
-        />
-      </AdminModal>
-
-      {/* NUEVO: Modal de confirmación para cancelar */}
       <AdminModal 
         isOpen={ordenACancelar !== null} 
         onClose={() => setOrdenACancelar(null)} 

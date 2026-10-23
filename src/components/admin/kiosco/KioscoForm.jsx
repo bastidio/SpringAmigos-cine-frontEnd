@@ -8,9 +8,9 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
     categoria_id: '', 
     precio: '', 
     stock: '', 
-    descuento: 0,
-    posterProducto: '',
-    activo: true // Lo mantenemos en memoria para no enviar 'null' al backend al editar
+    descuento: 0, 
+    activo: true,
+    imagenUrl: '' 
   });
 
   useEffect(() => {
@@ -18,8 +18,7 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
       setFormData({
         ...productoAEditar,
         categoria_id: productoAEditar.categoria?.id || '',
-        // Puede venir null del back; el input necesita un string.
-        posterProducto: productoAEditar.posterProducto || ''
+        imagenUrl: productoAEditar.imagenes?.length > 0 ? productoAEditar.imagenes[0].url : ''
       });
     }
   }, [productoAEditar]);
@@ -78,6 +77,18 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
       </div>
 
       <div className="kiosco-form-group">
+        <label className="kiosco-form-label">URL de la Imagen</label>
+        <input 
+          className="admin-input" 
+          name="imagenUrl" 
+          type="url"
+          placeholder="https://ejemplo.com/imagen.jpg" 
+          value={formData.imagenUrl} 
+          onChange={handleChange} 
+        />
+      </div>
+
+      <div className="kiosco-form-group">
         <label className="kiosco-form-label">Categoría</label>
         <select 
           className="admin-input" 
@@ -93,7 +104,6 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
         </select>
       </div>
       
-      {/* Esta fila ahora usa CSS Grid para evitar que se salga del modal */}
       <div className="kiosco-form-row">
         <div className="kiosco-form-group" style={{ marginBottom: 0 }}>
           <label className="kiosco-form-label">Precio ($)</label>

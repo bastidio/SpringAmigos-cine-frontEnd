@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import BotonAccion from '../ui/BotonAccion';
 
-// Agregamos peliculas y salas a las props
 const FuncionesForm = ({ funcionAEditar, peliculas, salas, onGuardar, onCancelar }) => {
   const [formData, setFormData] = useState({
-    pelicula_id: '', sala_id: '', horario: '', idioma: '', formato: '', precio_base: ''
+    pelicula_id: '', sala_id: '', idioma: '', formato: '', precio_base: ''
   });
+  
+  // Estados separados para fecha y hora
+  const [fecha, setFecha] = useState('');
+  const [hora, setHora] = useState('');
 
   useEffect(() => {
     if (funcionAEditar) {
@@ -14,6 +17,18 @@ const FuncionesForm = ({ funcionAEditar, peliculas, salas, onGuardar, onCancelar
         pelicula_id: String(funcionAEditar.pelicula_id ?? funcionAEditar.pelicula?.id ?? ''),
         sala_id: String(funcionAEditar.sala_id ?? funcionAEditar.sala?.id ?? ''),
       });
+
+      // Separamos el string "YYYY-MM-DDTHH:mm:00" que viene del backend
+      if (funcionAEditar.horario) {
+        const [fechaPart, horaPart] = funcionAEditar.horario.split('T');
+        setFecha(fechaPart);
+        setHora(horaPart ? horaPart.substring(0, 5) : ''); 
+      }
+    } else {
+      // Limpiamos todo si es nueva función
+      setFormData({ pelicula_id: '', sala_id: '', idioma: '', formato: '', precio_base: '' });
+      setFecha('');
+      setHora('');
     }
   }, [funcionAEditar]);
 
@@ -21,7 +36,21 @@ const FuncionesForm = ({ funcionAEditar, peliculas, salas, onGuardar, onCancelar
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onGuardar(formData);
+    
+    // Unimos fecha y hora
+    const horarioFormateado = `${fecha}T${hora}:00`;
+
+    // Armamos el objeto respetando EXACTAMENTE tu DTO FuncionRequest
+    const datosParaBackend = {
+      peliculaId: parseInt(formData.pelicula_id), // camelCase como en Java
+      salaId: parseInt(formData.sala_id),         // camelCase como en Java
+      horario: horarioFormateado,
+      idioma: formData.idioma,
+      formato: formData.formato,
+      precio_base: parseFloat(formData.precio_base) // snake_case como en Java
+    };
+
+    onGuardar(datosParaBackend);
   };
 
   return (
@@ -43,7 +72,23 @@ const FuncionesForm = ({ funcionAEditar, peliculas, salas, onGuardar, onCancelar
         ))}
       </select>
       
-      <input className="admin-input" name="horario" type="datetime-local" value={formData.horario} onChange={handleChange} required />
+      {/* Inputs separados aprovechando tu clase admin-form-row */}
+      <div className="admin-form-row">
+        <input 
+          className="admin-input" 
+          type="date" 
+          value={fecha} 
+          onChange={(e) => setFecha(e.target.value)} 
+          required 
+        />
+        <input 
+          className="admin-input" 
+          type="time" 
+          value={hora} 
+          onChange={(e) => setHora(e.target.value)} 
+          required 
+        />
+      </div>
       
       <div className="admin-form-row">
         <input className="admin-input" name="idioma" value={formData.idioma} onChange={handleChange} placeholder="Idioma (Ej: Subtitulada)" required />

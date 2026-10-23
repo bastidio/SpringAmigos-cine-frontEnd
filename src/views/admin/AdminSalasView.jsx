@@ -110,7 +110,7 @@ const AdminSalasView = () => {
 
       {/* COLUMNA DERECHA: Detalle y recuadro vacío */}
       <main className="salas-detalle">
-        <div className="detalle-header">
+        <div className="salas-acciones-header">
           <button className="btn-nueva-sala" onClick={() => abrirModal()}>
             + Nueva sala
           </button>

@@ -41,20 +41,30 @@ const AdminPeliculasView = () => {
 
   const manejarGuardar = async (formData) => {
     const metodo = peliculaEditando ? 'PUT' : 'POST';
-    const url = peliculaEditando ? `/peliculas/${peliculaEditando.id}` : '/peliculas';
-    const token = localStorage.getItem('token'); // 1. Recuperamos el token
+    
 
-    await fetch(url, {
-      method: metodo,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`       // 2. Lo enviamos en el header
-      },
-      body: JSON.stringify(formData)
+    const url = peliculaEditando 
+      ? `http://localhost:4002/peliculas/${peliculaEditando.id}` 
+      : 'http://localhost:4002/peliculas';
+      
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(url, {
+        method: metodo,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
     });
 
+   
+    if (!response.ok) {
+      return;
+    }
+
     cerrarModal();
-    fetchPeliculas(); 
+    fetchPeliculas();
   };
 
   // Antes era un window.confirm: ahora se guarda el id y se abre la
@@ -98,7 +108,7 @@ const AdminPeliculasView = () => {
   const peliculasFiltradas = peliculas.filter(p => 
     p.titulo.toLowerCase().includes(busqueda.toLowerCase())
   );
-
+  
   return (
     <div>
       <div className="admin-view-header">
