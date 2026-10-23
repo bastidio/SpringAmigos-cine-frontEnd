@@ -3,12 +3,15 @@ import { useState, useEffect } from 'react';
 import SalasList from '../../components/admin/salas/SalasList';
 import SalaForm from '../../components/admin/salas/SalaForm';
 import AdminModal from '../../components/admin/ui/AdminModal';
+import VentanaEmergente from '../../components/ui/VentanaEmergente';
 
 const AdminSalasView = () => {
   const [salas, setSalas] = useState([]);
   const [salaSeleccionada, setSalaSeleccionada] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [salaAEditar, setSalaAEditar] = useState(null);
+  // Mensaje de error al guardar (null = sin error). Se muestra en una ventana emergente.
+  const [errorGuardar, setErrorGuardar] = useState(null);
 
   const cargarSalas = async (salaIdSeleccionada = salaSeleccionada?.id) => {
     try {
@@ -83,8 +86,8 @@ const AdminSalasView = () => {
       cerrarModal();
       await cargarSalas(salaId);
     } catch (error) {
-      console.error('Error al guardar la sala:', error);
-      window.alert(error.message);
+      // Antes era un window.alert: ahora se muestra en la VentanaEmergente.
+      setErrorGuardar(error.message);
     }
   };
 
@@ -152,6 +155,13 @@ const AdminSalasView = () => {
           onCancelar={cerrarModal}
         />
       </AdminModal>
+
+      <VentanaEmergente
+        abierta={errorGuardar !== null}
+        titulo="No se pudo guardar la sala"
+        mensaje={errorGuardar}
+        onConfirmar={() => setErrorGuardar(null)}
+      />
     </div>
   );
 };

@@ -3,12 +3,18 @@ import PeliculasTable from '../../components/admin/peliculas/PeliculasTable';
 import PeliculasForm from '../../components/admin/peliculas/PeliculasForm';
 import BotonAccion from '../../components/admin/ui/BotonAccion';
 import AdminModal from '../../components/admin/ui/AdminModal';
+import VentanaEmergente from '../../components/ui/VentanaEmergente';
 
 const AdminPeliculasView = () => {
   const [peliculas, setPeliculas] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [peliculaEditando, setPeliculaEditando] = useState(null);
   const [busqueda, setBusqueda] = useState('');
+  // Ventana emergente para borrar: id de la pelicula a confirmar (null = cerrada),
+  // si se esta borrando y el error si el back no la borro.
+  const [peliculaABorrar, setPeliculaABorrar] = useState(null);
+  const [borrando, setBorrando] = useState(false);
+  const [errorEliminar, setErrorEliminar] = useState(null);
 
   const fetchPeliculas = async () => {
     const token = localStorage.getItem('token');
@@ -51,19 +57,42 @@ const AdminPeliculasView = () => {
     fetchPeliculas(); 
   };
 
-  const manejarEliminar = async (id) => {
-    if (!window.confirm('¿Seguro que quieres borrar esta película?')) return;
-    
-    const token = localStorage.getItem('token'); // 1. Recuperamos el token
+  // Antes era un window.confirm: ahora se guarda el id y se abre la
+  // VentanaEmergente para confirmar.
+  const manejarEliminar = (id) => {
+    setPeliculaABorrar(id);
+  };
 
-    await fetch(`/peliculas/${id}`, { 
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`       // 2. Lo enviamos en el header
+  const cancelarEliminar = () => {
+    setPeliculaABorrar(null);
+  };
+
+  const confirmarEliminar = async () => {
+    setBorrando(true);
+    try {
+      const token = localStorage.getItem('token'); // 1. Recuperamos el token
+
+      const res = await fetch(`/peliculas/${peliculaABorrar}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`       // 2. Lo enviamos en el header
+        }
+      });
+
+      // Si el back no la borra (por ejemplo, 409 porque tiene funciones), se
+      // muestra su mensaje en otra ventana emergente.
+      if (!res.ok) {
+        const datos = await res.json().catch(() => null);
+        throw new Error(datos?.message || `No se pudo borrar la película (${res.status})`);
       }
-    });
-    
-    fetchPeliculas();
+
+      fetchPeliculas();
+    } catch (error) {
+      setErrorEliminar(error.message);
+    } finally {
+      setBorrando(false);
+      setPeliculaABorrar(null);
+    }
   };
 
   const peliculasFiltradas = peliculas.filter(p => 
@@ -106,9 +135,27 @@ const AdminPeliculasView = () => {
         <PeliculasForm 
           peliculaAEditar={peliculaEditando} 
           onGuardar={manejarGuardar} 
-          onCancelar={cerrarModal} 
+          onCancelar={cerrarModal}
         />
       </AdminModal>
+
+      <VentanaEmergente
+        abierta={peliculaABorrar !== null}
+        variante="peligro"
+        titulo="Borrar película"
+        mensaje={`¿Seguro que querés borrar "${peliculas.find((p) => p.id === peliculaABorrar)?.titulo ?? ''}"? Esta acción no se puede deshacer.`}
+        textoConfirmar="Borrar"
+        ocupado={borrando}
+        onConfirmar={confirmarEliminar}
+        onCancelar={cancelarEliminar}
+      />
+
+      <VentanaEmergente
+        abierta={errorEliminar !== null}
+        titulo="No se pudo borrar"
+        mensaje={errorEliminar}
+        onConfirmar={() => setErrorEliminar(null)}
+      />
     </div>
   );
 };
