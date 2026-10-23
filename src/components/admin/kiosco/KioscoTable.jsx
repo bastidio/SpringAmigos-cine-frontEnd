@@ -1,6 +1,6 @@
 import BotonAccion from '../ui/BotonAccion';
 import CeldaProductoInfo from './CeldaProductoInfo';
-import ControlStockInline from './ControlStockInLine';
+import ControlStockInline from './ControlStockInline';
 
 const KioscoTable = ({ productos, onEditar, onActualizarStock, onCambiarEstado }) => {
   if (productos.length === 0) {

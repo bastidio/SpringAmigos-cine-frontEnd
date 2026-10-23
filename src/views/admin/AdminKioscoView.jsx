@@ -74,8 +74,9 @@ const AdminKioscoView = () => {
   };
 
   const manejarGuardar = async (formData) => {
-    const { categoria_id, categoria, ...resto } = formData;
-    const payload = { ...resto, categoriaId: categoria_id };
+    const payload = { ...formData, categoriaId: formData.categoria_id };
+    delete payload.categoria_id;
+    delete payload.categoria;
 
     setErrorGuardar(null);
     try {
