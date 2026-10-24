@@ -74,42 +74,54 @@ const AdminKioscoView = () => {
   };
 
   const manejarGuardar = async (formData) => {
-    const payload = { ...formData, categoriaId: formData.categoria_id };
-    delete payload.categoria_id;
-    delete payload.categoria;
-
-    setErrorGuardar(null);
-    try {
-      const url = productoEditando ? `/productos/${productoEditando.id}` : '/productos';
-      const method = productoEditando ? 'PUT' : 'POST';
-      const token = localStorage.getItem('token');
-
-      const response = await fetch(url, {
-        method: method,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        const datos = await response.json().catch(() => null);
-        const motivos = datos?.validationErrors ? Object.values(datos.validationErrors) : [];
-        const mensaje = motivos.length > 0
-          ? motivos.join(', ')
-          : datos?.message || `No se pudo guardar el producto (${response.status})`;
-        setErrorGuardar(mensaje);
-        return;
-      }
-
-      cerrarModal();
-      cargarDatos();
-    } catch (error) {
-      console.error("Error guardando producto:", error);
-      setErrorGuardar('No se pudo conectar con el servidor.');
-    }
+  // 1. Armamos el payload con las conversiones a Number para evitar el Bad Request (400)
+  const payload = {
+    nombre: formData.nombre,
+    descripcion: formData.descripcion,
+    precio: Number(formData.precio) || 0,
+    stock: Number(formData.stock) || 0,
+    descuento: Number(formData.descuento) || 0,
+    categoriaId: Number(formData.categoria_id) || 0,
+    imagenes: formData.imagenUrl ? [{ url: formData.imagenUrl }] : [] // Ajustado al formato de array de objetos que suele usar Java
   };
+
+  setErrorGuardar(null);
+  try {
+    // 2. Agregamos la URL completa del backend (asegurate de que el puerto sea el correcto)
+    const baseUrl = 'http://localhost:4002';
+    const url = productoEditando 
+      ? `${baseUrl}/productos/${productoEditando.id}` 
+      : `${baseUrl}/productos`;
+      
+    const method = productoEditando ? 'PUT' : 'POST';
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(url, {
+      method: method,
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const datos = await response.json().catch(() => null);
+      const motivos = datos?.validationErrors ? Object.values(datos.validationErrors) : [];
+      const mensaje = motivos.length > 0
+        ? motivos.join(', ')
+        : datos?.message || `No se pudo guardar el producto (${response.status})`;
+      setErrorGuardar(mensaje);
+      return;
+    }
+
+    cerrarModal();
+    cargarDatos();
+  } catch (error) {
+    console.error("Error guardando producto:", error);
+    setErrorGuardar('No se pudo conectar con el servidor.');
+  }
+};
 
   const abrirModal = (producto = null) => {
     setProductoEditando(producto);

@@ -15,7 +15,6 @@ const AdminDashboardView = () => {
 
   const cargarDatosDashboard = async () => {
     try {
-      // 1. Recuperamos el token para los headers
       const token = localStorage.getItem('token');
       const opciones = {
         headers: {
@@ -23,20 +22,27 @@ const AdminDashboardView = () => {
         }
       };
 
-      // 2. Usamos rutas absolutas y pasamos las opciones.
-      const [resOrdenes, resProductos] = await Promise.allSettled([
+      // 1. Obtenemos la fecha de hoy en formato YYYY-MM-DD (hora local)
+      const fecha = new Date();
+      const hoy = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
+
+      // 2. Agregamos el fetch al endpoint de funciones pasando la fecha
+      const [resOrdenes, resProductos, resFunciones] = await Promise.allSettled([
         fetch('http://localhost:4002/ordenes', opciones),
-        fetch('http://localhost:4002/productos', opciones)
+        fetch('http://localhost:4002/productos', opciones),
+        fetch(`http://localhost:4002/funciones?fecha=${hoy}`, opciones)
       ]);
 
-      // 3. Verificamos que la petición haya sido exitosa antes de parsear JSON.
+      // 3. Parseamos los datos
       const ordenesData = (resOrdenes.status === 'fulfilled' && resOrdenes.value.ok) ? await resOrdenes.value.json() : [];
       const productosData = (resProductos.status === 'fulfilled' && resProductos.value.ok) ? await resProductos.value.json() : [];
+      const funcionesData = (resFunciones.status === 'fulfilled' && resFunciones.value.ok) ? await resFunciones.value.json() : [];
 
+      // 4. Guardamos todo en el estado
       setDatos({
         ordenes: ordenesData,
         productos: productosData,
-        funciones: [] // Como ya no traés funciones, pasamos un array vacío (o quitalo si no lo usás)
+        funciones: funcionesData
       });
     } catch (error) {
       console.error("Error cargando dashboard:", error);

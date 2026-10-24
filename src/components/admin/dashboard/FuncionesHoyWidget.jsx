@@ -27,7 +27,7 @@ const FuncionesHoyWidget = ({ funciones }) => {
             funciones.map(f => (
               <tr key={f.id}>
                 <td><strong>{f.pelicula?.titulo}</strong></td>
-                <td>{f.horario}</td>
+                <td>{new Date(f.horario).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</td>
                 <td>{f.sala?.nombre}</td>
                 <td>{f.entradasVendidas} / {f.sala?.capacidad}</td>
               </tr>

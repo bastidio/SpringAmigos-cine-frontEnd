@@ -1263,3 +1263,71 @@
     width: 100%;
   }
 }
+.admin-error-mensaje {
+  color: #ff4d4d;
+  background-color: #3a1616;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  border: 1px solid #ff4d4d;
+  text-align: center;
+}
+/* --- Miniaturas para Tablas (Reutilizable) --- */
+.img-miniatura-tabla {
+  width: 50px;
+  height: 50px; /* Cuadrado por defecto (Ideal para Kiosco) */
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  display: block;
+}
+
+.img-miniatura-placeholder {
+  width: 50px;
+  height: 50px;
+  background-color: #2c2c2c; /* Fondo oscuro */
+  border: 1px dashed #555;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* Modificador específico para películas (Rectangular) */
+.img-miniatura-tabla.img-poster,
+.img-miniatura-placeholder.img-poster {
+  width: 55px;
+  height: 80px; 
+}
+/* Contenedor de la botonera de filtros */
+.filtros-fecha-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Ajustes específicos para el input type="date" */
+.input-fecha {
+  background-color: transparent; /* Mantiene el fondo de tu admin */
+  color: #fff;
+  border: 1px solid #333; 
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Efecto focus para que coincida con el tema (violeta) */
+.input-fecha:focus {
+  border-color: #a855f7; 
+}
+
+/* Invierte el color del ícono del calendario para que sea blanco */
+.input-fecha::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
