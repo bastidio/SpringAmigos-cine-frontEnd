@@ -1,3 +1,4 @@
+import { butacasTotales } from './calculoButacas';
 
 const textoDeFilas = (sala, asientos, estadoAsientos) => {
   if (estadoAsientos !== 'listo') return null;
@@ -16,6 +17,7 @@ const SalasList = ({ salas, salaActiva, onSeleccionar, asientos, estadoAsientos 
     <div className="salas-lista">
       {salas.map((sala) => {
         const filas = textoDeFilas(sala, asientos, estadoAsientos);
+        const totales = butacasTotales(sala, asientos, estadoAsientos);
 
         return (
           <button
@@ -25,7 +27,7 @@ const SalasList = ({ salas, salaActiva, onSeleccionar, asientos, estadoAsientos 
             onClick={() => onSeleccionar(sala)}
           >
             <h3 className="tarjeta-sala-titulo">{sala.nombre}</h3>
-            <p className="tarjeta-sala-detalle">{sala.capacidad} butacas totales</p>
+            {totales !== null && <p className="tarjeta-sala-detalle">{totales} butacas totales</p>}
             {filas !== null && <p className="tarjeta-sala-filas">{filas}</p>}
           </button>
         );

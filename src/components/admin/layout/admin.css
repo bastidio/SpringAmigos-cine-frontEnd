@@ -1151,31 +1151,32 @@
   background-color: rgba(139, 92, 246, 0.12);
 }
 
-.btn-nueva-sala:disabled {
-  opacity: 0.5;
+.btn-nueva-sala:disabled,
+.btn-editar-config:disabled {
+  opacity: 0.45;
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
 }
 
-.panel-mapa-acciones {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
+.btn-editar-config:disabled:hover {
+  background: transparent;
 }
 
-.generar-butacas_texto {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--admin-text-muted);
+/* Por que no se puede editar la sala (tiene funciones o no se pudo comprobar). */
+.panel-mapa_aviso {
+  margin-bottom: 24px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-gold-linea);
+  background-color: var(--admin-gold-tinte);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--admin-gold);
 }
 
-.generar-butacas_texto strong {
-  color: var(--admin-text);
-}
-
-.generar-butacas_resumen {
+/* ---------- Formulario de la sala (crear / editar configuracion) ---------- */
+.sala-form_resumen {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -1187,16 +1188,21 @@
   color: var(--admin-text-muted);
 }
 
-.generar-butacas_resumen strong {
+.sala-form_resumen strong {
   color: var(--admin-gold);
 }
 
-.generar-butacas_aviso {
+.sala-form_quitar,
+.sala-form_quitar strong {
+  color: var(--admin-rojo);
+}
+
+.sala-form_aviso {
   font-size: 12.5px;
   color: var(--admin-gold);
 }
 
-.generar-butacas_progreso {
+.sala-form_progreso {
   font-size: 13.5px;
   font-weight: 600;
   color: var(--admin-gold);
@@ -1282,17 +1288,6 @@
 
 .mapa-sala_dato strong {
   color: var(--admin-text);
-}
-
-/* Cuando las butacas cargadas no coinciden con la capacidad de la sala. */
-.mapa-sala_dato--aviso {
-  border-color: var(--admin-gold-linea);
-  background-color: var(--admin-gold-tinte);
-  color: var(--admin-gold);
-}
-
-.mapa-sala_dato--aviso strong {
-  color: var(--admin-gold);
 }
 
 .mapa-sala_pantalla {

@@ -32,13 +32,8 @@ const MapaSala = ({ asientos, capacidad, estado }) => {
           <strong>{filas.length}</strong> {filas.length === 1 ? 'fila' : 'filas'}
         </span>
         <span className="mapa-sala_dato">
-          <strong>{ordenados.length}</strong> {ordenados.length === 1 ? 'butaca cargada' : 'butacas cargadas'}
+          <strong>{ordenados.length}</strong> {ordenados.length === 1 ? 'butaca' : 'butacas'}
         </span>
-        {ordenados.length !== capacidad && (
-          <span className="mapa-sala_dato mapa-sala_dato--aviso">
-            Capacidad configurada: <strong>{capacidad}</strong>
-          </span>
-        )}
       </div>
 
       <div className="mapa-sala_pantalla">
