@@ -13,7 +13,7 @@ const AdminLayout = ({ token, onLogout, onIrAEntradas }) => {
         
         {/* Aquí renderiza la vista correspondiente (Peliculas, Kiosco, etc.) */}
         <div className="admin-content">
-          <Outlet />
+          <Outlet context={{ token }} />
         </div>
       </div>
     </div>

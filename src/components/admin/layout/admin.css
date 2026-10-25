@@ -293,6 +293,13 @@
     border-color 0.15s ease, color 0.15s ease;
 }
 
+.admin-container .btn-admin:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
 .admin-container .btn-admin:focus-visible {
   outline: 2px solid var(--admin-gold);
   outline-offset: 2px;
@@ -1091,7 +1098,7 @@
   color: var(--admin-text-muted);
 }
 
-.tarjeta-sala-vip {
+.tarjeta-sala-filas {
   margin: 0;
   font-size: 11.5px;
   font-weight: 600;
@@ -1144,6 +1151,58 @@
   background-color: rgba(139, 92, 246, 0.12);
 }
 
+.btn-nueva-sala:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.panel-mapa-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.generar-butacas_texto {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--admin-text-muted);
+}
+
+.generar-butacas_texto strong {
+  color: var(--admin-text);
+}
+
+.generar-butacas_resumen {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-border);
+  background-color: var(--admin-panel-raised);
+  font-size: 13.5px;
+  color: var(--admin-text-muted);
+}
+
+.generar-butacas_resumen strong {
+  color: var(--admin-gold);
+}
+
+.generar-butacas_aviso {
+  font-size: 12.5px;
+  color: var(--admin-gold);
+}
+
+.generar-butacas_progreso {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--admin-gold);
+}
+
+
 .btn-nueva-sala:focus-visible,
 .btn-editar-config:focus-visible {
   outline: 2px solid var(--admin-gold);
@@ -1177,14 +1236,135 @@
   color: var(--admin-text-muted);
 }
 
-.mapa-placeholder {
-  padding: 48px 24px;
+/* ---------- Mapa de butacas de la sala (solo lectura) ---------- */
+.mapa-sala_mensaje {
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--admin-text-muted);
+}
+
+.mapa-sala_mensaje--error {
+  color: var(--admin-rojo);
+}
+
+.mapa-sala_vacio {
+  padding: 40px 24px;
   text-align: center;
   line-height: 1.6;
   color: var(--admin-text-muted);
   border: 1px dashed rgba(212, 175, 55, 0.45);
   border-radius: 12px;
   background-color: var(--admin-gold-tinte);
+}
+
+.mapa-sala_vacio-titulo {
+  margin-bottom: 4px;
+  font-family: var(--admin-font-title);
+  font-size: 18px;
+  color: var(--admin-text);
+}
+
+.mapa-sala_resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.mapa-sala_dato {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid var(--admin-border);
+  background-color: var(--admin-panel-raised);
+  font-size: 12.5px;
+  color: var(--admin-text-muted);
+}
+
+.mapa-sala_dato strong {
+  color: var(--admin-text);
+}
+
+/* Cuando las butacas cargadas no coinciden con la capacidad de la sala. */
+.mapa-sala_dato--aviso {
+  border-color: var(--admin-gold-linea);
+  background-color: var(--admin-gold-tinte);
+  color: var(--admin-gold);
+}
+
+.mapa-sala_dato--aviso strong {
+  color: var(--admin-gold);
+}
+
+.mapa-sala_pantalla {
+  max-width: 640px;
+  margin: 0 auto 32px;
+  text-align: center;
+}
+
+.mapa-sala_pantalla-luz {
+  height: 12px;
+  margin: 0 32px 4px;
+  border-radius: 9999px 9999px 0 0;
+  background: linear-gradient(to bottom, rgba(139, 92, 246, 0.4), transparent);
+}
+
+.mapa-sala_pantalla-linea {
+  height: 4px;
+  margin: 0 16px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, transparent, var(--admin-primary), transparent);
+}
+
+.mapa-sala_pantalla-texto {
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--admin-text-muted);
+}
+
+.mapa-sala_filas {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+  overflow-x: auto;
+}
+
+.mapa-sala_fila {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 auto;
+}
+
+.mapa-sala_letra {
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--admin-gold);
+}
+
+.mapa-sala_butaca {
+  flex-shrink: 0;
+  width: 30px;
+  height: 26px;
+  border-radius: 6px 6px 0 0;
+  border: 1px solid rgba(165, 126, 255, 0.35);
+  background-color: var(--admin-panel-raised);
+}
+
+.mapa-sala_butaca:hover {
+  border-color: var(--admin-gold);
+  background-color: var(--admin-gold-brillo);
+}
+
+.mapa-sala_butaca--pasillo {
+  margin-left: 16px;
 }
 
 /* ---------- Kiosco: checkbox y subtitulo ---------- */
