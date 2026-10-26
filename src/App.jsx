@@ -246,7 +246,7 @@ function App() {
         <Route path="/perfil" element={<Navigate to="/" replace />} />
       </Routes>
 
-      {!esRutaAdmin && location.pathname !== '/login' && <Footer />}
+      {!esRutaAdmin && location.pathname !== '/login' && <Footer haySesion={token !== ''} />}
     </CarritoContext.Provider>
   );
 }

@@ -4,7 +4,7 @@ import logotipo from '../assets/lumiere-logotipo.png';
 import './Footer.css';
 
 
-const Footer = () => {
+const Footer = ({ haySesion = false }) => {
 
   return (
     <footer className="footer">
@@ -23,12 +23,13 @@ const Footer = () => {
           <Link to="/kiosco" className="footer_link">Kiosco</Link>
         </nav>
 
-        <nav className="footer_columna" aria-label="Mi cuenta">
-          <h3 className="footer_titulo">Mi cuenta</h3>
-          <Link to="/perfil" className="footer_link">Mi perfil</Link>
-          <Link to="/mis-entradas" className="footer_link">Mis entradas</Link>
-          <Link to="/carrito" className="footer_link">Carrito</Link>
-        </nav>
+        {haySesion && (
+          <nav className="footer_columna" aria-label="Mi cuenta">
+            <h3 className="footer_titulo">Mi cuenta</h3>
+            <Link to="/mis-entradas" className="footer_link">Mis entradas</Link>
+            <Link to="/carrito" className="footer_link">Carrito</Link>
+          </nav>
+        )}
       </div>
 
       <div className="footer_base">
