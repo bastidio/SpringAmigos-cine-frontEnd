@@ -1,5 +1,5 @@
-// Componente "tonto": los dos botones de abajo. No sabe que hacen: solo
-// llama a las funciones que le llegan por props.
+
+
 const AccionesPerfil = ({ onIrAEntradas, onLogout }) => {
   return (
     <div className="grid grid-cols-2 gap-3">
@@ -8,7 +8,7 @@ const AccionesPerfil = ({ onIrAEntradas, onLogout }) => {
         onClick={onIrAEntradas}
         className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-solid border-violet-500 bg-transparent px-4 py-3 text-sm font-semibold text-violet-300 transition-colors hover:bg-violet-500/10"
       >
-        {/* Icono de ticket */}
+        {}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

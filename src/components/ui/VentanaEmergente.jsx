@@ -1,11 +1,11 @@
-// Componente "tonto": ventana emergente para confirmar algo o avisar un error.
-// Reemplaza a window.alert y window.confirm (no se usan en el proyecto).
-// No decide nada: si se ve o no, el texto y que pasa al aceptar o cancelar se
-// lo pasa el padre por props.
-// - Con onCancelar: dos botones (confirmar / cancelar), como un confirm.
-// - Sin onCancelar: un solo boton para cerrar, como un alert.
-// Se cierra con Escape o tocando el fondo oscuro (si hay onCancelar, cancela;
-// si no, confirma = "Entendido").
+
+
+
+
+
+
+
+
 const COLORES = {
   peligro: {
     icono: 'bg-red-500/15 text-red-400',
@@ -38,7 +38,7 @@ const VentanaEmergente = ({
   };
 
   return (
-    // Fondo oscuro: un click afuera de la caja cierra la ventana.
+    
     <div
       className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
       onClick={ocupado ? undefined : cerrar}

@@ -34,7 +34,7 @@ const SeleccionButacas = () => {
           .filter((asiento) => asiento.sala.id === funcionData.sala.id)
           .sort((a, b) => a.fila - b.fila || a.numero - b.numero)
           .map((asiento) => {
-            // El back manda la fila como numero: 1 es la A, 2 la B...
+            
             const fila = String.fromCharCode(64 + asiento.fila);
             return {
               id: asiento.id,
@@ -73,8 +73,8 @@ const SeleccionButacas = () => {
 
   const elegidas = butacas.filter((butaca) => seleccionadas.includes(butaca.id));
 
-  // Manda las butacas elegidas al carrito del back y despues navega. El carrito
-  // necesita sesion: sin token, primero al login.
+  
+  
   const agregarAlCarritoEIr = async (destino) => {
     if (!localStorage.getItem('token')) {
       navigate('/login');
@@ -84,8 +84,8 @@ const SeleccionButacas = () => {
     setAgregando(true);
     setErrorCarrito(null);
     try {
-      // El back rechaza la misma butaca dos veces: se saltean las que ya estan
-      // (por ejemplo, si el usuario volvio desde el kiosco).
+      
+      
       const carrito = await apiFetch('/api/carritos');
       const yaEnCarrito = (carrito?.items ?? [])
         .filter((item) => item.tipo === 'BUTACA')
@@ -113,7 +113,7 @@ const SeleccionButacas = () => {
       }
       setErrorCarrito(err.message);
     } finally {
-      // Tambien si fallo a mitad: alguna butaca pudo haberse agregado igual.
+      
       refrescarCantidad();
       setAgregando(false);
     }

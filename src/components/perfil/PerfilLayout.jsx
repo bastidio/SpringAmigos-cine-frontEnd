@@ -1,8 +1,8 @@
-// Componente contenedor: el panel desplegable que cae debajo del icono del
-// nav. Ocupa mas o menos un cuarto de la pantalla y, si el contenido no
-// entra, scrollea adentro. Lo que le pase el padre va como children.
-// tabIndex -1 + autoFocus: al abrirse, el foco entra al panel (lo hace React).
-// Asi PerfilMenu se entera del click afuera (onBlur) y de la tecla Escape.
+
+
+
+
+
 const PerfilLayout = ({ children }) => {
   return (
     <div

@@ -1,8 +1,8 @@
-// Componente "tonto": solo dibuja el formulario de registro. No tiene estado
-// ni sabe del backend: los valores, los cambios y el envio le llegan por props
-// desde Register (el padre).
-// Cada input tiene un name igual a su clave en datos, asi el padre sabe que
-// campo cambio con una sola funcion (onCambiar).
+
+
+
+
+
 function RegisterForm({ datos, error, enviando, onCambiar, onEnviar, onIrALogin }) {
   return (
     <form className="auth-form" onSubmit={onEnviar}>
@@ -28,7 +28,7 @@ function RegisterForm({ datos, error, enviando, onCambiar, onEnviar, onIrALogin 
         <input type="email" name="email" value={datos.email} onChange={onCambiar} required />
       </label>
 
-      {/* type="tel" abre el teclado numerico en el celular. Es opcional. */}
+      {}
       <label className="auth-form_campo">
         <span>Teléfono (opcional)</span>
         <input

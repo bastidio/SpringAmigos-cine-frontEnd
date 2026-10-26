@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-// Vacio: las rutas /api las reenvia el proxy de Vite (ver vite.config.js).
+
 const API_BASE = '';
 
-// Formulario de login. No sabe nada de Register: solo pide credenciales,
-// llama al backend, y avisa hacia arriba (via props) si funciono o no.
+
+
 function Login({ onAutenticado, onIrARegistro }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -4,11 +4,11 @@ import Register from './Register';
 import './Auth.css';
 import logo from '../../assets/lumiere-logo.svg';
 
-// Componente padre: decide (con estado propio) si se muestra Login o
-// Register. Cuando cualquiera de los dos hijos consigue un token, avisa
-// hacia arriba con onAutenticado, que viene de App.jsx por props.
+
+
+
 function Auth({ onAutenticado }) {
-  const [modo, setModo] = useState('login'); // 'login' | 'registro'
+  const [modo, setModo] = useState('login'); 
 
   return (
     <div className="auth">

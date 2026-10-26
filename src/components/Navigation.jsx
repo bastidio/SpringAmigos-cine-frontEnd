@@ -4,18 +4,18 @@ import logo from '../assets/lumiere-logo.svg';
 import logotipo from '../assets/lumiere-logotipo.png';
 import './Navigation.css';
 
-// Barra de arriba. App la renderiza afuera de Routes, por eso aparece en
-// todas las vistas. Para las palabras usa Link; para los botones, useNavigate.
-// "perfil" es el menu desplegable de Mi Perfil (lo arma App); va en el lugar
-// donde antes estaba "Cerrar sesion", que ahora esta adentro del perfil.
-// "carrito" es el menu desplegable del carrito (tambien lo arma App).
+
+
+
+
+
 const Navigation = ({ haySesion, esAdmin, perfil, carrito }) => {
-  // useLocation devuelve un objeto con la ubicacion actual; pathname es la
-  // ruta. Sirve para pintar de otro color el link de la vista en la que estoy.
+  
+  
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Solo importa en celular: si el menu hamburguesa esta desplegado.
+  
   const [menuAbierto, setMenuAbierto] = useState(false);
 
   const handleIngresar = () => {
@@ -26,7 +26,7 @@ const Navigation = ({ haySesion, esAdmin, perfil, carrito }) => {
     setMenuAbierto(!menuAbierto);
   };
 
-  // Al tocar un link o un boton del menu, se cierra.
+  
   const cerrarMenu = () => {
     setMenuAbierto(false);
   };
@@ -83,7 +83,7 @@ const Navigation = ({ haySesion, esAdmin, perfil, carrito }) => {
             >
               Kiosco
             </Link>
-            {/* Solo los admin ven el acceso al panel. */}
+            {}
             {esAdmin && (
               <Link to="/admin/dashboard" className="nav_link">
                 Panel admin

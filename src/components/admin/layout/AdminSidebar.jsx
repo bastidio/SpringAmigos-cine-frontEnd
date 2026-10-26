@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import logo from '../../../assets/lumiere-logo.svg';
 import logotipo from '../../../assets/lumiere-logotipo.png';
 
-// Cada link con su icono (trazos de 24x24, sin relleno: toman el color del texto).
+
 const ENLACES = [
   {
     ruta: '/admin',
@@ -73,8 +73,8 @@ const ENLACES = [
 const AdminSidebar = () => {
   const location = useLocation();
 
-  // Marca el link de la seccion en la que estoy. El Dashboard es /admin y
-  // tambien /admin/dashboard (a donde manda el login y el nav del cliente).
+  
+  
   const estaActivo = (ruta) => {
     if (ruta === '/admin') {
       return location.pathname === '/admin' || location.pathname === '/admin/dashboard';

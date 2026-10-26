@@ -1,5 +1,5 @@
-// Componente "tonto": un dato del usuario con su etiqueta. El input es
-// readOnly: se puede seleccionar y copiar, pero no editar.
+
+
 const CampoLectura = ({ id, etiqueta, valor }) => {
   return (
     <div className="flex flex-col gap-1.5">

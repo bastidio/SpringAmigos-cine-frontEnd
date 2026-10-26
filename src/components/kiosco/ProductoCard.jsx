@@ -14,14 +14,14 @@ const ProductoCard = ({
   onAgregar,
   onCambiarCantidad,
 }) => {
-  // Si la URL no carga (onError), se muestra el placeholder en su lugar.
+  
   const [imagenFallo, setImagenFallo] = useState(false);
 
-  // El back guarda el descuento como porcentaje (0 a 100).
+  
   const tieneDescuento = descuento > 0;
   const precioFinal = tieneDescuento ? precio - (precio * descuento) / 100 : precio;
 
-  // Formato de precio argentino, con dos decimales como maximo (igual que el back).
+  
   const formato = { maximumFractionDigits: 2 };
 
   return (

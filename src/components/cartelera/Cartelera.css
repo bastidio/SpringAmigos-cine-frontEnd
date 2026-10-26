@@ -1,6 +1,6 @@
-/* Estilos de la vista Cartelera: bloque destacado, filtros y grilla. */
 
-/* ---------- Pelicula destacada (bloque de arriba) ---------- */
+
+
 
 .destacada {
   position: relative;
@@ -74,7 +74,7 @@
   line-height: 1.625;
   color: var(--texto-suave);
   margin-bottom: 24px;
-  /* Corta la sinopsis en 3 renglones con puntos suspensivos. */
+  
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
@@ -87,7 +87,7 @@
   gap: 12px;
 }
 
-/* ---------- Encabezado de la grilla y filtros ---------- */
+
 
 .cartelera_contenido {
   max-width: 1280px;
@@ -142,7 +142,7 @@
   color: var(--texto-suave);
 }
 
-/* ---------- Grilla de peliculas ---------- */
+
 
 .cartelera_grid {
   display: grid;
@@ -210,7 +210,7 @@
   display: flex;
 }
 
-/* Velo oscuro que aparece desde abajo al pasar el mouse. */
+
 .pelicula-card_marco::after {
   content: '';
   position: absolute;

@@ -1,10 +1,10 @@
-// Componente "tonto": un item del carrito. onQuitar y onCambiarCantidad son
-// opcionales: el checkout reusa este componente solo para mostrar, sin botones.
+
+
 const claseBotonCantidad =
   'flex h-5 w-5 cursor-pointer items-center justify-center rounded border border-solid border-white/15 bg-transparent p-0 text-xs leading-none text-white transition-colors hover:bg-violet-500/10 disabled:cursor-not-allowed disabled:opacity-40';
 
 const CarritoItem = ({ item, formatearMoneda, onQuitar, onCambiarCantidad, ocupado = false }) => {
-  // La butaca es unitaria en el back: solo los productos cambian de cantidad.
+  
   const esProducto = item.tipo === 'PRODUCTO';
 
   return (

@@ -3,7 +3,7 @@ import logo from '../assets/lumiere-logo.svg';
 import logotipo from '../assets/lumiere-logotipo.png';
 import './Footer.css';
 
-// Pie de pagina. App lo renderiza afuera de Routes (igual que Navigation), asi aparece en todas las vistas del cliente.
+
 const Footer = () => {
 
   return (

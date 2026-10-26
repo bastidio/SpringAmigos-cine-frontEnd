@@ -1,5 +1,5 @@
-// Componente "tonto": el resumen con la cantidad, el total y el boton para
-// pagar. No navega solo: avisa al padre con onIrACheckout.
+
+
 const PanelResumenCarrito = ({ cantidadArticulos, total, formatearMoneda, onIrACheckout, ocupado = false }) => {
   return (
     <aside className="flex flex-col gap-3 rounded-xl border border-solid border-white/10 bg-[#16101f] p-4 text-white">

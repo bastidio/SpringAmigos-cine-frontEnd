@@ -1,12 +1,12 @@
-/* Estilos de la vista Detalle de pelicula: ficha y funciones por dia. */
 
-/* ---------- Detalle de una pelicula ---------- */
+
+
 
 .detalle {
   position: relative;
 }
 
-/* Franja de arriba: el poster de fondo, fundido hacia el color de la pagina. */
+
 .detalle_fondo {
   position: relative;
   height: 320px;
@@ -27,7 +27,7 @@
   background: linear-gradient(to bottom, rgba(11, 7, 16, 0.3) 0%, rgba(11, 7, 16, 1) 100%);
 }
 
-/* Link para volver, apoyado arriba a la izquierda sobre la franja. */
+
 .detalle_volver {
   position: absolute;
   top: 20px;
@@ -155,7 +155,7 @@
   color: var(--texto-suave);
 }
 
-/* Linea fina dorada que separa la ficha de las funciones. */
+
 .detalle_separador {
   height: 1px;
   border: none;
@@ -204,7 +204,7 @@
   padding-bottom: 64px;
 }
 
-/* ---------- Tarjeta de una funcion ---------- */
+
 
 .funcion-card {
   display: block;

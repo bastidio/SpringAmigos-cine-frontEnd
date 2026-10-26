@@ -1,6 +1,6 @@
-// Componente "tonto": la fila de botones para elegir una categoria.
-// La categoria elegida vive en el estado del padre (ProductoList) y llega
-// por props; al hacer click en un boton se le avisa al padre con cambiar.
+
+
+
 const CategoriaTabs = ({ categorias, seleccionada, cambiar }) => {
   return (
     <div className="kiosco_tabs">

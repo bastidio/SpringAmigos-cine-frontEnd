@@ -13,9 +13,9 @@ const elegirImagen = (producto) => {
   return producto.imagenes?.length > 0 ? producto.imagenes[0].url : null;
 };
 
-// Componente padre del kiosco: es el unico que tiene estado y logica.
-// Le pide los productos al backend, los guarda en un estado local y se los
-// pasa a los hijos por props.
+
+
+
 const ProductoList = ({ token }) => {
   const { refrescarCantidad, version } = useCarrito();
   const [productos, setProductos] = useState([]);
@@ -103,9 +103,9 @@ const ProductoList = ({ token }) => {
     return () => controller.abort();
   }, [token, version]);
 
-  // Efecto secundario: pedirle los productos al back. Array de dependencias
-  // vacio: se ejecuta una sola vez, cuando el componente se monta.
-  // GET /productos es publico y ya devuelve solo los productos activos.
+  
+  
+  
   useEffect(() => {
     fetch('/productos')
       .then((response) => {
@@ -126,7 +126,7 @@ const ProductoList = ({ token }) => {
       });
   }, []);
 
-  // Primero "por las malas": cargando y error.
+  
   if (cargando) {
     return <p className="pagina_mensaje">Cargando kiosco...</p>;
   }
@@ -135,12 +135,12 @@ const ProductoList = ({ token }) => {
     return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
   }
 
-  // Las categorias salen de los productos que mando el back.
-  // Set no admite repetidos, asi cada categoria aparece una sola vez.
+  
+  
   const categorias = [...new Set(productos.map((p) => p.categoria.nombre))];
 
-  // Se filtra sobre lo que ya esta guardado: no hace falta volver a pedirle
-  // nada al back. filter devuelve un array nuevo, el estado no se toca.
+  
+  
   const visibles = productos.filter((p) => {
     return categoria === 'Todo' || p.categoria.nombre === categoria;
   });

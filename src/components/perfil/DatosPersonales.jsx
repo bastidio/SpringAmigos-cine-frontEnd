@@ -1,6 +1,6 @@
 import CampoLectura from './CampoLectura';
 
-// Componente "tonto": tarjeta con los datos personales, solo lectura.
+
 const DatosPersonales = ({ nombre, email, telefono }) => {
   return (
     <section className="flex flex-col gap-4 rounded-xl border border-solid border-white/10 bg-[#16101f] p-6">

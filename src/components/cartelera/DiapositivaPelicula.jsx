@@ -1,9 +1,9 @@
-// Componente "tonto": una diapositiva del carrusel de la cartelera. Muestra
-// una pelicula con su poster de fondo. Todas las diapositivas estan apiladas;
-// la activa se ve (opacity-100) y las otras quedan transparentes. Si esta
-// activa o no, se lo dice el padre por props.
+
+
+
+
 const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) => {
-  // Los botones de las diapositivas ocultas no se alcanzan con Tab.
+  
   const tabIndex = activa ? 0 : -1;
 
   return (
@@ -16,8 +16,8 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
       }`}
     >
       {pelicula.poster_url && (
-        // draggable={false}: si no, al arrastrar el carrusel el navegador
-        // "levanta" la imagen en vez de mover las peliculas.
+        
+        
         <img
           src={pelicula.poster_url}
           alt=""
@@ -38,7 +38,7 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
           </h2>
 
           <p className="mb-4 flex flex-wrap items-center gap-3 text-sm text-[var(--texto-suave)]">
-            {/* Clasificacion por edad, en dorado. */}
+            {}
             <span className="rounded border border-solid border-[var(--dorado)]/30 bg-[var(--dorado)]/12 px-2.5 py-0.5 text-[11.2px] font-bold uppercase tracking-wider text-[var(--dorado)]">
               {pelicula.clasificacion}
             </span>

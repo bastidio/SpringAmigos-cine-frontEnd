@@ -2,17 +2,17 @@ import CarritoBoton from './CarritoBoton';
 import CarritoLayout from './CarritoLayout';
 import CarritoDetalle from './CarritoDetalle';
 
-// Componente del menu desplegable del carrito. A diferencia del perfil, si
-// esta abierto o cerrado lo decide App (el carrito se puede abrir desde otras
-// vistas), asi que aca solo se avisa con callbacks. CarritoDetalle se monta
-// recien cuando se abre el menu (y se desmonta al cerrarlo).
-// Todo con eventos de React: no se escucha nada en document ni se lee el DOM
-// con refs.
+
+
+
+
+
+
 const CarritoMenu = ({ token, abierto, cantidad, onAlternar, onCerrar, onNavegar }) => {
-  // El foco se fue a otro elemento fuera del contenedor (por ejemplo, con Tab).
-  // relatedTarget es a donde fue el foco. Si es null no se cierra: pasa cuando
-  // un boton se deshabilita o desaparece (al tocar +, - o quitar), y el click
-  // afuera ya lo resuelve el fondo transparente de abajo.
+  
+  
+  
+  
   const cerrarSiSaleElFoco = (evento) => {
     const destino = evento.relatedTarget;
     if (abierto && destino !== null && !evento.currentTarget.contains(destino)) {
@@ -20,7 +20,7 @@ const CarritoMenu = ({ token, abierto, cantidad, onAlternar, onCerrar, onNavegar
     }
   };
 
-  // Escape: funciona porque al abrir, el foco queda adentro del panel.
+  
   const cerrarConEscape = (evento) => {
     if (abierto && evento.key === 'Escape') {
       onCerrar();
@@ -28,15 +28,15 @@ const CarritoMenu = ({ token, abierto, cantidad, onAlternar, onCerrar, onNavegar
   };
 
   return (
-    // stopPropagation: en celular el icono esta dentro del menu hamburguesa,
-    // que se cierra con cualquier click adentro. Asi no se cierra al abrir el carrito.
+    
+    
     <div
       className="relative"
       onClick={(evento) => evento.stopPropagation()}
       onBlur={cerrarSiSaleElFoco}
       onKeyDown={cerrarConEscape}
     >
-      {/* z-50: el icono queda por encima del fondo, para poder cerrar tocandolo. */}
+      {}
       <div className="relative z-50">
         <CarritoBoton abierto={abierto} cantidad={cantidad} onClick={onAlternar} />
       </div>

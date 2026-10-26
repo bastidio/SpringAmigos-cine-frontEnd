@@ -1,7 +1,7 @@
 
 
 const AlertaStockWidget = ({ productos }) => {
-  // Filtramos los que tienen menos de 20 de stock
+  
   const bajoStock = productos.filter(p => p.stock < 20);
 
   return (

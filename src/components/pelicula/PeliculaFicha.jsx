@@ -1,5 +1,5 @@
-// Componente "tonto": la ficha de una pelicula (poster y datos).
-// Recibe el objeto pelicula por props y lo muestra.
+
+
 const PeliculaFicha = ({ pelicula }) => {
   return (
     <div className="detalle_ficha">

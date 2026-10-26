@@ -30,7 +30,7 @@ const KioscoTable = ({ productos, onEditar, onActualizarStock, onCambiarEstado }
               <tr key={p.id}>
                 <td>{p.id}</td>
                 
-                {/* Columna de Imagen separada, igual que en películas */}
+                {}
                 <td>
                   {imagenUrl ? (
                     <img src={imagenUrl} alt={p.nombre} className="img-miniatura-tabla" />
@@ -41,7 +41,7 @@ const KioscoTable = ({ productos, onEditar, onActualizarStock, onCambiarEstado }
                   )}
                 </td>
 
-                {/* Columna de Nombre separada */}
+                {}
                 <td>
                   <div className="info-texto">
                     <span className="titulo">{p.nombre}</span>

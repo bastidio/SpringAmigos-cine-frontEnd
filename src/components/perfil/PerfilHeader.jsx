@@ -1,8 +1,8 @@
 import Avatar from './Avatar';
 import Badge from './Badge';
 
-// Componente "tonto": tarjeta de arriba con el avatar, el nombre, el email
-// y la etiqueta de entradas activas. Todo sale de las props.
+
+
 const PerfilHeader = ({ nombre, email, fotoPerfil, entradasActivas }) => {
   const textoEntradas = entradasActivas === 1 ? 'ENTRADA ACTIVA' : 'ENTRADAS ACTIVAS';
 

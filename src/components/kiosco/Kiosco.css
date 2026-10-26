@@ -1,4 +1,4 @@
-/* Estilos de la vista Kiosco: categorias y grilla de productos. */
+
 
 .kiosco {
   max-width: 1152px;
@@ -23,7 +23,7 @@
   margin: 24px;
 }
 
-/* ---------- Categorias ---------- */
+
 
 .kiosco_tabs {
   display: flex;
@@ -58,7 +58,7 @@
   outline-offset: 2px;
 }
 
-/* ---------- Grilla de productos ---------- */
+
 
 .kiosco_grid {
   display: grid;

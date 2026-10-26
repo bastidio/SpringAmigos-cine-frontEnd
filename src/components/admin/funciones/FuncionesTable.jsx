@@ -30,7 +30,7 @@ const FuncionesTable = ({ funciones, onEditar, onEliminar }) => {
               <td>{f.id}</td>
               <td><strong>{f.pelicula?.titulo || 'N/A'}</strong></td>
               <td>{f.sala?.nombre || 'N/A'}</td>
-              {/* Reemplazamos la T por un espacio para que se lea mejor */}
+              {}
               <td>{f.horario ? f.horario.replace('T', ' ') : ''}</td>
               <td>{f.idioma}</td>
               <td>{f.formato}</td>

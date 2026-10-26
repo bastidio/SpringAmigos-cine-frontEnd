@@ -15,15 +15,15 @@ const moneda = (valor) =>
 const claseAviso = 'm-0 rounded-xl border border-solid px-4 py-3 text-sm';
 const claseError = `${claseAviso} border-red-400/40 bg-red-400/10 text-red-300`;
 
-// Cambios que el usuario ya hizo pero el back todavia no confirmo.
-// cantidades: { [itemId]: cantidad nueva } (0 = quitar el item).
+
+
 const SIN_CAMBIOS = { vaciar: false, cantidades: {} };
 
 const hayCambios = (cambios) => cambios.vaciar || Object.keys(cambios.cantidades).length > 0;
 
-// ACTUALIZACION OPTIMISTA: lo que se ve es el carrito del back con los cambios
-// pendientes ya aplicados. Asi la pantalla cambia al instante, sin esperar la
-// respuesta. El total es estimado hasta que el back conteste.
+
+
+
 const aplicarCambios = (carrito, cambios) => {
   if (carrito === null || !hayCambios(cambios)) return carrito;
   if (cambios.vaciar) return { ...carrito, items: [], total: 0 };
@@ -40,8 +40,8 @@ const aplicarCambios = (carrito, cambios) => {
   return { ...carrito, items, total };
 };
 
-// DELETE que no falla si el item ya no estaba (404): puede pasar si un pedido
-// se cancelo pero el back llego a procesarlo, y despues se manda de nuevo.
+
+
 const borrar = async (url, opciones) => {
   try {
     await apiFetch(url, { ...opciones, method: 'DELETE' });
@@ -50,25 +50,25 @@ const borrar = async (url, opciones) => {
   }
 };
 
-// Componente padre del carrito: es el unico que tiene estado y logica. Le
-// pide el carrito al back, maneja carrito/cargando/error y se lo pasa a los
-// hijos por props. Para cambiar de vista avisa con onNavegar (lo decide App).
+
+
+
 const CarritoDetalle = ({ token, onNavegar }) => {
-  // Para avisarle al nav que cambio el carrito (el numero del icono).
+  
   const { refrescarCantidad } = useCarrito();
-  // El carrito tal como lo mando el back la ultima vez.
+  
   const [carrito, setCarrito] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-  // "Reintentar" suma 1: el efecto de carga depende de este numero y vuelve a correr.
+  
   const [intento, setIntento] = useState(0);
   const [cambios, setCambios] = useState(SIN_CAMBIOS);
-  // Error de un cambio: se muestra arriba de la lista sin tapar el carrito.
+  
   const [errorAccion, setErrorAccion] = useState(null);
 
-  // MONTAJE: CarritoMenu monta este componente cada vez que se abre el
-  // desplegable, asi que el carrito se pide fresco en cada apertura.
-  // ACTUALIZACION: si cambia el token o se toca "Reintentar", se pide de nuevo.
+  
+  
+  
   useEffect(() => {
     const controller = new AbortController();
 
@@ -78,26 +78,26 @@ const CarritoDetalle = ({ token, onNavegar }) => {
         setCarrito(data);
         setError(null);
       } catch (err) {
-        // Si se cancelo por el desmontaje, no es un error real: se ignora.
+        
         if (err.name === 'AbortError') return;
         setError(err.message || 'No se pudo cargar el carrito.');
       } finally {
-        // Si se cancelo, el componente ya no esta: no se toca su estado.
+        
         if (!controller.signal.aborted) setCargando(false);
       }
     };
 
     cargarCarrito();
 
-    // DESMONTAJE: si se cierra el menu antes de la respuesta, se cancela.
+    
     return () => controller.abort();
   }, [token, intento]);
 
-  // ACTUALIZACION: cada vez que el usuario cambia algo, se le mandan al back
-  // todos los cambios pendientes y despues se pide el carrito para quedar
-  // igual que el back. Si llega otro click antes de terminar, la limpieza
-  // cancela este envio y el efecto vuelve a correr con los cambios al dia
-  // (las cantidades son absolutas, asi que mandarlas de nuevo no duplica nada).
+  
+  
+  
+  
+  
   useEffect(() => {
     if (!hayCambios(cambios)) return;
 
@@ -125,14 +125,14 @@ const CarritoDetalle = ({ token, onNavegar }) => {
         setErrorAccion(null);
       } catch (err) {
         if (err.name === 'AbortError') return;
-        // Fallo: se avisa y, al pedir el carrito abajo, la pantalla vuelve a
-        // mostrar lo que de verdad tiene el back.
+        
+        
         setErrorAccion(err.message);
       }
 
       try {
         setCarrito(await apiFetch('/api/carritos', { token, signal }));
-        // El back ya tiene los cambios: se actualiza el numero del nav.
+        
         refrescarCantidad();
       } catch (err) {
         if (err.name === 'AbortError') return;
@@ -144,7 +144,7 @@ const CarritoDetalle = ({ token, onNavegar }) => {
 
     enviarCambios();
 
-    // DESMONTAJE (o un click nuevo): se cancela el envio en curso.
+    
     return () => controller.abort();
   }, [cambios, token, refrescarCantidad]);
 
@@ -189,16 +189,16 @@ const CarritoDetalle = ({ token, onNavegar }) => {
     );
   }
 
-  // Lo que se muestra: el carrito del back + los cambios que todavia viajan.
+  
   const visible = aplicarCambios(carrito, cambios);
   const items = visible?.items ?? [];
   const cantidadTotal = items.reduce((total, item) => total + item.cantidad, 0);
-  // Mientras haya cambios sin confirmar no se puede ir a pagar.
+  
   const guardando = hayCambios(cambios);
 
   return (
     <>
-      {/* Arriba: a la izquierda el tacho (vacia el carrito), a la derecha la cantidad. */}
+      {}
       {cantidadTotal > 0 && (
         <div className="flex items-center justify-between gap-2">
           <BotonVaciar onVaciar={vaciarCarrito} />

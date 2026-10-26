@@ -1,4 +1,4 @@
-// Componente "tonto": circulo que gira mientras se espera la respuesta del back.
+
 const Spinner = () => {
   return (
     <div className="flex justify-center py-16" role="status" aria-label="Cargando perfil">

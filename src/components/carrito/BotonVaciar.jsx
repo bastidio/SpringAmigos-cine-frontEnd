@@ -1,5 +1,5 @@
-// Componente "tonto": el tacho de basura que vacia el carrito. No sabe que
-// hace: solo llama a onVaciar, que le pasa CarritoDetalle.
+
+
 const BotonVaciar = ({ onVaciar, ocupado = false }) => {
   return (
     <button
@@ -10,7 +10,7 @@ const BotonVaciar = ({ onVaciar, ocupado = false }) => {
       title="Vaciar carrito"
       className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-solid border-red-400/40 bg-transparent p-0 text-red-400 transition-colors hover:bg-red-400/10 disabled:cursor-not-allowed disabled:opacity-40"
     >
-      {/* Icono de tacho de basura */}
+      {}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"

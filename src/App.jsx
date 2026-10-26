@@ -1,4 +1,4 @@
-// tema.css va primero: asi los estilos de cada componente pueden pisarlo.
+
 import './tema.css';
 import { useCallback, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
@@ -25,13 +25,13 @@ import AdminKioscoView from './views/admin/AdminKioscoView';
 import AdminOrdenesView from './views/admin/AdminOrdenesView';
 
 
-// Averigua el rol sin tocar el back: ni el token ni GET /users/me traen el
-// rol, asi que se le pide algo que solo puede ver un admin. GET /ordenes
-// (todas las ordenes) esta restringido a ADMIN en el SecurityConfig:
-//   200 -> es ADMIN
-//   403 -> esta logueado pero no es admin (USER)
-//   401 -> el token vencio o no sirve: hay que volver al login
-// Ojo: si algun dia cambian los permisos de GET /ordenes, esto hay que revisarlo.
+
+
+
+
+
+
+
 const obtenerRol = async (token, signal) => {
   const res = await fetch('/ordenes', {
     headers: { Authorization: `Bearer ${token}` },
@@ -52,23 +52,23 @@ const obtenerRol = async (token, signal) => {
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
-  // null = todavia no se sabe (se esta consultando); '' = sin rol.
+  
   const [rol, setRol] = useState(null);
-  // Si el desplegable del carrito esta abierto. Vive aca (y no en el menu)
-  // porque el carrito se puede abrir desde otras vistas, no solo del nav.
+  
+  
   const [carritoAbierto, setCarritoAbierto] = useState(false);
-  // Cuantos productos hay en el carrito (el numero del icono del nav).
+  
   const [cantidadCarrito, setCantidadCarrito] = useState(0);
   const navigate = useNavigate();
-  const location = useLocation(); // Agregado para saber en qué URL estamos
+  const location = useLocation(); 
 
-  // Suma 1 cada vez que alguien avisa que el carrito cambio (ver CarritoContext). Como el efecto de abajo depende de este numero, avisar alcanza para que se vuelva a pedir la cantidad.
+  
   const [avisosCarrito, setAvisosCarrito] = useState(0);
   const refrescarCantidad = useCallback(() => {
     setAvisosCarrito((avisos) => avisos + 1);
   }, []);
 
-  // MONTAJE / ACTUALIZACION: al abrir la app, al loguearse, al cambiar de pantalla y cuando alguien avisa, se pide el carrito y se cuentan las unidades (cada butaca cuenta 1). Cambiar de pantalla cubre lo que no avisa nadie: el carrito que vence a los 5 minutos. Si falla, el numero queda como estaba: el icono nunca rompe la pagina.
+  
   useEffect(() => {
     if (token === '') return;
 
@@ -81,16 +81,16 @@ function App() {
         if (err.name !== 'AbortError') console.error('No se pudo actualizar el contador del carrito', err);
       });
 
-    // DESMONTAJE (o un aviso nuevo): se cancela el pedido en curso.
+    
     return () => controller.abort();
   }, [token, location.pathname, avisosCarrito]);
 
-  // Sin sesion el carrito no existe: se muestra 0 sin esperar a ningun pedido.
+  
   const cantidadVisible = token === '' ? 0 : cantidadCarrito;
 
   const esAdmin = rol === 'ADMIN';
 
-  // Al cerrar sesion se borran el token y el rol.
+  
   const cerrarSesion = (destino = '/') => {
     setToken('');
     setRol(null);
@@ -99,9 +99,9 @@ function App() {
     navigate(destino);
   };
 
-  // Si hay que preguntar el rol y el back dice 401, la sesion no sirve mas:
-  // se borra todo y se manda al login. Cualquier otro error deja al usuario
-  // como cliente comun (sin acceso al admin).
+  
+  
+  
   const manejarErrorRol = (err) => {
     if (err.message === 'SESION_VENCIDA') {
       cerrarSesion('/login');
@@ -111,7 +111,7 @@ function App() {
     setRol('');
   };
 
-  // Despues del login se pide el rol y, segun cual sea, se elige a donde ir.
+  
   const iniciarSesion = async (nuevoToken) => {
     setToken(nuevoToken);
     localStorage.setItem('token', nuevoToken);
@@ -126,8 +126,8 @@ function App() {
     }
   };
 
-  // MONTAJE: si al abrir la app ya habia un token guardado (por ejemplo,
-  // despues de recargar la pagina), se pregunta el rol una sola vez.
+  
+  
   useEffect(() => {
     if (token === '') return;
 
@@ -138,16 +138,16 @@ function App() {
         if (err.name !== 'AbortError') manejarErrorRol(err);
       });
 
-    // DESMONTAJE: si App se desmonta antes de la respuesta, se cancela.
+    
     return () => controller.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, []);
 
   const irAEntradas = () => {
     navigate('/mis-entradas');
   };
 
-  // Icono del carrito: sin sesion va al login; con sesion abre o cierra el desplegable.
+  
   const alternarCarrito = () => {
     if (token === '') {
       navigate('/login');
@@ -160,18 +160,18 @@ function App() {
     setCarritoAbierto(false);
   };
 
-  // Desde el carrito (ir a pagar, ver cartelera): se cierra y se navega.
+  
   const navegarDesdeCarrito = (destino) => {
     setCarritoAbierto(false);
     navigate(destino);
   };
 
-  // Verificamos si estamos en una ruta de administrador
+  
   const esRutaAdmin = location.pathname.startsWith('/admin');
 
-  // Que mostrar en /admin/*: sin sesion, al login; con sesion pero todavia
-  // sin saber el rol, un aviso; sin rol ADMIN (por ejemplo, alguien que
-  // escribio la URL a mano), al inicio.
+  
+  
+  
   let rutaAdmin;
   if (token === '') {
     rutaAdmin = <Navigate to="/login" replace />;
@@ -185,7 +185,7 @@ function App() {
 
   return (
     <CarritoContext.Provider value={{ refrescarCantidad, version: avisosCarrito }}>
-      {/* Solo renderiza la barra del cliente si NO estamos en el admin */}
+      {}
       {!esRutaAdmin && (
         <Navigation
           haySesion={token !== ''}
@@ -211,7 +211,7 @@ function App() {
         <Route path="/kiosco" element={<Kiosco token={token} />} />
         <Route path="/login" element={<Login onAutenticado={iniciarSesion} />} />
 
-        {/* Carrito, checkout y entradas son del usuario logueado: sin token, al login. */}
+        {}
         <Route
           path="/carrito"
           element={

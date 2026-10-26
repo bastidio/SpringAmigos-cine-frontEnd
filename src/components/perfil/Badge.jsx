@@ -1,4 +1,4 @@
-// Componente "tonto": etiqueta chica con borde. La variante elige el color.
+
 const COLORES = {
   violeta: 'border-violet-500 text-violet-400',
   dorado: 'border-amber-400 text-amber-300',

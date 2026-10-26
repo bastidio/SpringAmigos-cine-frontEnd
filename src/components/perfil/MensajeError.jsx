@@ -1,4 +1,4 @@
-// Componente "tonto": muestra el texto de error que le pasa la vista.
+
 const MensajeError = ({ mensaje }) => {
   return (
     <p

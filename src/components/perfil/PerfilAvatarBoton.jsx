@@ -1,9 +1,9 @@
 import Avatar from './Avatar';
 
-// Componente "tonto": el icono redondo del nav que abre y cierra el menu del
-// perfil. No sabe si el menu esta abierto: se lo dice el padre por props.
-// "usuario" ({ nombre, fotoPerfil }) es null mientras no llegaron los datos:
-// hasta entonces se ve el icono de usuario de siempre.
+
+
+
+
 const PerfilAvatarBoton = ({ abierto, usuario, onClick }) => {
   return (
     <button
@@ -21,10 +21,10 @@ const PerfilAvatarBoton = ({ abierto, usuario, onClick }) => {
       }`}
     >
       {usuario !== null ? (
-        // 32px adentro del boton de 38px: queda un aro de 3px con el borde.
+        
         <Avatar fotoPerfil={usuario.fotoPerfil} nombre={usuario.nombre} tamano={32} />
       ) : (
-        /* Icono de usuario */
+        
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

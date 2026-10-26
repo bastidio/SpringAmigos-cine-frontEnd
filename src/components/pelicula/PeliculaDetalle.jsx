@@ -4,19 +4,19 @@ import PeliculaFicha from './PeliculaFicha';
 import FuncionCard from './FuncionCard';
 import './Detalle.css';
 
-// Componente padre del detalle: tiene el estado y la logica. Le pide al
-// backend la pelicula y las funciones, y se las pasa a los hijos por props.
+
+
 const PeliculaDetalle = () => {
-  // useParams devuelve un objeto con los parametros de la URL. En App la ruta
-  // es "/pelicula/:id", asi que en "/pelicula/3" el id vale "3".
+  
+  
   const { id } = useParams();
 
   const [pelicula, setPelicula] = useState(null);
   const [funciones, setFunciones] = useState([]);
   const [error, setError] = useState(null);
 
-  // Efecto secundario: pedirle los datos al back. En el array de dependencias
-  // va id: se ejecuta al montar el componente y cada vez que cambie el id.
+  
+  
   useEffect(() => {
     fetch(`/peliculas/${id}`)
       .then((response) => {
@@ -50,7 +50,7 @@ const PeliculaDetalle = () => {
       });
   }, [id]);
 
-  // Primero "por las malas": error y cargando.
+  
   if (error !== null) {
     return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
   }
@@ -59,15 +59,15 @@ const PeliculaDetalle = () => {
     return <p className="pagina_mensaje">Cargando película...</p>;
   }
 
-  // De todas las funciones, me quedo con las de esta pelicula y las ordeno
-  // por horario. filter devuelve un array nuevo, asi que sort ordena esa
-  // copia y el estado funciones no se toca.
+  
+  
+  
   const funcionesDeLaPelicula = funciones
     .filter((funcion) => funcion.pelicula.id === pelicula.id)
     .sort((a, b) => (a.horario > b.horario ? 1 : -1));
 
-  // Dias que tienen funciones, sin repetir.
-  // El horario llega como "2026-10-21T14:30:00"; slice(0, 10) es "2026-10-21".
+  
+  
   const dias = [...new Set(funcionesDeLaPelicula.map((funcion) => funcion.horario.slice(0, 10)))];
 
   return (
@@ -76,7 +76,7 @@ const PeliculaDetalle = () => {
         {pelicula.poster_url && <img src={pelicula.poster_url} alt="" />}
       </div>
 
-      {/* Es una palabra y no un boton: para volver se usa Link. */}
+      {}
       <Link to="/" className="detalle_volver">
         ← Volver a la cartelera
       </Link>
@@ -93,7 +93,7 @@ const PeliculaDetalle = () => {
         )}
 
         {dias.map((dia) => {
-          // De las funciones de la pelicula, las de este dia.
+          
           const funcionesDelDia = funcionesDeLaPelicula.filter(
             (funcion) => funcion.horario.slice(0, 10) === dia,
           );

@@ -21,7 +21,7 @@ const CheckoutDetalle = () => {
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
   const navigate = useNavigate();
-  // Para avisarle al nav que cambio el carrito (el numero del icono).
+  
   const { refrescarCantidad } = useCarrito();
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const CheckoutDetalle = () => {
         method: 'POST',
       });
       setOrden(compra);
-      // La compra vacia el carrito: el numero del nav vuelve a 0.
+      
       refrescarCantidad();
     } catch (err) {
       setError(
@@ -148,4 +148,4 @@ const CheckoutDetalle = () => {
   );
 };
 
-export default CheckoutDetalle;
+export default CheckoutDetalle;

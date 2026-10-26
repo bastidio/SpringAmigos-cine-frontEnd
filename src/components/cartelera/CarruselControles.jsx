@@ -1,10 +1,10 @@
-// Componente "tonto": los controles del carrusel. No sabe cual es la
-// siguiente pelicula: solo avisa al padre con callbacks.
-// - Flechas doradas: estan escondidas y aparecen cuando el mouse llega al borde
-//   izquierdo o derecho (una franja invisible con "group"; al pasar por encima,
-//   group-hover muestra la flecha). Todo con clases de Tailwind, sin estado.
-//   En celular no hay mouse: no se muestran y se usa el dedo para arrastrar.
-// - Puntitos dorados abajo, uno por pelicula.
+
+
+
+
+
+
+
 const claseBorde = 'group absolute inset-y-0 z-20 flex items-center max-md:hidden';
 
 const claseFlecha =
@@ -43,7 +43,7 @@ const CarruselControles = ({ cantidad, indice, onAnterior, onSiguiente, onIrA })
         </button>
       </div>
 
-      {/* El activo es mas largo y dorado lleno; los otros, dorado transparente. */}
+      {}
       <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
         {Array.from({ length: cantidad }, (_, posicion) => (
           <button

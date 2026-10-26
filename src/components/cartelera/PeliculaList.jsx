@@ -5,9 +5,9 @@ import PeliculaCard from './PeliculaCard';
 import Filtro from './Filtro';
 import './Cartelera.css';
 
-// Componente padre de la cartelera: es el unico que tiene estado y logica.
-// Le pide las peliculas al backend, las guarda en un estado local y se las
-// pasa a los hijos por props.
+
+
+
 const PeliculaList = () => {
   const [peliculas, setPeliculas] = useState([]);
   const [clasificacion, setClasificacion] = useState('Todos');
@@ -17,15 +17,15 @@ const PeliculaList = () => {
 
   const navigate = useNavigate();
 
-  // Pedirle datos al back es un efecto secundario: va adentro de un useEffect.
-  // Array de dependencias vacio: se ejecuta una sola vez, cuando el componente
-  // se monta. GET /peliculas es publico (no necesita token); la ruta la reenvia
-  // el proxy de Vite al backend (ver vite.config.js).
+  
+  
+  
+  
   useEffect(() => {
     fetch('/peliculas')
       .then((response) => {
-        // fetch solo rechaza la promesa si falla la conexion. Si el back
-        // responde con un error (404, 500...), hay que mandarlo al catch a mano.
+        
+        
         if (!response.ok) {
           throw new Error('Error ' + response.status);
         }
@@ -43,13 +43,13 @@ const PeliculaList = () => {
       });
   }, []);
 
-  // El click ocurre en la card (hijo), pero la logica vive aca (padre).
-  // Como es un boton, para cambiar de vista se usa useNavigate.
+  
+  
   const verDetalle = (id) => {
     navigate(`/pelicula/${id}`);
   };
 
-  // Primero "por las malas": cargando, error, lista vacia.
+  
   if (cargando) {
     return <p className="pagina_mensaje">Cargando cartelera...</p>;
   }
@@ -62,12 +62,12 @@ const PeliculaList = () => {
     return <p className="pagina_mensaje">Todavía no hay películas en cartelera.</p>;
   }
 
-  // Opciones de los filtros: salen de las peliculas que mando el back.
-  // Set no admite repetidos, asi cada clasificacion/idioma aparece una sola vez.
+  
+  
   const clasificaciones = [...new Set(peliculas.map((p) => p.clasificacion))];
   const idiomas = [...new Set(peliculas.map((p) => p.idioma))];
 
-  // filter devuelve un array nuevo: el estado peliculas no se toca.
+  
   const visibles = peliculas.filter((p) => {
     if (clasificacion !== 'Todos' && p.clasificacion !== clasificacion) {
       return false;
@@ -80,7 +80,7 @@ const PeliculaList = () => {
 
   return (
     <>
-      {/* Carrusel con las primeras 5 peliculas (antes era solo la primera). */}
+      {}
       <CarruselDestacadas peliculas={peliculas.slice(0, 5)} verDetalle={verDetalle} />
 
       <div className="cartelera_contenido">

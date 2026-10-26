@@ -35,7 +35,7 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
     Number.isInteger(filas) && filas >= 1 && filas <= MAX_FILAS &&
     Number.isInteger(porFila) && porFila >= 1 && porFila <= MAX_POR_FILA;
 
-  // La capacidad de la sala es la cantidad de butacas que va a tener el mapa.
+  
   const capacidad = valido ? filas * porFila : 0;
   const nuevas = valido ? butacasFaltantes(asientosDeSala, filas, porFila) : [];
   const sobrantes = valido ? butacasSobrantes(asientosDeSala, filas, porFila) : [];

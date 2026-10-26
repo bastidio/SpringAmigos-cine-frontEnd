@@ -2,7 +2,7 @@
    formas que la parte de usuario (tema.css): fondo oscuro, tarjetas con borde
    fino, titulos en Playfair, cifras en dorado y violeta como color de accion. */
 
-/* ---------- Variables ---------- */
+
 .admin-container {
   --admin-bg: var(--fondo);
   --admin-panel: var(--superficie);
@@ -16,7 +16,7 @@
   --admin-font: var(--cuerpo);
   --admin-font-title: var(--titulos);
 
-  /* Nombres que usaban varias vistas y no estaban definidos en ningun lado. */
+  
   --text-main: var(--texto);
   --text-muted: var(--texto-suave);
   --bg-panel: var(--superficie);
@@ -26,7 +26,7 @@
   --admin-verde: #34d399;
   --admin-rojo: #f87171;
 
-  /* Dorado en versiones suaves, para lineas y bordes finos. */
+  
   --admin-gold-linea: rgba(212, 175, 55, 0.28);
   --admin-gold-tinte: rgba(212, 175, 55, 0.07);
   --admin-gold-brillo: rgba(212, 175, 55, 0.18);
@@ -49,13 +49,13 @@
   box-sizing: border-box;
 }
 
-/* :where() deja esta regla sin peso, asi cualquier clase de abajo puede pisarla. */
+
 :where(.admin-container) :where(h1, h2, h3, h4, p) {
   margin: 0;
   letter-spacing: normal;
 }
 
-/* letter-spacing: index.css le pone un valor negativo a h1 y h2; aca se anula. */
+
 .admin-container h1,
 .admin-container h2 {
   color: var(--admin-text);
@@ -86,7 +86,7 @@
   color: var(--admin-text-muted);
 }
 
-/* ---------- Sidebar ---------- */
+
 .admin-sidebar {
   width: 260px;
   flex-shrink: 0;
@@ -160,7 +160,7 @@
   color: var(--admin-text);
 }
 
-/* Igual que el chip activo del kiosco: violeta lleno. */
+
 .admin-sidebar nav a.active {
   background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
   color: var(--admin-text);
@@ -172,7 +172,7 @@
   outline-offset: 2px;
 }
 
-/* ---------- Area principal ---------- */
+
 .admin-main {
   flex-grow: 1;
   min-width: 0;
@@ -180,7 +180,7 @@
   flex-direction: column;
 }
 
-/* ---------- Header ---------- */
+
 .admin-header {
   height: 64px;
   flex-shrink: 0;
@@ -229,7 +229,7 @@
   outline-offset: 2px;
 }
 
-/* ---------- Contenedor de vistas ---------- */
+
 .admin-content {
   flex-grow: 1;
   padding: 36px 40px 56px;
@@ -255,7 +255,7 @@
   margin: 0;
 }
 
-/* Barrita dorada debajo del titulo de cada pantalla. */
+
 .admin-view-title::after {
   content: '';
   display: block;
@@ -281,7 +281,7 @@
   flex-wrap: wrap;
 }
 
-/* ---------- Botones ---------- */
+
 .admin-container .btn-admin {
   padding: 9px 18px;
   border-radius: 8px;
@@ -333,7 +333,7 @@
   background-color: var(--admin-gold-tinte);
 }
 
-/* Botones chicos dentro de las tablas. */
+
 .admin-table .btn-admin,
 .admin-table .btn-cancelar-orden {
   padding: 6px 12px;
@@ -371,7 +371,7 @@
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
 }
 
-/* ---------- Filtros (chips) ---------- */
+
 .filtro-grupo,
 .filtros-categorias-container {
   display: flex;
@@ -415,7 +415,7 @@
   outline-offset: 2px;
 }
 
-/* ---------- Etiquetas de estado ---------- */
+
 .badge,
 .etiqueta-rol,
 .etiqueta-estado-btn {
@@ -477,7 +477,7 @@
   border-color: rgba(248, 113, 113, 0.3);
 }
 
-/* ---------- Tablas ---------- */
+
 .admin-table-container {
   background-color: var(--admin-panel);
   border: 1px solid var(--admin-border);
@@ -551,7 +551,7 @@
   margin: 0;
 }
 
-/* Celda del producto en la tabla del kiosco */
+
 .celda-producto-info {
   display: flex;
   flex-direction: column;
@@ -570,7 +570,7 @@
   color: var(--admin-text-muted);
 }
 
-/* Control de stock: mismo contador que las tarjetas del kiosco. */
+
 .control-stock-container {
   display: inline-flex;
   align-items: center;
@@ -615,7 +615,7 @@
   color: var(--admin-gold);
 }
 
-/* ---------- Formularios y modal ---------- */
+
 .admin-container .modal-overlay {
   position: fixed;
   inset: 0;
@@ -794,7 +794,7 @@
   min-width: 0;
 }
 
-/* ---------- Dashboard y tarjetas ---------- */
+
 .dashboard-grid {
   display: flex;
   flex-direction: column;
@@ -814,7 +814,7 @@
   margin-bottom: 24px;
 }
 
-/* En el dashboard el espacio ya lo da el gap de la columna. */
+
 .dashboard-grid .tarjetas-resumen-grid {
   margin-bottom: 0;
 }
@@ -832,7 +832,7 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-/* Linea fina dorada arriba, igual que el pie de pagina del sitio. */
+
 .tarjeta-resumen::before {
   content: '';
   position: absolute;
@@ -961,7 +961,7 @@
   padding: 24px 8px;
 }
 
-/* ---------- Detalle de orden ---------- */
+
 .panel-detalle-lista {
   display: flex;
   flex-direction: column;
@@ -1031,7 +1031,7 @@
   margin-bottom: 16px;
 }
 
-/* ---------- Salas ---------- */
+
 .admin-salas-contenedor {
   display: flex;
   gap: 32px;
@@ -1163,7 +1163,7 @@
   background: transparent;
 }
 
-/* Por que no se puede editar la sala (tiene funciones o no se pudo comprobar). */
+
 .panel-mapa_aviso {
   margin-bottom: 24px;
   padding: 12px 14px;
@@ -1175,7 +1175,7 @@
   color: var(--admin-gold);
 }
 
-/* ---------- Formulario de la sala (crear / editar configuracion) ---------- */
+
 .sala-form_resumen {
   display: flex;
   flex-direction: column;
@@ -1242,7 +1242,7 @@
   color: var(--admin-text-muted);
 }
 
-/* ---------- Mapa de butacas de la sala (solo lectura) ---------- */
+
 .mapa-sala_mensaje {
   padding: 40px 24px;
   text-align: center;
@@ -1362,7 +1362,7 @@
   margin-left: 16px;
 }
 
-/* ---------- Kiosco: checkbox y subtitulo ---------- */
+
 .kiosco-checkbox-group {
   display: flex;
   align-items: center;
@@ -1382,7 +1382,7 @@
   cursor: pointer;
 }
 
-/* ---------- Pantallas angostas ---------- */
+
 @media (max-width: 1100px) {
   .dashboard-fila-dividida {
     grid-template-columns: 1fr;
@@ -1398,7 +1398,7 @@
   }
 }
 
-/* Menu lateral solo con iconos. */
+
 @media (max-width: 900px) {
   .admin-sidebar {
     width: 72px;
@@ -1447,10 +1447,10 @@
   border: 1px solid #ff4d4d;
   text-align: center;
 }
-/* --- Miniaturas para Tablas (Reutilizable) --- */
+
 .img-miniatura-tabla {
   width: 50px;
-  height: 50px; /* Cuadrado por defecto (Ideal para Kiosco) */
+  height: 50px; 
   object-fit: cover;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
@@ -1460,7 +1460,7 @@
 .img-miniatura-placeholder {
   width: 50px;
   height: 50px;
-  background-color: #2c2c2c; /* Fondo oscuro */
+  background-color: #2c2c2c; 
   border: 1px dashed #555;
   border-radius: 6px;
   display: flex;
@@ -1472,13 +1472,13 @@
   line-height: 1.1;
 }
 
-/* Modificador específico para películas (Rectangular) */
+
 .img-miniatura-tabla.img-poster,
 .img-miniatura-placeholder.img-poster {
   width: 55px;
   height: 80px; 
 }
-/* Contenedor de la botonera de filtros */
+
 .filtros-fecha-container {
   display: flex;
   gap: 10px;
@@ -1486,9 +1486,9 @@
   margin-bottom: 20px;
 }
 
-/* Ajustes específicos para el input type="date" */
+
 .input-fecha {
-  background-color: transparent; /* Mantiene el fondo de tu admin */
+  background-color: transparent; 
   color: #fff;
   border: 1px solid #333; 
   font-family: inherit;
@@ -1496,12 +1496,12 @@
   outline: none;
 }
 
-/* Efecto focus para que coincida con el tema (violeta) */
+
 .input-fecha:focus {
   border-color: #a855f7; 
 }
 
-/* Invierte el color del ícono del calendario para que sea blanco */
+
 .input-fecha::-webkit-calendar-picker-indicator {
   filter: invert(1);
   cursor: pointer;

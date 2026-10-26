@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-// Primera letra de la primera y de la ultima palabra del nombre ("Lorena
-// Gomez" -> "LG"). Con una sola palabra, una letra; sin nombre, "?".
+
+
 const iniciales = (nombre) => {
   const palabras = (nombre ?? '').trim().split(/\s+/).filter(Boolean);
   if (palabras.length === 0) return '?';
@@ -10,17 +10,17 @@ const iniciales = (nombre) => {
   return (primera + ultima).toUpperCase();
 };
 
-// Componente "tonto" reutilizable: la foto de perfil en un circulo. Si no hay
-// foto, o la URL no carga (onError), muestra un circulo violeta con las
-// iniciales. "tamano" es el lado en px (el nav usa 32, el perfil 80).
+
+
+
 const Avatar = ({ fotoPerfil, nombre, tamano = 40 }) => {
-  // Guarda la URL que fallo (no un booleano): si mas adelante llega otra foto,
-  // se vuelve a intentar sin necesidad de un efecto que reinicie el estado.
+  
+  
   const [urlFallida, setUrlFallida] = useState(null);
   const hayFoto = Boolean(fotoPerfil) && fotoPerfil !== urlFallida;
 
-  // El tamano es dinamico, asi que va en style (Tailwind no arma clases con
-  // valores que se calculan al renderizar).
+  
+  
   const medidas = { width: tamano, height: tamano };
 
   if (hayFoto) {

@@ -1,8 +1,8 @@
 import CarritoDetalle from '../components/carrito/CarritoDetalle';
 
-// Pagina /carrito. Queda mientras haya links que mandan aca (butacas,
-// checkout, entradas, footer); el carrito principal es el desplegable del nav
-// (CarritoView). Solo renderiza: la logica esta en CarritoDetalle.
+
+
+
 const Carrito = ({ token, onNavegar }) => {
   return (
     <section className="pagina">

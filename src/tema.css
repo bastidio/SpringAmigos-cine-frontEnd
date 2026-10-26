@@ -55,7 +55,7 @@
   color: var(--error);
 }
 
-/*Botones*/
+
 
 .boton {
   display: inline-flex;
@@ -113,7 +113,7 @@
   outline-offset: 2px;
 }
 
-/*Etiquetas (clasificacion, descuento)*/
+
 
 .etiqueta {
   display: inline-block;
@@ -137,7 +137,7 @@
   letter-spacing: 0.06em;
 }
 
-/*Hueco cuando no hay imagen cargada*/
+
 
 .sin-imagen {
   display: flex;

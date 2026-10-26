@@ -1,5 +1,5 @@
-// Componente "tonto": el bloque grande de arriba de la cartelera.
-// Muestra una pelicula (la primera de la lista) con su poster de fondo.
+
+
 const PeliculaDestacada = ({ pelicula, verDetalle }) => {
   return (
     <section className="destacada">

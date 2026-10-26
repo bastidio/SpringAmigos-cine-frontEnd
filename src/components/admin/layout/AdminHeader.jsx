@@ -7,7 +7,7 @@ const AdminHeader = ({ token, onLogout, onIrAEntradas }) => {
       <span className="admin-header__titulo">Panel de administración</span>
 
       <div className="admin-header__acciones">
-        {/* Vuelve a la parte publica sin cerrar la sesion de admin. */}
+        {}
         <Link to="/" className="admin-header__btn-cartelera">
           ← Volver a la cartelera
         </Link>
