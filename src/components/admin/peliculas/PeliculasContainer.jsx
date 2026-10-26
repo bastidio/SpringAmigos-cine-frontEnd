@@ -13,6 +13,7 @@ const PeliculasContainer = () => {
   const [peliculaABorrar, setPeliculaABorrar] = useState(null);
   const [borrando, setBorrando] = useState(false);
   const [errorEliminar, setErrorEliminar] = useState(null);
+  const [errorGuardar, setErrorGuardar] = useState(null);
 
   const fetchPeliculas = async () => {
     const token = localStorage.getItem('token');
@@ -21,25 +22,36 @@ const PeliculasContainer = () => {
         Authorization: `Bearer ${token}`
       }
     });
+    if (!res.ok) {
+      throw new Error(`No se pudieron cargar las películas (${res.status})`);
+    }
     const data = await res.json();
     return data;
   };
 
   const actualizarPeliculas = async () => {
-    setPeliculas(await fetchPeliculas());
+    try {
+      setPeliculas(await fetchPeliculas());
+    } catch (error) {
+      console.error('Error cargando películas:', error);
+    }
   };
 
   useEffect(() => {
-    fetchPeliculas().then(setPeliculas);
+    fetchPeliculas()
+      .then(setPeliculas)
+      .catch((error) => console.error('Error cargando películas:', error));
   }, []);
 
   const abrirModal = (pelicula = null) => {
     setPeliculaEditando(pelicula);
+    setErrorGuardar(null);
     setModalAbierto(true);
   };
 
   const cerrarModal = () => {
     setPeliculaEditando(null);
+    setErrorGuardar(null);
     setModalAbierto(false);
   };
 
@@ -48,17 +60,33 @@ const PeliculasContainer = () => {
     const url = peliculaEditando ? `/peliculas/${peliculaEditando.id}` : '/peliculas';
     const token = localStorage.getItem('token');
 
-    await fetch(url, {
-      method: metodo,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(formData)
-    });
+    setErrorGuardar(null);
+    try {
+      const res = await fetch(url, {
+        method: metodo,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
 
-    cerrarModal();
-    actualizarPeliculas();
+      if (!res.ok) {
+        const datos = await res.json().catch(() => null);
+        const motivos = datos?.validationErrors ? Object.values(datos.validationErrors) : [];
+        const mensaje = motivos.length > 0
+          ? motivos.join(', ')
+          : datos?.message || `No se pudo guardar la película (${res.status})`;
+        setErrorGuardar(mensaje);
+        return;
+      }
+
+      cerrarModal();
+      actualizarPeliculas();
+    } catch (error) {
+      console.error('Error guardando película:', error);
+      setErrorGuardar('No se pudo conectar con el servidor.');
+    }
   };
 
   const manejarEliminar = (id) => {
@@ -132,6 +160,9 @@ const PeliculasContainer = () => {
         onClose={cerrarModal}
         titulo={peliculaEditando ? 'Editar Película' : 'Nueva Película'}
       >
+        {errorGuardar && (
+          <p role="alert" className="pagina_mensaje pagina_mensaje--error">{errorGuardar}</p>
+        )}
         <PeliculasForm
           peliculaAEditar={peliculaEditando}
           onGuardar={manejarGuardar}
