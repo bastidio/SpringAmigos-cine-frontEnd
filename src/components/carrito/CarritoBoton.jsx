@@ -15,7 +15,7 @@ const CarritoBoton = ({ abierto, cantidad = 0, onClick }) => {
       aria-haspopup="dialog"
       aria-controls="menu-carrito"
       title="Carrito"
-      className={`relative flex h-[38px] w-[38px] cursor-pointer items-center justify-center rounded-lg border-0 p-0 text-[var(--dorado)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--morado)] ${
+      className={`relative flex h-[38px] w-[38px] cursor-pointer items-center justify-center rounded-lg border-0 p-0 text-[var(--dorado-texto)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--morado-texto)] ${
         abierto
           ? 'bg-[rgba(212,175,55,0.15)]'
           : 'bg-transparent hover:bg-[rgba(212,175,55,0.12)]'

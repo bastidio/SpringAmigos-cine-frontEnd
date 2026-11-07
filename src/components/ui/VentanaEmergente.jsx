@@ -12,8 +12,8 @@ const COLORES = {
     boton: 'bg-red-500 hover:bg-red-400 focus-visible:outline-red-400',
   },
   aviso: {
-    icono: 'bg-[var(--dorado)]/15 text-[var(--dorado)]',
-    boton: 'bg-[var(--morado)] hover:bg-violet-500 focus-visible:outline-[var(--morado)]',
+    icono: 'bg-[var(--dorado)]/15 text-[var(--dorado-texto)]',
+    boton: 'bg-[var(--morado)] hover:bg-violet-500 focus-visible:outline-[var(--morado-texto)]',
   },
 };
 
@@ -80,7 +80,7 @@ const VentanaEmergente = ({
               type="button"
               onClick={onCancelar}
               disabled={ocupado}
-              className="cursor-pointer rounded-lg border border-solid border-[var(--borde)] bg-transparent px-4 py-2 text-sm font-medium text-[var(--texto)] transition-colors hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado)]"
+              className="cursor-pointer rounded-lg border border-solid border-[var(--borde)] bg-transparent px-4 py-2 text-sm font-medium text-[var(--texto)] transition-colors hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]"
             >
               {textoCancelar}
             </button>

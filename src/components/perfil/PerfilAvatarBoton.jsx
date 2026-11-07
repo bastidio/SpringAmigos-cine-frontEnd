@@ -14,9 +14,9 @@ const PerfilAvatarBoton = ({ abierto, usuario, onClick }) => {
       aria-haspopup="dialog"
       aria-controls="menu-perfil"
       title="Mi Perfil"
-      className={`flex h-[38px] w-[38px] cursor-pointer items-center justify-center rounded-full border border-solid bg-transparent p-0 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--morado)] ${
+      className={`flex h-[38px] w-[38px] cursor-pointer items-center justify-center rounded-full border border-solid bg-transparent p-0 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--morado-texto)] ${
         abierto
-          ? 'border-[var(--morado)] bg-violet-500/15 text-[var(--morado)]'
+          ? 'border-[var(--morado)] bg-violet-500/15 text-[var(--morado-texto)]'
           : 'border-white/15 text-[var(--texto-suave)] hover:bg-violet-500/10 hover:text-[var(--texto)]'
       }`}
     >

@@ -29,7 +29,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(11, 7, 16, 0.3) 0%, rgba(11, 7, 16, 1) 100%);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--fondo) 30%, transparent) 0%, var(--fondo) 100%);
 }
 
 
@@ -43,7 +43,7 @@
   font-size: 14px;
   line-height: 20px;
   color: var(--texto-suave);
-  background-color: rgba(11, 7, 16, 0.6);
+  background-color: color-mix(in srgb, var(--fondo) 60%, transparent);
   text-decoration: none;
   transition: color 0.15s ease;
 }
@@ -53,7 +53,7 @@
 }
 
 .detalle_volver:focus-visible {
-  outline: 2px solid var(--morado);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 2px;
 }
 
@@ -165,7 +165,7 @@
   height: 1px;
   border: none;
   margin: 40px 0;
-  background: linear-gradient(to right, transparent, #d4af37, transparent);
+  background: linear-gradient(to right, transparent, var(--dorado), transparent);
   opacity: 0.35;
 }
 
@@ -225,12 +225,12 @@
 
 .funcion-card:hover {
   border-color: var(--morado);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--morado) 20%, transparent);
   transform: translateY(-2px);
 }
 
 .funcion-card:focus-visible {
-  outline: 2px solid var(--morado);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 2px;
 }
 
@@ -260,8 +260,8 @@
   line-height: 16px;
   padding: 2px 8px;
   border-radius: 4px;
-  background-color: rgba(139, 92, 246, 0.15);
-  color: var(--morado);
+  background-color: color-mix(in srgb, var(--morado) 15%, transparent);
+  color: var(--morado-texto);
 }
 
 .funcion-card_sala,
@@ -281,7 +281,7 @@
 
 .funcion-card_precio {
   font-weight: 700;
-  color: var(--dorado);
+  color: var(--dorado-texto);
 }
 
 @media (max-width: 767px) {

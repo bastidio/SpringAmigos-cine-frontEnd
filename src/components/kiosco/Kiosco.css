@@ -18,7 +18,7 @@
 .kiosco_bajada {
   font-size: 14px;
   line-height: 20px;
-  color: var(--dorado);
+  color: var(--dorado-texto);
   margin-top: 4px;
   margin: 24px;
 }
@@ -54,7 +54,7 @@
 }
 
 .tab:focus-visible {
-  outline: 2px solid var(--morado);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 2px;
 }
 
@@ -135,7 +135,7 @@
   line-height: 1.5;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--morado);
+  color: var(--morado-texto);
   margin-bottom: 4px;
 }
 
@@ -166,7 +166,7 @@
   font-size: 18px;
   font-weight: 700;
   line-height: 28px;
-  color: var(--dorado);
+  color: var(--dorado-texto);
 }
 
 .producto-card_precio-anterior {

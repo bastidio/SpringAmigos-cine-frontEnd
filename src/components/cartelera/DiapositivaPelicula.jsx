@@ -29,7 +29,7 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
 
       {/* Dos velos sobre la imagen: uno oscurece la izquierda para que el texto
           se lea, el otro funde el borde de abajo con el fondo de la pagina. */}
-      <div className="absolute inset-0 bg-linear-to-r from-[rgba(11,7,16,0.95)] via-[rgba(11,7,16,0.6)] to-[rgba(11,7,16,0.2)]" />
+      <div className="absolute inset-0 bg-linear-to-r from-[var(--fondo)]/95 via-[var(--fondo)]/60 to-[var(--fondo)]/20" />
       <div className="absolute inset-0 bg-linear-to-t from-[var(--fondo)] to-transparent to-40%" />
 
       <div className="relative z-10 mx-auto flex h-full max-w-[1280px] flex-col justify-center px-20 max-md:px-6">
@@ -40,7 +40,7 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
 
           <p className="mb-4 flex flex-wrap items-center gap-3 text-sm text-[var(--texto-suave)]">
             {}
-            <span className="rounded border border-solid border-[var(--dorado)]/30 bg-[var(--dorado)]/12 px-2.5 py-0.5 text-[11.2px] font-bold uppercase tracking-wider text-[var(--dorado)]">
+            <span className="rounded border border-solid border-[var(--dorado)]/30 bg-[var(--dorado)]/12 px-2.5 py-0.5 text-[11.2px] font-bold uppercase tracking-wider text-[var(--dorado-texto)]">
               {pelicula.clasificacion}
             </span>
             <span>{pelicula.duracion} min</span>
@@ -56,7 +56,7 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
               type="button"
               tabIndex={tabIndex}
               onClick={() => verDetalle(pelicula.id)}
-              className="inline-flex cursor-pointer items-center justify-center rounded-lg border-0 bg-linear-135 from-[var(--morado)] to-[#6d28d9] px-6 py-3 text-[14.4px] font-semibold text-[var(--texto)] transition-all hover:-translate-y-px hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado)]"
+              className="inline-flex cursor-pointer items-center justify-center rounded-lg border-0 bg-linear-135 from-[var(--morado)] to-[var(--morado-hover)] px-6 py-3 text-[14.4px] font-semibold text-[var(--texto)] transition-all hover:-translate-y-px hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]"
             >
               Ver funciones
             </button>
@@ -64,7 +64,7 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
               type="button"
               tabIndex={tabIndex}
               onClick={() => verDetalle(pelicula.id)}
-              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-solid border-[var(--morado)] bg-transparent px-6 py-3 text-[14.4px] font-medium text-[var(--morado)] transition-all hover:bg-[var(--morado)]/10 hover:shadow-[0_0_16px_rgba(139,92,246,0.2)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado)]"
+              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-solid border-[var(--morado)] bg-transparent px-6 py-3 text-[14.4px] font-medium text-[var(--morado-texto)] transition-all hover:bg-[var(--morado)]/10 hover:shadow-[0_0_16px_rgba(139,92,246,0.2)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]"
             >
               Más información
             </button>

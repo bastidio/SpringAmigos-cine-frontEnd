@@ -43,7 +43,7 @@ const Navigation = ({ haySesion, esAdmin, perfil, carrito }) => {
             se convierten en una X cuando el menu esta abierto. */}
         <button
           type="button"
-          className="flex flex-col justify-center gap-1.5 w-10 h-10 p-2 bg-transparent border-0 rounded cursor-pointer md:hidden focus-visible:outline-2 focus-visible:outline-[var(--morado)]"
+          className="flex flex-col justify-center gap-1.5 w-10 h-10 p-2 bg-transparent border-0 rounded cursor-pointer md:hidden focus-visible:outline-2 focus-visible:outline-[var(--morado-texto)]"
           onClick={alternarMenu}
           aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
           aria-expanded={menuAbierto}

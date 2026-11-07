@@ -68,7 +68,7 @@
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
-  color: var(--dorado);
+  color: var(--dorado-texto);
 }
 
 .footer_link {
@@ -81,12 +81,12 @@
 }
 
 .footer_link:hover {
-  color: var(--morado);
+  color: var(--morado-texto);
 }
 
 .footer_logos:focus-visible,
 .footer_link:focus-visible {
-  outline: 2px solid var(--morado);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 4px;
   border-radius: 4px;
 }

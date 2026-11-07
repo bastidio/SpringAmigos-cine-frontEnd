@@ -20,7 +20,7 @@
 }
 
 .checkout__volver:focus-visible {
-  outline: 2px solid var(--morado);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -44,7 +44,7 @@
 .checkout__bajada {
   font-size: 14px;
   line-height: 20px;
-  color: var(--dorado);
+  color: var(--dorado-texto);
   margin-top: 4px;
 }
 
@@ -121,7 +121,7 @@
 }
 
 .checkout-panel__total {
-  color: var(--dorado);
+  color: var(--dorado-texto);
 }
 
 .checkout-panel__nota {
@@ -195,7 +195,7 @@
 
 .checkout-confirmada__total {
   font-size: 18px;
-  color: var(--dorado);
+  color: var(--dorado-texto);
 }
 
 .checkout-confirmada__nota {

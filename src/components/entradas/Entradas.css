@@ -24,7 +24,7 @@
 .entradas__bajada {
   font-size: 14px;
   line-height: 20px;
-  color: var(--dorado);
+  color: var(--dorado-texto);
   margin-top: 4px;
 }
 
@@ -134,7 +134,7 @@
 .entrada-card__precio {
   font-size: 16px;
   font-weight: 700;
-  color: var(--dorado);
+  color: var(--dorado-texto);
 }
 
 .entradas__vacio {

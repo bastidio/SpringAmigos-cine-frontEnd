@@ -8,7 +8,7 @@
 const claseBorde = 'group absolute inset-y-0 z-20 flex items-center max-md:hidden';
 
 const claseFlecha =
-  'flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-solid border-[var(--dorado)]/50 bg-[var(--fondo)]/60 p-0 text-[var(--dorado)] opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-[var(--dorado)]/20 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dorado)]';
+  'flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-solid border-[var(--dorado)]/50 bg-[var(--fondo)]/60 p-0 text-[var(--dorado-texto)] opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-[var(--dorado)]/20 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dorado)]';
 
 const Flecha = ({ direccion }) => (
   <svg

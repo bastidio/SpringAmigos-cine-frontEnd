@@ -11,7 +11,7 @@
   --admin-text: var(--texto);
   --admin-text-muted: var(--texto-suave);
   --admin-primary: var(--morado);
-  --admin-primary-hover: var(--morado-profundo);
+  --admin-primary-hover: var(--morado-hover);
   --admin-gold: var(--dorado);
   --admin-font: var(--cuerpo);
   --admin-font-title: var(--titulos);

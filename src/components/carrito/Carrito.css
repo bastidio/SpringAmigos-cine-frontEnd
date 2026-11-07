@@ -20,7 +20,7 @@
 }
 
 .carrito__volver:focus-visible {
-  outline: 2px solid var(--morado);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -44,7 +44,7 @@
 .carrito__bajada {
   font-size: 14px;
   line-height: 20px;
-  color: var(--dorado);
+  color: var(--dorado-texto);
   margin-top: 4px;
 }
 
@@ -167,7 +167,7 @@
 .carrito-item__monto {
   font-size: 16px;
   font-weight: 700;
-  color: var(--dorado);
+  color: var(--dorado-texto);
 }
 
 .carrito-panel {
@@ -217,7 +217,7 @@
 }
 
 .carrito-panel__total {
-  color: var(--dorado);
+  color: var(--dorado-texto);
 }
 
 .carrito-panel__boton {

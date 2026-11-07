@@ -65,7 +65,7 @@
 
 .nav_link--activo,
 .nav_link--activo:hover {
-  color: var(--morado);
+  color: var(--morado-texto);
 }
 
 .nav_acciones {
@@ -81,19 +81,19 @@
   width: 38px;
   height: 38px;
   border-radius: 8px;
-  color: var(--dorado);
+  color: var(--dorado-texto);
   text-decoration: none;
   transition: color 0.15s ease, background-color 0.15s ease;
 }
 
 .nav_carrito:hover {
-  color: var(--dorado);
+  color: var(--dorado-texto);
   background-color: rgba(212, 175, 55, 0.12);
 }
 
 .nav_carrito--activo,
 .nav_carrito--activo:hover {
-  color: var(--dorado);
+  color: var(--dorado-texto);
   background-color: rgba(212, 175, 55, 0.12);
 }
 
@@ -105,7 +105,7 @@
 .nav_marca:focus-visible,
 .nav_link:focus-visible,
 .nav_carrito:focus-visible {
-  outline: 2px solid var(--morado);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 4px;
   border-radius: 4px;
 }

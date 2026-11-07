@@ -20,7 +20,7 @@
 }
 
 .butacas_volver:focus-visible, .panel_quitar:focus-visible {
-  outline: 2px solid var(--morado);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 2px;
 }
 
@@ -282,7 +282,7 @@
 }
 
 .panel_total {
-  color: var(--dorado);
+  color: var(--dorado-texto);
 }
 
 .panel_boton {
