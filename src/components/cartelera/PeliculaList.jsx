@@ -29,7 +29,7 @@ const PeliculaList = () => {
   
   
   useEffect(() => {
-    fetch('/peliculas')
+    fetch('/peliculas/cartelera')
       .then((response) => {
         
         

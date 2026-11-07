@@ -12,7 +12,7 @@ const PeliculaDetalle = () => {
   const { id } = useParams();
 
   const [pelicula, setPelicula] = useState(null);
-  const [funciones, setFunciones] = useState([]);
+  const [funciones, setFunciones] = useState(null);
   const [error, setError] = useState(null);
 
   
@@ -61,6 +61,28 @@ const PeliculaDetalle = () => {
 
   if (pelicula === null) {
     return <p className="pagina_mensaje">Cargando película...</p>;
+  }
+
+  // Las funciones todavia no llegaron: no se sabe si esta en cartelera.
+  if (funciones === null) {
+    return <p className="pagina_mensaje">Cargando película...</p>;
+  }
+
+  // "En cartelera" = tiene alguna funcion con horario mayor a ahora.
+  const ahora = new Date();
+  const enCartelera = funciones.some(
+    (funcion) => funcion.pelicula.id === pelicula.id && new Date(funcion.horario) > ahora,
+  );
+
+  if (!enCartelera) {
+    return (
+      <div className="detalle_no-cartelera">
+        <p className="pagina_mensaje">Esta película no está en cartelera</p>
+        <Link to="/" className="boton boton--primario">
+          Volver a la cartelera
+        </Link>
+      </div>
+    );
   }
 
   
