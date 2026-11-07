@@ -5,6 +5,7 @@
 const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) => {
   
   const tabIndex = activa ? 0 : -1;
+  const imagen = pelicula.bannerUrl || pelicula.poster_url;
 
   return (
     <article
@@ -15,11 +16,11 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
         activa ? 'opacity-100' : 'pointer-events-none opacity-0'
       }`}
     >
-      {pelicula.poster_url && (
+      {imagen && (
         
         
         <img
-          src={pelicula.poster_url}
+          src={imagen}
           alt=""
           draggable={false}
           className="absolute inset-0 h-full w-full object-cover"

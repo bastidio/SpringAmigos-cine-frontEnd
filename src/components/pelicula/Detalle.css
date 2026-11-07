@@ -9,7 +9,7 @@
 
 .detalle_fondo {
   position: relative;
-  height: 320px;
+  height: 55vh;
   overflow: hidden;
 }
 
@@ -18,6 +18,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.detalle_fondo--poster img {
+  filter: blur(30px) brightness(0.35) saturate(1.3);
+  transform: scale(1.3);
 }
 
 .detalle_fondo::after {
@@ -72,7 +77,7 @@
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--borde);
-  box-shadow: 0 0 24px rgba(139, 92, 246, 0.12);
+  box-shadow: var(--sombra-card);
 }
 
 .detalle_poster img {
@@ -277,4 +282,23 @@
 .funcion-card_precio {
   font-weight: 700;
   color: var(--dorado);
+}
+
+@media (max-width: 767px) {
+  .detalle_fondo {
+    height: 32vh;
+  }
+
+  .detalle_contenido {
+    margin-top: -72px;
+  }
+
+  .detalle_ficha {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .detalle_poster {
+    width: 140px;
+  }
 }

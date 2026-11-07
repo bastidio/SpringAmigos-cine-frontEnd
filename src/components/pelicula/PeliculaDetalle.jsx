@@ -50,6 +50,10 @@ const PeliculaDetalle = () => {
       });
   }, [id]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
   
   if (error !== null) {
     return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
@@ -72,8 +76,10 @@ const PeliculaDetalle = () => {
 
   return (
     <div className="detalle">
-      <div className="detalle_fondo">
-        {pelicula.poster_url && <img src={pelicula.poster_url} alt="" />}
+      <div className={`detalle_fondo${pelicula.bannerUrl ? '' : ' detalle_fondo--poster'}`}>
+        {(pelicula.bannerUrl || pelicula.poster_url) && (
+          <img src={pelicula.bannerUrl || pelicula.poster_url} alt="" />
+        )}
       </div>
 
       {}
