@@ -5,13 +5,20 @@ import PeliculaCard from './PeliculaCard';
 import Filtro from './Filtro';
 import './Cartelera.css';
 
-
-
+const aFuncionCard = (f) => ({
+  id: f.id,
+  fechaHora: f.horario,
+  idioma: /sub/i.test(f.idioma) ? 'Sub' : 'Dob',
+  disponible: f.entradasVendidas < f.sala.capacidad,
+  sala: f.sala.nombre,
+  premium: /premium|vip/i.test(f.sala.nombre),
+});
 
 const PeliculaList = () => {
   const [peliculas, setPeliculas] = useState([]);
   const [clasificacion, setClasificacion] = useState('Todos');
   const [idioma, setIdioma] = useState('Todos');
+  const [funciones, setFunciones] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
@@ -43,10 +50,27 @@ const PeliculaList = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/funciones', { signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : []))
+      .then((data) => setFunciones(data))
+      .catch((error) => {
+        if (error.name !== 'AbortError') {
+          console.error('Error al traer las funciones', error);
+        }
+      });
+    return () => controller.abort();
+  }, []);
+
   
   
   const verDetalle = (id) => {
     navigate(`/pelicula/${id}`);
+  };
+
+  const reservar = (funcion) => {
+    navigate(`/funcion/${funcion.id}/butacas`);
   };
 
   
@@ -111,10 +135,10 @@ const PeliculaList = () => {
                 id={pelicula.id}
                 titulo={pelicula.titulo}
                 poster_url={pelicula.poster_url}
-                duracion={pelicula.duracion}
                 clasificacion={pelicula.clasificacion}
-                idioma={pelicula.idioma}
+                funciones={funciones.filter((f) => f.pelicula.id === pelicula.id).map(aFuncionCard)}
                 verDetalle={verDetalle}
+                reservar={reservar}
               />
             ))}
           </div>

@@ -11,6 +11,9 @@
   --texto-suave: #a79bb8;
   --borde: #2a2138;
   --error: #f87171;
+  --radio-card: 16px;
+  --sombra-card: 0 20px 50px rgba(0, 0, 0, 0.7);
+  --sombra-card-hover: 0 28px 60px rgba(0, 0, 0, 0.8);
   --titulos: 'Playfair Display', Georgia, serif;
   --cuerpo: 'Inter', system-ui, sans-serif;
 }
