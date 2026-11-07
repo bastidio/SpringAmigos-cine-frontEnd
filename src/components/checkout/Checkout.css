@@ -70,10 +70,6 @@
   gap: 12px;
 }
 
-.checkout__acciones-lista {
-  margin-top: 8px;
-}
-
 .checkout-panel {
   position: sticky;
   top: 88px;

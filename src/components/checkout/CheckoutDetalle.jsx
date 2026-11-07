@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../services/api';
 import { useCarrito } from '../../context/CarritoContext';
 import CarritoItem from '../carrito/CarritoItem';
+import AvisoReservaButacas from '../carrito/AvisoReservaButacas';
+import useEdicionCarrito from '../carrito/useEdicionCarrito';
 import OrdenConfirmada from './OrdenConfirmada';
 import PanelCheckout from './PanelCheckout';
 import './Checkout.css';
@@ -15,8 +17,6 @@ const moneda = (valor) =>
   });
 
 const CheckoutDetalle = () => {
-  const [carrito, setCarrito] = useState(null);
-  const [cargando, setCargando] = useState(true);
   const [confirmando, setConfirmando] = useState(false);
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
@@ -24,31 +24,18 @@ const CheckoutDetalle = () => {
   
   const { refrescarCantidad } = useCarrito();
 
-  useEffect(() => {
-    let activo = true;
-
-    apiFetch('/api/carritos')
-      .then((data) => {
-        if (activo) {
-          setCarrito(data);
-          setError(null);
-        }
-      })
-      .catch((err) => {
-        if (activo) {
-          setError(err.message || 'No se pudo cargar el resumen.');
-        }
-      })
-      .finally(() => {
-        if (activo) {
-          setCargando(false);
-        }
-      });
-
-    return () => {
-      activo = false;
-    };
-  }, []);
+  // Mismo carrito editable que el desplegable (cantidad, quitar, vaciar).
+  const {
+    visible,
+    items,
+    cantidadTotal,
+    cargando,
+    error: errorCarrito,
+    errorAccion,
+    guardando,
+    cambiarCantidad,
+    quitarItem,
+  } = useEdicionCarrito();
 
   const confirmarCompra = async () => {
     setConfirmando(true);
@@ -87,8 +74,7 @@ const CheckoutDetalle = () => {
     );
   }
 
-  const items = carrito?.items ?? [];
-  const cantidadTotal = items.reduce((total, item) => total + item.cantidad, 0);
+  const mensajeError = error ?? errorCarrito ?? errorAccion;
 
   return (
     <div className="checkout">
@@ -103,9 +89,9 @@ const CheckoutDetalle = () => {
         </div>
       </div>
 
-      {error !== null && (
+      {mensajeError !== null && (
         <p role="alert" className="pagina_mensaje pagina_mensaje--error checkout__alerta">
-          {error}
+          {mensajeError}
         </p>
       )}
 
@@ -116,29 +102,31 @@ const CheckoutDetalle = () => {
           <p className="checkout__vacio-texto">
             Elegí una película en la cartelera para comenzar tu compra.
           </p>
-          <Link className="boton boton--primario" to="/carrito">
-            Volver al carrito
+          <Link className="boton boton--primario" to="/">
+            Volver a la cartelera
           </Link>
         </div>
       ) : (
         <div className="checkout__cuerpo">
           <div className="checkout__lista">
+            <AvisoReservaButacas carrito={visible} items={items} />
             {items.map((item) => (
-              <CarritoItem key={item.itemId} item={item} formatearMoneda={moneda} />
+              <CarritoItem
+                key={item.itemId}
+                item={item}
+                formatearMoneda={moneda}
+                onQuitar={quitarItem}
+                onCambiarCantidad={cambiarCantidad}
+                ocupado={guardando}
+              />
             ))}
-
-            <div className="checkout__acciones-lista">
-              <Link className="boton boton--secundario" to="/carrito">
-                ← Modificar carrito
-              </Link>
-            </div>
           </div>
 
           <PanelCheckout
             cantidadItems={cantidadTotal}
-            total={carrito.total}
+            total={visible.total}
             confirmando={confirmando}
-            deshabilitado={confirmando || items.length === 0}
+            deshabilitado={confirmando || guardando || items.length === 0}
             onConfirmar={confirmarCompra}
             formatearMoneda={moneda}
           />
