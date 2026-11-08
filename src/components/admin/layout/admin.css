@@ -334,41 +334,9 @@
 }
 
 
-.admin-table .btn-admin,
-.admin-table .btn-cancelar-orden {
+.admin-table .btn-admin {
   padding: 6px 12px;
   font-size: 12.8px;
-}
-
-.btn-peligro,
-.btn-cancelar-orden {
-  border-radius: 8px;
-  font-size: 13.6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.btn-cancelar-orden {
-  padding: 6px 12px;
-  color: #fca5a5;
-  background-color: rgba(248, 113, 113, 0.12);
-  border: 1px solid rgba(248, 113, 113, 0.35);
-}
-
-.btn-cancelar-orden:hover {
-  background-color: rgba(248, 113, 113, 0.22);
-}
-
-.btn-peligro {
-  padding: 9px 18px;
-  color: #fff;
-  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-  border: none;
-}
-
-.btn-peligro:hover {
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
 }
 
 .btn-eliminar {
@@ -692,13 +660,6 @@
 .admin-container .modal-close:hover {
   background-color: var(--admin-gold-brillo);
   color: var(--admin-gold);
-}
-
-.modal-confirmacion-texto {
-  margin-bottom: 24px;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--admin-text);
 }
 
 .admin-form {

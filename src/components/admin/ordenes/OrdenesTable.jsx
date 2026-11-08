@@ -1,7 +1,7 @@
 import BotonAccion from '../ui/BotonAccion';
 
 
-const OrdenesTable = ({ ordenes, onVerDetalle, onCancelarOrden, onEditar }) => {
+const OrdenesTable = ({ ordenes, onVerDetalle }) => {
   if (ordenes.length === 0) return <p className="texto-muted">No se encontraron órdenes.</p>;
 
   const getClaseEstado = (estado) => {
@@ -38,15 +38,6 @@ const OrdenesTable = ({ ordenes, onVerDetalle, onCancelarOrden, onEditar }) => {
               <td className="acciones-celda">
                  <div className="admin-table-actions">
                     <BotonAccion variante="secundario" onClick={() => onVerDetalle(o)}>Ver</BotonAccion>
-                    <BotonAccion variante="secundario" onClick={() => onEditar(o)}>Editar</BotonAccion>
-                    {o.estado === 'PENDIENTE' && (
-                      <button 
-                        className="btn-cancelar-orden"
-                        onClick={() => onCancelarOrden(o.id)}
-                      >
-                        Cancelar
-                      </button>
-                    )}
                  </div>
               </td>
             </tr>

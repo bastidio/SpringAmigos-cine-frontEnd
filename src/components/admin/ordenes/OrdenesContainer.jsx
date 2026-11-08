@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import TarjetaResumen from './TarjetaResumen';
 import OrdenesTable from './OrdenesTable';
-import OrdenForm from './OrdenForm';
 import PanelDetalleOrden from './PanelDetalleOrden';
-import BotonAccion from '../ui/BotonAccion';
 import AdminModal from '../ui/AdminModal';
 
 const AdminOrdenesView = () => {
@@ -11,12 +9,8 @@ const AdminOrdenesView = () => {
   const [filtroEstado, setFiltroEstado] = useState('Todas');
   const [busqueda, setBusqueda] = useState('');
   
-  const [modalFormAbierto, setModalFormAbierto] = useState(false);
   const [modalDetalleAbierto, setModalDetalleAbierto] = useState(false);
   const [ordenActiva, setOrdenActiva] = useState(null);
-  const [errorOperacion, setErrorOperacion] = useState(null);
-  
-  const [ordenACancelar, setOrdenACancelar] = useState(null);
 
   const cargarDatos = async () => {
     try {
@@ -47,70 +41,6 @@ const AdminOrdenesView = () => {
   useEffect(() => {
     cargarDatos();
   }, []);
-
-  const solicitarCancelacion = (id) => {
-    setOrdenACancelar(id);
-  };
-
-const confirmarCancelacion = async () => {
-    if (!ordenACancelar) return;
-    setErrorOperacion(null);
-
-    try {
-      const token = localStorage.getItem('token');
-
-      const response = await fetch(`http://localhost:4002/ordenes/${ordenACancelar}/estado`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify({ estado: 'CANCELADA' })
-      });
-
-      if (!response.ok) {
-        const datos = await response.json().catch(() => null);
-        const mensajeError = datos?.message || "No se pudo cancelar la orden.";
-        throw new Error(mensajeError);
-      }
-
-      setOrdenes(ordenes.map(o => o.id === ordenACancelar ? { ...o, estado: 'CANCELADA' } : o));
-      setOrdenACancelar(null);
-    } catch (error) {
-      console.error("Error al cancelar:", error);
-      setErrorOperacion(error.message);
-    }
-  };
-
-  const manejarGuardarFormulario = async (datosForm) => {
-    if (!ordenActiva) return;
-    setErrorOperacion(null);
-
-    try {
-      const token = localStorage.getItem('token');
-
-      const response = await fetch(`http://localhost:4002/ordenes/${ordenActiva.id}/estado`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify({ estado: datosForm.estado })
-      });
-
-      if (!response.ok) {
-        const datos = await response.json().catch(() => null);
-        const mensajeError = datos?.message || "No se pudo actualizar el estado de la orden.";
-        throw new Error(mensajeError);
-      }
-
-      setOrdenes(ordenes.map(o => o.id === ordenActiva.id ? { ...o, estado: datosForm.estado } : o));
-      setModalFormAbierto(false);
-    } catch (error) {
-      console.error("Error guardando orden:", error);
-      setErrorOperacion(error.message);
-    }
-  };
 
   const ordenesFiltradas = ordenes.filter(o => {
     const coincideEstado = filtroEstado === 'Todas' || o.estado === filtroEstado;
@@ -163,54 +93,10 @@ const confirmarCancelacion = async () => {
       <OrdenesTable 
         ordenes={ordenesFiltradas} 
         onVerDetalle={(orden) => { setOrdenActiva(orden); setModalDetalleAbierto(true); }}
-        onEditar={(orden) => { setOrdenActiva(orden); setModalFormAbierto(true); }}
-        onCancelarOrden={solicitarCancelacion} 
       />
 
       <AdminModal isOpen={modalDetalleAbierto} onClose={() => setModalDetalleAbierto(false)} titulo={`Orden #${ordenActiva?.id}`}>
         <PanelDetalleOrden orden={ordenActiva} />
-      </AdminModal>
-
-      <AdminModal 
-        isOpen={modalFormAbierto} 
-        onClose={() => { setModalFormAbierto(false); setErrorOperacion(null); }} 
-        titulo="Editar Estado de Orden"
-      >
-        {errorOperacion && (
-          <div className="admin-error-mensaje">
-            {errorOperacion}
-          </div>
-        )}
-        <OrdenForm 
-          ordenAEditar={ordenActiva} 
-          onGuardar={manejarGuardarFormulario}
-          onCancelar={() => { setModalFormAbierto(false); setErrorOperacion(null); }} 
-        />
-      </AdminModal>
-
-      <AdminModal 
-        isOpen={ordenACancelar !== null} 
-        onClose={() => { setOrdenACancelar(null); setErrorOperacion(null); }} 
-        titulo="Confirmar Cancelación"
-      >
-        <div>
-          {errorOperacion && (
-            <div className="admin-error-mensaje">
-              {errorOperacion}
-            </div>
-          )}
-          <p className="modal-confirmacion-texto">
-            ¿Estás seguro de que querés cancelar la orden #{ordenACancelar}? Esta acción no se puede deshacer.
-          </p>
-          <div className="admin-form-actions">
-            <BotonAccion variante="secundario" onClick={() => { setOrdenACancelar(null); setErrorOperacion(null); }}>
-              No, volver
-            </BotonAccion>
-            <button className="btn-peligro" onClick={confirmarCancelacion}>
-              Sí, cancelar orden
-            </button>
-          </div>
-        </div>
       </AdminModal>
     </div>
   );
