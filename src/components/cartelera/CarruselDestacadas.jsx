@@ -6,18 +6,10 @@ import CarruselControles from './CarruselControles';
 const INTERVALO_MS = 6000;
 
 
-const UMBRAL_ARRASTRE_PX = 50;
-
-
-
-
 const CarruselDestacadas = ({ peliculas, verDetalle }) => {
   const [indice, setIndice] = useState(0);
   
   const [pausado, setPausado] = useState(false);
-  
-  
-  const [inicioArrastre, setInicioArrastre] = useState(null);
 
   const cantidad = peliculas.length;
 
@@ -47,28 +39,6 @@ const CarruselDestacadas = ({ peliculas, verDetalle }) => {
     setIndice((indice + 1) % cantidad);
   };
 
-  
-  
-  
-  const empezarArrastre = (evento) => {
-    if (evento.button !== 0) return;
-    setInicioArrastre(evento.clientX);
-  };
-
-  const terminarArrastre = (evento) => {
-    if (inicioArrastre === null) return;
-    const distancia = evento.clientX - inicioArrastre;
-    setInicioArrastre(null);
-
-    if (distancia > UMBRAL_ARRASTRE_PX) anterior();
-    if (distancia < -UMBRAL_ARRASTRE_PX) siguiente();
-  };
-
-  const cancelarArrastre = () => {
-    setInicioArrastre(null);
-  };
-
-  
   const moverConTeclado = (evento) => {
     if (evento.key === 'ArrowLeft') anterior();
     if (evento.key === 'ArrowRight') siguiente();
@@ -79,20 +49,9 @@ const CarruselDestacadas = ({ peliculas, verDetalle }) => {
       aria-roledescription="carrusel"
       aria-label="Películas destacadas"
       onMouseEnter={() => setPausado(true)}
-      onMouseLeave={() => {
-        setPausado(false);
-        cancelarArrastre();
-      }}
-      onPointerDown={empezarArrastre}
-      onPointerUp={terminarArrastre}
-      onPointerCancel={cancelarArrastre}
+      onMouseLeave={() => setPausado(false)}
       onKeyDown={moverConTeclado}
-      
-      
-      
-      className={`relative h-[70vh] min-h-[480px] touch-pan-y select-none overflow-hidden ${
-        inicioArrastre === null ? 'cursor-grab' : 'cursor-grabbing'
-      }`}
+      className="relative h-[70vh] min-h-[480px] overflow-hidden"
     >
       {peliculas.map((pelicula, posicion) => (
         <DiapositivaPelicula

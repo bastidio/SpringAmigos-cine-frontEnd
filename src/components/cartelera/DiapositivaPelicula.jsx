@@ -2,8 +2,10 @@
 
 
 
+import { Link } from 'react-router-dom';
+
 const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) => {
-  
+
   const tabIndex = activa ? 0 : -1;
   const imagen = pelicula.bannerUrl || pelicula.poster_url;
 
@@ -16,24 +18,32 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
         activa ? 'opacity-100' : 'pointer-events-none opacity-0'
       }`}
     >
+      {/* El Link envuelve solo la imagen (no hay botones adentro). Los velos y el
+          contenedor del texto dejan pasar el clic para que toda la diapositiva
+          lleve al detalle, salvo el texto y los botones. */}
       {imagen && (
-        
-        
-        <img
-          src={imagen}
-          alt=""
-          draggable={false}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        <Link
+          to={`/pelicula/${pelicula.id}`}
+          aria-label={`Ver detalle de ${pelicula.titulo}`}
+          tabIndex={tabIndex}
+          className="absolute inset-0 cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-[var(--morado-texto)]"
+        >
+          <img
+            src={imagen}
+            alt=""
+            draggable={false}
+            className="h-full w-full object-cover"
+          />
+        </Link>
       )}
 
       {/* Dos velos sobre la imagen: uno oscurece la izquierda para que el texto
           se lea, el otro funde el borde de abajo con el fondo de la pagina. */}
-      <div className="absolute inset-0 bg-linear-to-r from-[var(--fondo)]/95 via-[var(--fondo)]/60 to-[var(--fondo)]/20" />
-      <div className="absolute inset-0 bg-linear-to-t from-[var(--fondo)] to-transparent to-40%" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-[var(--fondo)]/95 via-[var(--fondo)]/60 to-[var(--fondo)]/20" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[var(--fondo)] to-transparent to-40%" />
 
-      <div className="relative z-10 mx-auto flex h-full max-w-[1280px] flex-col justify-center px-20 max-md:px-6">
-        <div className="max-w-xl">
+      <div className="pointer-events-none relative z-10 mx-auto flex h-full max-w-[1280px] flex-col justify-center px-20 max-md:px-6">
+        <div className="pointer-events-auto max-w-xl">
           <h2 className="mb-4 text-6xl font-bold leading-tight text-[var(--texto)] [font-family:var(--titulos)] max-md:text-4xl">
             {pelicula.titulo}
           </h2>
@@ -59,14 +69,6 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
               className="inline-flex cursor-pointer items-center justify-center rounded-lg border-0 bg-linear-135 from-[var(--morado)] to-[var(--morado-hover)] px-6 py-3 text-[14.4px] font-semibold text-[var(--texto)] transition-all hover:-translate-y-px hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]"
             >
               Ver funciones
-            </button>
-            <button
-              type="button"
-              tabIndex={tabIndex}
-              onClick={() => verDetalle(pelicula.id)}
-              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-solid border-[var(--morado)] bg-transparent px-6 py-3 text-[14.4px] font-medium text-[var(--morado-texto)] transition-all hover:bg-[var(--morado)]/10 hover:shadow-[0_0_16px_rgba(139,92,246,0.2)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]"
-            >
-              Más información
             </button>
           </div>
         </div>
