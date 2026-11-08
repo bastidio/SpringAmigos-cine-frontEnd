@@ -7,7 +7,7 @@ const PerfilHeader = ({ nombre, email, fotoPerfil, entradasActivas }) => {
   const textoEntradas = entradasActivas === 1 ? 'ENTRADA ACTIVA' : 'ENTRADAS ACTIVAS';
 
   return (
-    <section className="flex flex-col items-center gap-3 rounded-xl border border-solid border-white/10 bg-[#16101f] p-6 text-center">
+    <section className="flex flex-col items-center gap-3 rounded-xl border border-solid border-white/10 bg-[var(--superficie)] p-6 text-center">
       <Avatar fotoPerfil={fotoPerfil} nombre={nombre} tamano={80} />
 
       <div>

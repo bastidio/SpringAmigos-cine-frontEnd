@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../services/api';
 import { useCarrito } from '../../context/CarritoContext';
@@ -6,6 +6,8 @@ import CarritoItem from '../carrito/CarritoItem';
 import AvisoReservaButacas from '../carrito/AvisoReservaButacas';
 import useEdicionCarrito from '../carrito/useEdicionCarrito';
 import OrdenConfirmada from './OrdenConfirmada';
+import PagoExitoso from './PagoExitoso';
+import PagoTarjeta from './PagoTarjeta';
 import PanelCheckout from './PanelCheckout';
 import './Checkout.css';
 
@@ -16,10 +18,14 @@ const moneda = (valor) =>
     maximumFractionDigits: 2,
   });
 
+// Cuanto se muestra la animacion de confirmacion antes del mensaje de compra exitosa.
+const DURACION_EXITO_MS = 1800;
+
 const CheckoutDetalle = () => {
   const [confirmando, setConfirmando] = useState(false);
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
+  const [exitoTerminado, setExitoTerminado] = useState(false);
   const navigate = useNavigate();
   
   const { refrescarCantidad } = useCarrito();
@@ -35,7 +41,19 @@ const CheckoutDetalle = () => {
     guardando,
     cambiarCantidad,
     quitarItem,
+    recargar,
   } = useEdicionCarrito();
+
+  // MONTAJE y ACTUALIZACION (compra exitosa): subir al inicio de la pagina y mostrar la
+  // animacion un momento. Con "reducir movimiento" el scroll es directo, sin animacion.
+  // DESMONTAJE: cancelar el temporizador.
+  useEffect(() => {
+    if (orden === null) return;
+    const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reducirMovimiento ? 'auto' : 'smooth' });
+    const temporizador = setTimeout(() => setExitoTerminado(true), DURACION_EXITO_MS);
+    return () => clearTimeout(temporizador);
+  }, [orden]);
 
   const confirmarCompra = async () => {
     setConfirmando(true);
@@ -48,7 +66,11 @@ const CheckoutDetalle = () => {
       setOrden(compra);
       
       refrescarCantidad();
+      // El carrito ya esta vacio: se vuelve a pedir para frenar el temporizador de vencimiento.
+      recargar();
     } catch (err) {
+      // 409: puede ser que el carrito haya vencido; se recarga para que el hook lo detecte.
+      if (err.status === 409) recargar();
       setError(
         err.message ||
           'No se pudo completar la compra. Revisá el carrito e intentá nuevamente.'
@@ -60,6 +82,14 @@ const CheckoutDetalle = () => {
 
   if (cargando) {
     return <p className="pagina_mensaje">Preparando checkout...</p>;
+  }
+
+  if (orden !== null && !exitoTerminado) {
+    return (
+      <div className="checkout">
+        <PagoExitoso />
+      </div>
+    );
   }
 
   if (orden !== null) {
@@ -125,10 +155,15 @@ const CheckoutDetalle = () => {
           <PanelCheckout
             cantidadItems={cantidadTotal}
             total={visible.total}
-            confirmando={confirmando}
-            deshabilitado={confirmando || guardando || items.length === 0}
-            onConfirmar={confirmarCompra}
             formatearMoneda={moneda}
+          />
+
+          <PagoTarjeta
+            total={visible.total}
+            formatearMoneda={moneda}
+            pagando={confirmando}
+            bloqueado={guardando}
+            onPagar={confirmarCompra}
           />
         </div>
       )}

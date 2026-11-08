@@ -35,7 +35,7 @@ const CarritoDetalle = ({ token, onNavegar }) => {
   if (cargando) {
     return (
       <div className="flex justify-center py-10" role="status" aria-label="Cargando carrito">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-solid border-violet-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-solid border-[var(--morado)] border-t-transparent" />
       </div>
     );
   }
@@ -49,7 +49,7 @@ const CarritoDetalle = ({ token, onNavegar }) => {
         <button
           type="button"
           onClick={reintentar}
-          className="cursor-pointer rounded-xl border border-solid border-violet-500 bg-transparent px-4 py-2.5 text-sm font-semibold text-violet-300 transition-colors hover:bg-violet-500/10"
+          className="cursor-pointer rounded-xl border border-solid border-[var(--morado)] bg-transparent px-4 py-2.5 text-sm font-semibold text-[var(--morado-texto)] transition-colors hover:bg-[var(--morado)]/10"
         >
           Reintentar
         </button>
@@ -79,7 +79,7 @@ const CarritoDetalle = ({ token, onNavegar }) => {
       )}
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-xl border border-solid border-white/10 bg-[#16101f] p-6 text-center">
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-solid border-white/10 bg-[var(--superficie)] p-6 text-center">
           <h2 className="m-0 font-serif text-lg font-bold text-white">Tu carrito está vacío</h2>
           <p className="m-0 text-sm text-gray-400">
             Elegí una película en la cartelera o agregá productos del kiosco para comenzar.
@@ -87,7 +87,7 @@ const CarritoDetalle = ({ token, onNavegar }) => {
           <button
             type="button"
             onClick={() => onNavegar('/')}
-            className="cursor-pointer rounded-xl border-0 bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-violet-500"
+            className="cursor-pointer rounded-xl border-0 bg-[var(--morado)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--morado-hover)]"
           >
             Ver cartelera
           </button>

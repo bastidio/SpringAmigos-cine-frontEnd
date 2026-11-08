@@ -11,7 +11,7 @@ const CampoLectura = ({ id, etiqueta, valor }) => {
         type="text"
         value={valor}
         readOnly
-        className="w-full rounded-lg border border-solid border-white/10 bg-[#0b0910] px-3 py-2.5 text-sm text-white outline-none"
+        className="w-full rounded-lg border border-solid border-white/10 bg-[var(--fondo)] px-3 py-2.5 text-sm text-white outline-none"
       />
     </div>
   );
