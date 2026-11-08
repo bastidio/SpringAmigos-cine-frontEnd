@@ -234,7 +234,6 @@
   flex-grow: 1;
   padding: 36px 40px 56px;
   overflow-y: auto;
-  scrollbar-color: rgba(212, 175, 55, 0.4) transparent;
 }
 
 .admin-view-header {

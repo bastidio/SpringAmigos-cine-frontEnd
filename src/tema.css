@@ -21,6 +21,29 @@
   --cuerpo: 'Inter', system-ui, sans-serif;
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--dorado) var(--fondo);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--fondo);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dorado);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dorado-texto);
+}
+
 .pagina {
   flex-grow: 1;
   min-height: 100vh;
