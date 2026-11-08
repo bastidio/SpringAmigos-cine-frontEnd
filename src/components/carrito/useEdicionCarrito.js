@@ -58,7 +58,7 @@ const informarVencimiento = async (funcionId, avisarVencimiento, signal) => {
 };
 
 const useEdicionCarrito = (token) => {
-  const { refrescarCantidad, avisarVencimiento } = useCarrito();
+  const { refrescarCantidad, avisarVencimiento, version } = useCarrito();
   
   const [carrito, setCarrito] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -99,7 +99,8 @@ const useEdicionCarrito = (token) => {
 
     
     return () => controller.abort();
-  }, [token, intento]);
+    // "version" cambia cuando otra parte de la app modifica el carrito (ej: el kiosco).
+  }, [token, intento, version]);
 
   
   

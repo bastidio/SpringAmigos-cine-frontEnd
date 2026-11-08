@@ -13,7 +13,7 @@ const PanelResumenCarrito = ({ cantidadArticulos, total, formatearMoneda, onIrAC
       <hr className="m-0 border-0 border-t border-solid border-white/10" />
 
       <p className="m-0 flex justify-between text-sm font-semibold">
-        <span>Total estimado</span>
+        <span>Total</span>
         <span className="text-amber-300">{formatearMoneda(total)}</span>
       </p>
 
@@ -23,7 +23,7 @@ const PanelResumenCarrito = ({ cantidadArticulos, total, formatearMoneda, onIrAC
         disabled={ocupado}
         className="cursor-pointer rounded-lg border-0 bg-[var(--morado)] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[var(--morado-hover)] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {ocupado ? 'Guardando cambios...' : 'Ir a pagar'}
+        {ocupado ? 'Guardando cambios...' : 'Continuar'}
       </button>
     </aside>
   );

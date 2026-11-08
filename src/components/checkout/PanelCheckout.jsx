@@ -11,11 +11,11 @@ const PanelCheckout = ({ cantidadItems, total, formatearMoneda }) => {
       <hr className="checkout-panel__separador" />
 
       <p className="checkout-panel__renglon checkout-panel__renglon--total">
-        <span>Total estimado</span>
+        <span>Total</span>
         <span className="checkout-panel__total">{formatearMoneda(total)}</span>
       </p>
     </aside>
   );
 };
 
-export default PanelCheckout;
+export default PanelCheckout;

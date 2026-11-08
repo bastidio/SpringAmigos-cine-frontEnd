@@ -162,7 +162,6 @@ const SeleccionButacas = () => {
           precio={funcion.precio_base}
           quitar={alternarButaca}
           irAlKiosco={() => agregarAlCarritoEIr('/kiosco')}
-          irAlCarrito={() => agregarAlCarritoEIr('/carrito')}
           agregando={agregando}
         />
       </div>

@@ -1,5 +1,56 @@
 
 
+.kiosco_layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.kiosco_productos {
+  min-width: 0;
+}
+
+.kiosco_carrito {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 32px 0;
+  padding: 20px;
+  border-radius: 16px;
+  background-color: var(--fondo);
+  border: 1px solid var(--borde);
+}
+
+.kiosco_carrito-titulo {
+  font-family: var(--titulos);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.kiosco_carrito-login {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+@media (max-width: 1023px) {
+  .kiosco_layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .kiosco_carrito {
+    margin-top: 0;
+    margin-bottom: 48px;
+  }
+}
+
 .kiosco {
   max-width: 1152px;
   margin: 0 auto;
@@ -62,19 +113,19 @@
 
 .kiosco_grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1279px) {
   .kiosco_grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 767px) {
   .kiosco_grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -90,7 +141,7 @@
 
 .producto-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 32px rgba(139, 92, 246, 0.22);
+  box-shadow: 0 0 32px color-mix(in srgb, var(--morado-texto) 22%, transparent);
 }
 
 .producto-card_marco {
@@ -216,13 +267,13 @@
   font-size: 16px;
   line-height: 1;
   color: var(--texto);
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  background-color: var(--morado);
   cursor: pointer;
-  transition: box-shadow 0.15s ease, opacity 0.15s ease;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
 }
 
 .producto-card_contador-boton:hover:not(:disabled) {
-  box-shadow: 0 0 12px rgba(139, 92, 246, 0.45);
+  background-color: var(--morado-hover);
 }
 
 .producto-card_contador-boton:disabled {
