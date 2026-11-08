@@ -1,7 +1,7 @@
 import BotonAccion from '../ui/BotonAccion';
 import ControlStockInline from './ControlStockInline';
 
-const KioscoTable = ({ productos, onEditar, onActualizarStock, onCambiarEstado }) => {
+const KioscoTable = ({ productos, onEditar, onActualizarStock, onEliminar, onReactivar }) => {
   if (productos.length === 0) {
     return <p className="texto-muted kiosco-tabla-vacia">No hay productos en esta categoría.</p>;
   }
@@ -60,17 +60,18 @@ const KioscoTable = ({ productos, onEditar, onActualizarStock, onCambiarEstado }
                   />
                 </td>
                 <td>
-                  <button 
-                    className={`etiqueta-estado-btn ${p.activo ? 'etiqueta--activa' : 'etiqueta--inactiva'}`}
-                    onClick={() => onCambiarEstado(p)}
-                    title="Clic para cambiar estado"
-                  >
+                  <span className={`etiqueta-estado-btn etiqueta-estado-fija ${p.activo ? 'etiqueta--activa' : 'etiqueta--inactiva'}`}>
                     {p.activo ? 'ACTIVO' : 'INACTIVO'}
-                  </button>
+                  </span>
                 </td>
                 <td className="acciones-celda">
                    <div className="admin-table-actions">
                       <BotonAccion variante="secundario" onClick={() => onEditar(p)}>Editar</BotonAccion>
+                      {p.activo ? (
+                        <BotonAccion variante="eliminar" onClick={() => onEliminar(p)}>Eliminar</BotonAccion>
+                      ) : (
+                        <BotonAccion variante="secundario" onClick={() => onReactivar(p)}>Reactivar</BotonAccion>
+                      )}
                    </div>
                 </td>
               </tr>

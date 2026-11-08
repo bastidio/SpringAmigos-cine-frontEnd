@@ -371,6 +371,18 @@
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
 }
 
+.btn-eliminar {
+  color: var(--error);
+  background-color: transparent;
+  border: 1px solid var(--error);
+  cursor: pointer;
+}
+
+.btn-eliminar:hover {
+  background-color: var(--error);
+  color: #fff;
+}
+
 
 .filtro-grupo,
 .filtros-categorias-container {

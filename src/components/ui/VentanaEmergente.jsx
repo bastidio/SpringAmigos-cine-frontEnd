@@ -8,8 +8,8 @@
 
 const COLORES = {
   peligro: {
-    icono: 'bg-red-500/15 text-red-400',
-    boton: 'bg-red-500 hover:bg-red-400 focus-visible:outline-red-400',
+    icono: 'bg-[var(--error)]/15 text-[var(--error)]',
+    boton: 'bg-[var(--error)] hover:opacity-85 focus-visible:outline-[var(--error)]',
   },
   aviso: {
     icono: 'bg-[var(--dorado)]/15 text-[var(--dorado-texto)]',

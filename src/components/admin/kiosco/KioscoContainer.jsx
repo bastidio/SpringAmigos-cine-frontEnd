@@ -3,6 +3,7 @@ import KioscoTable from './KioscoTable';
 import KioscoForm from './KioscoForm';
 import BotonAccion from '../ui/BotonAccion';
 import AdminModal from '../ui/AdminModal';
+import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const AdminKioscoView = () => {
   const [productos, setProductos] = useState([]);
@@ -11,6 +12,9 @@ const AdminKioscoView = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
   const [errorGuardar, setErrorGuardar] = useState(null);
+  const [productoAEliminar, setProductoAEliminar] = useState(null);
+  const [procesando, setProcesando] = useState(false);
+  const [errorAccion, setErrorAccion] = useState(null);
 
   const cargarDatos = async () => {
     try {
@@ -18,7 +22,7 @@ const AdminKioscoView = () => {
       const opciones = { headers: { 'Authorization': `Bearer ${token}` } };
 
       const [resProd, resCat] = await Promise.all([
-        fetch('/productos', opciones),
+        fetch('/productos?incluirInactivos=true', opciones),
         fetch('/categorias', opciones)
       ]);
       setProductos(await resProd.json());
@@ -52,26 +56,33 @@ const AdminKioscoView = () => {
     }
   };
 
-  const manejarCambioEstado = async (producto) => {
-    const nuevoEstado = !producto.activo;
+  const cambiarActivo = async (producto, metodo, ruta, mensajeError) => {
+    setProcesando(true);
     try {
       const token = localStorage.getItem('token');
-      await fetch(`/productos/${producto.id}/estado`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify({ activo: nuevoEstado })
+      const response = await fetch(`/productos/${producto.id}${ruta}`, {
+        method: metodo,
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-      
-      setProductos(productos.map(p => 
-        p.id === producto.id ? { ...p, activo: nuevoEstado } : p
-      ));
+      if (!response.ok) {
+        setErrorAccion(`${mensajeError} (${response.status})`);
+        return;
+      }
+      await cargarDatos();
     } catch (error) {
-      console.error("Error cambiando estado:", error);
+      console.error(mensajeError, error);
+      setErrorAccion('No se pudo conectar con el servidor.');
+    } finally {
+      setProcesando(false);
+      setProductoAEliminar(null);
     }
   };
+
+  const confirmarEliminar = () =>
+    cambiarActivo(productoAEliminar, 'DELETE', '', 'No se pudo eliminar el producto');
+
+  const manejarReactivar = (producto) =>
+    cambiarActivo(producto, 'PATCH', '/reactivar', 'No se pudo reactivar el producto');
 
   const manejarGuardar = async (formData) => {
     const payload = {
@@ -173,7 +184,8 @@ const AdminKioscoView = () => {
         productos={productosFiltrados} 
         onEditar={abrirModal} 
         onActualizarStock={manejarActualizacionStock}
-        onCambiarEstado={manejarCambioEstado}
+        onEliminar={setProductoAEliminar}
+        onReactivar={manejarReactivar}
       />
 
       <AdminModal isOpen={modalAbierto} onClose={cerrarModal} titulo={productoEditando ? 'Editar Producto' : 'Nuevo Producto'}>
@@ -187,6 +199,24 @@ const AdminKioscoView = () => {
           onCancelar={cerrarModal} 
         />
       </AdminModal>
+
+      <VentanaEmergente
+        abierta={productoAEliminar !== null}
+        variante="peligro"
+        titulo="Eliminar producto"
+        mensaje={`¿Eliminar ${productoAEliminar?.nombre ?? ''}? Va a dejar de mostrarse en el kiosco.`}
+        textoConfirmar="Eliminar"
+        ocupado={procesando}
+        onConfirmar={confirmarEliminar}
+        onCancelar={() => setProductoAEliminar(null)}
+      />
+
+      <VentanaEmergente
+        abierta={errorAccion !== null}
+        titulo="No se pudo completar"
+        mensaje={errorAccion}
+        onConfirmar={() => setErrorAccion(null)}
+      />
     </div>
   );
 };
