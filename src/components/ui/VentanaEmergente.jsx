@@ -13,7 +13,7 @@ const COLORES = {
   },
   aviso: {
     icono: 'bg-[var(--dorado)]/15 text-[var(--dorado-texto)]',
-    boton: 'bg-[var(--morado)] hover:bg-violet-500 focus-visible:outline-[var(--morado-texto)]',
+    boton: 'bg-[var(--morado)] hover:bg-[var(--morado-hover)] focus-visible:outline-[var(--morado-texto)]',
   },
 };
 

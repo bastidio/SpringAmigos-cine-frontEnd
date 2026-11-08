@@ -156,13 +156,13 @@
 }
 
 .admin-sidebar nav a:hover {
-  background-color: rgba(139, 92, 246, 0.12);
+  background-color: color-mix(in srgb, var(--morado) 12%, transparent);
   color: var(--admin-text);
 }
 
 
 .admin-sidebar nav a.active {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  background: linear-gradient(135deg, var(--morado) 0%, var(--morado-hover) 100%);
   color: var(--admin-text);
   font-weight: 600;
 }
@@ -225,7 +225,7 @@
 }
 
 .admin-header__btn-cartelera:focus-visible {
-  outline: 2px solid var(--admin-primary);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 2px;
 }
 
@@ -306,13 +306,13 @@
 }
 
 .admin-container .btn-primario {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  background: linear-gradient(135deg, var(--morado) 0%, var(--morado-hover) 100%);
   color: var(--admin-text);
   border: none;
 }
 
 .admin-container .btn-primario:hover {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--morado) 40%, transparent);
   transform: translateY(-1px);
 }
 
@@ -401,17 +401,22 @@
 }
 
 .admin-container .filtro-item.activo,
+.btn-filtro-dia.activo {
+  color: var(--admin-text);
+  background-color: var(--morado);
+  border-color: var(--morado);
+}
+
 .admin-container .filtro-item.activo:hover,
-.btn-filtro-dia.activo,
 .btn-filtro-dia.activo:hover {
   color: var(--admin-text);
-  background-color: var(--admin-primary);
-  border-color: var(--admin-primary);
+  background-color: var(--morado-hover);
+  border-color: var(--morado-hover);
 }
 
 .admin-container .filtro-item:focus-visible,
 .btn-filtro-dia:focus-visible {
-  outline: 2px solid var(--admin-primary);
+  outline: 2px solid var(--morado-texto);
   outline-offset: 2px;
 }
 
@@ -593,13 +598,13 @@
   font-size: 15px;
   line-height: 1;
   color: var(--admin-text);
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  background: linear-gradient(135deg, var(--morado) 0%, var(--morado-hover) 100%);
   cursor: pointer;
   transition: box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
 .control-stock-btn:hover:not(:disabled) {
-  box-shadow: 0 0 12px rgba(139, 92, 246, 0.45);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--morado) 45%, transparent);
 }
 
 .control-stock-btn:disabled {
@@ -1075,7 +1080,7 @@
 
 .tarjeta-sala.activa {
   border-color: var(--admin-gold);
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: color-mix(in srgb, var(--morado) 10%, transparent);
   box-shadow: 0 0 24px rgba(212, 175, 55, 0.14);
 }
 
@@ -1132,23 +1137,23 @@
 
 .btn-nueva-sala {
   color: var(--admin-text);
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  background: linear-gradient(135deg, var(--morado) 0%, var(--morado-hover) 100%);
   border: none;
 }
 
 .btn-nueva-sala:hover {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--morado) 40%, transparent);
   transform: translateY(-1px);
 }
 
 .btn-editar-config {
-  color: var(--admin-primary);
+  color: var(--morado-texto);
   background: transparent;
-  border: 1px solid var(--admin-primary);
+  border: 1px solid var(--morado-texto);
 }
 
 .btn-editar-config:hover {
-  background-color: rgba(139, 92, 246, 0.12);
+  background-color: color-mix(in srgb, var(--morado) 12%, transparent);
 }
 
 .btn-nueva-sala:disabled,
@@ -1300,7 +1305,7 @@
   height: 12px;
   margin: 0 32px 4px;
   border-radius: 9999px 9999px 0 0;
-  background: linear-gradient(to bottom, rgba(139, 92, 246, 0.4), transparent);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--morado) 40%, transparent), transparent);
 }
 
 .mapa-sala_pantalla-linea {
@@ -1349,7 +1354,7 @@
   width: 30px;
   height: 26px;
   border-radius: 6px 6px 0 0;
-  border: 1px solid rgba(165, 126, 255, 0.35);
+  border: 1px solid color-mix(in srgb, var(--morado-texto) 35%, transparent);
   background-color: var(--admin-panel-raised);
 }
 
@@ -1539,7 +1544,7 @@
 
 
 .input-fecha:focus {
-  border-color: #a855f7; 
+  border-color: var(--morado-texto); 
 }
 
 

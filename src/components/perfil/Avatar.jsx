@@ -40,7 +40,7 @@ const Avatar = ({ fotoPerfil, nombre, tamano = 40 }) => {
       role="img"
       aria-label={nombre ? `Avatar de ${nombre}` : 'Avatar'}
       style={{ ...medidas, fontSize: Math.round(tamano * 0.4) }}
-      className="flex shrink-0 select-none items-center justify-center rounded-full bg-violet-600 font-serif font-bold leading-none text-white"
+      className="flex shrink-0 select-none items-center justify-center rounded-full bg-[var(--morado)] font-serif font-bold leading-none text-[var(--texto)]"
     >
       {iniciales(nombre)}
     </span>

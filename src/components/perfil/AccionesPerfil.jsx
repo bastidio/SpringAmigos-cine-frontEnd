@@ -6,7 +6,7 @@ const AccionesPerfil = ({ onIrAEntradas, onLogout }) => {
       <button
         type="button"
         onClick={onIrAEntradas}
-        className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-solid border-violet-500 bg-transparent px-4 py-3 text-sm font-semibold text-violet-300 transition-colors hover:bg-violet-500/10"
+        className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-solid border-[var(--morado-texto)] bg-transparent px-4 py-3 text-sm font-semibold text-[var(--morado-texto)] transition-colors hover:bg-[var(--morado)]/10"
       >
         {}
         <svg

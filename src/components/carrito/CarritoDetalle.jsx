@@ -35,7 +35,7 @@ const CarritoDetalle = ({ token, onNavegar }) => {
   if (cargando) {
     return (
       <div className="flex justify-center py-10" role="status" aria-label="Cargando carrito">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-solid border-[var(--morado)] border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-solid border-[var(--morado-texto)] border-t-transparent" />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 
 const COLORES = {
-  violeta: 'border-violet-500 text-violet-400',
+  violeta: 'border-[var(--morado-texto)] text-[var(--morado-texto)]',
   dorado: 'border-amber-400 text-amber-300',
 };
 
