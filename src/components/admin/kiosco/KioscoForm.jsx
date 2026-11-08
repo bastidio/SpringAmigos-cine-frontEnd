@@ -9,8 +9,8 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
     precio: '', 
     stock: '', 
     descuento: 0,
-    posterProducto: '',
-    activo: true 
+    imagenes: [''],
+    activo: true
   });
 
   useEffect(() => {
@@ -18,11 +18,31 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
       setFormData({
         ...productoAEditar,
         categoria_id: productoAEditar.categoria?.id || '',
-        
-        posterProducto: productoAEditar.posterProducto || ''
+        imagenes: productoAEditar.imagenes?.length > 0
+          ? productoAEditar.imagenes.map((img) => img.url)
+          : ['']
       });
     }
   }, [productoAEditar]);
+
+  // La primera URL es la imagen principal. Siempre queda al menos un campo.
+  const cambiarImagen = (indice, valor) => {
+    setFormData({
+      ...formData,
+      imagenes: formData.imagenes.map((url, i) => (i === indice ? valor : url))
+    });
+  };
+
+  const agregarImagen = () => {
+    setFormData({ ...formData, imagenes: [...formData.imagenes, ''] });
+  };
+
+  const quitarImagen = (indice) => {
+    setFormData({
+      ...formData,
+      imagenes: formData.imagenes.filter((_, i) => i !== indice)
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -32,7 +52,10 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    onGuardar({ ...formData, posterProducto: formData.posterProducto.trim() || null });
+    onGuardar({
+      ...formData,
+      imagenes: formData.imagenes.map((url) => url.trim()).filter(Boolean)
+    });
   };
 
   return (
@@ -63,18 +86,29 @@ const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
       </div>
 
       <div className="kiosco-form-group">
-        <label className="kiosco-form-label">URL de imagen (opcional)</label>
-        {}
-        <input
-          className="admin-input"
-          name="posterProducto"
-          type="url"
-          placeholder="https://..."
-          pattern="https?://.+"
-          title="La URL tiene que empezar con http:// o https://"
-          value={formData.posterProducto}
-          onChange={handleChange}
-        />
+        <label className="kiosco-form-label">Imágenes (la primera es la principal)</label>
+        {formData.imagenes.map((url, indice) => (
+          <div key={indice} className="kiosco-form-imagen">
+            <input
+              className="admin-input"
+              type="url"
+              placeholder="https://..."
+              pattern="https?://.+"
+              title="La URL tiene que empezar con http:// o https://"
+              value={url}
+              onChange={(e) => cambiarImagen(indice, e.target.value)}
+              required={indice === 0}
+            />
+            {formData.imagenes.length > 1 && (
+              <BotonAccion variante="secundario" type="button" onClick={() => quitarImagen(indice)}>
+                Quitar
+              </BotonAccion>
+            )}
+          </div>
+        ))}
+        <BotonAccion variante="secundario" type="button" onClick={agregarImagen}>
+          Agregar otra imagen
+        </BotonAccion>
       </div>
 
       <div className="kiosco-form-group">

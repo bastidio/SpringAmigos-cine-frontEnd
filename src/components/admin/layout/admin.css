@@ -796,6 +796,17 @@
   color: var(--admin-text-muted);
 }
 
+/* Una URL de imagen con su boton para quitarla */
+.kiosco-form-imagen {
+  display: flex;
+  gap: 8px;
+}
+
+.kiosco-form-imagen .admin-input {
+  flex: 1;
+  min-width: 0;
+}
+
 /* Precio, stock y descuento en una fila de 3 columnas. minmax(0, 1fr) deja
    que las columnas se achiquen y no se salgan del modal. */
 .kiosco-form-row {

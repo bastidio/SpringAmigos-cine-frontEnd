@@ -7,9 +7,6 @@ import ProductoCard from './ProductoCard';
 import './Kiosco.css';
 
 const elegirImagen = (producto) => {
-  if (producto.posterProducto) {
-    return producto.posterProducto;
-  }
   return producto.imagenes?.length > 0 ? producto.imagenes[0].url : null;
 };
 

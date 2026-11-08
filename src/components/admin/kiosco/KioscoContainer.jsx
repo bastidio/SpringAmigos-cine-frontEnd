@@ -92,8 +92,7 @@ const AdminKioscoView = () => {
   stock: Number(formData.stock) || 0,
   descuento: Number(formData.descuento) || 0,
   categoriaId: Number(formData.categoria_id) || Number(formData.categoriaId) || 0,
-  imagenes: formData.posterProducto ? [formData.posterProducto] : [],
-  posterProducto: formData.posterProducto || null
+  imagenes: formData.imagenes
 };
 
     setErrorGuardar(null);
