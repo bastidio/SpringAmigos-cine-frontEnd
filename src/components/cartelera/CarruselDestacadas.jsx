@@ -6,7 +6,7 @@ import CarruselControles from './CarruselControles';
 const INTERVALO_MS = 6000;
 
 
-const CarruselDestacadas = ({ peliculas, verDetalle }) => {
+const CarruselDestacadas = ({ peliculas }) => {
   const [indice, setIndice] = useState(0);
   
   const [pausado, setPausado] = useState(false);
@@ -60,7 +60,6 @@ const CarruselDestacadas = ({ peliculas, verDetalle }) => {
           activa={posicion === indice}
           posicion={posicion + 1}
           total={cantidad}
-          verDetalle={verDetalle}
         />
       ))}
 

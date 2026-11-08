@@ -176,6 +176,8 @@
   line-height: 32px;
   color: var(--texto);
   margin-bottom: 24px;
+  /* Deja lugar para la barra de navegacion sticky (88px, igual que los paneles sticky) al hacer scroll hasta el titulo. */
+  scroll-margin-top: 88px;
 }
 
 .detalle_dia {

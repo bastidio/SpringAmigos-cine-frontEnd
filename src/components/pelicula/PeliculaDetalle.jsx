@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import PeliculaFicha from './PeliculaFicha';
 import FuncionCard from './FuncionCard';
 import './Detalle.css';
@@ -10,6 +10,7 @@ const PeliculaDetalle = () => {
   
   
   const { id } = useParams();
+  const irAFunciones = useLocation().hash === '#funciones';
 
   const [pelicula, setPelicula] = useState(null);
   const [funciones, setFunciones] = useState(null);
@@ -56,9 +57,25 @@ const PeliculaDetalle = () => {
     return () => controller.abort();
   }, [id]);
 
+  // Si se entra con #funciones (boton "Ver funciones" del banner) no se va arriba:
+  // el scroll a la seccion lo hace irAFunciones cuando el titulo ya existe.
   useEffect(() => {
+    if (irAFunciones) return;
     window.scrollTo(0, 0);
-  }, [id]);
+  }, [id, irAFunciones]);
+
+  // Callback ref: React lo llama con el elemento cuando el titulo se monta en pantalla
+  // (recien despues de que cargaron las funciones, antes ese titulo no existe) y con null
+  // cuando se desmonta. useCallback mantiene la misma funcion entre renders, asi no se
+  // vuelve a llamar (ni a hacer scroll) en cada render.
+  const irAFuncionesRef = useCallback(
+    (titulo) => {
+      if (titulo === null || !irAFunciones) return;
+      const sinAnimacion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      titulo.scrollIntoView({ behavior: sinAnimacion ? 'auto' : 'smooth' });
+    },
+    [irAFunciones],
+  );
 
   
   if (error !== null) {
@@ -120,7 +137,7 @@ const PeliculaDetalle = () => {
 
         <hr className="detalle_separador" />
 
-        <h2 className="detalle_funciones-titulo">Funciones disponibles</h2>
+        <h2 ref={irAFuncionesRef} className="detalle_funciones-titulo">Funciones disponibles</h2>
 
         {funcionesDeLaPelicula.length === 0 && (
           <p className="pagina_mensaje">Todavía no hay funciones para esta película.</p>

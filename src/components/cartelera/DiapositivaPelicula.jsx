@@ -4,7 +4,7 @@
 
 import { Link } from 'react-router-dom';
 
-const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) => {
+const DiapositivaPelicula = ({ pelicula, activa, posicion, total }) => {
 
   const tabIndex = activa ? 0 : -1;
   const imagen = pelicula.bannerUrl || pelicula.poster_url;
@@ -62,14 +62,13 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total, verDetalle }) 
           </p>
 
           <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
+            <Link
+              to={`/pelicula/${pelicula.id}#funciones`}
               tabIndex={tabIndex}
-              onClick={() => verDetalle(pelicula.id)}
-              className="inline-flex cursor-pointer items-center justify-center rounded-lg border-0 bg-linear-135 from-[var(--morado)] to-[var(--morado-hover)] px-6 py-3 text-[14.4px] font-semibold text-[var(--texto)] transition-all hover:-translate-y-px hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]"
+              className="inline-flex cursor-pointer items-center justify-center rounded-lg border-0 bg-linear-135 from-[var(--morado)] to-[var(--morado-hover)] px-6 py-3 text-[14.4px] font-semibold text-[var(--texto)] no-underline transition-all hover:-translate-y-px hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]"
             >
               Ver funciones
-            </button>
+            </Link>
           </div>
         </div>
       </div>

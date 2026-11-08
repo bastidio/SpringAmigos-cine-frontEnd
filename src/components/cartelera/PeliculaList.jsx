@@ -105,7 +105,7 @@ const PeliculaList = () => {
   return (
     <>
       {}
-      <CarruselDestacadas peliculas={peliculas.slice(0, 5)} verDetalle={verDetalle} />
+      <CarruselDestacadas peliculas={peliculas.slice(0, 5)} />
 
       <div className="cartelera_contenido">
         <div className="cartelera_encabezado">
