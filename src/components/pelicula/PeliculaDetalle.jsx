@@ -18,7 +18,9 @@ const PeliculaDetalle = () => {
   
   
   useEffect(() => {
-    fetch(`/peliculas/${id}`)
+    const controller = new AbortController();
+
+    fetch(`/peliculas/${id}`, { signal: controller.signal })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error ' + response.status);
@@ -30,11 +32,12 @@ const PeliculaDetalle = () => {
         setError(null);
       })
       .catch((error) => {
+        if (error.name === 'AbortError') return;
         console.error('Error al mostrar la película', error);
         setError('No se pudo cargar la película. Puede que no exista o que el backend esté caído.');
       });
 
-    fetch('/funciones')
+    fetch('/funciones', { signal: controller.signal })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error ' + response.status);
@@ -45,9 +48,12 @@ const PeliculaDetalle = () => {
         setFunciones(data);
       })
       .catch((error) => {
+        if (error.name === 'AbortError') return;
         console.error('Error al mostrar las funciones', error);
         setError('No se pudieron cargar las funciones. Revisá que el backend esté levantado.');
       });
+
+    return () => controller.abort();
   }, [id]);
 
   useEffect(() => {
