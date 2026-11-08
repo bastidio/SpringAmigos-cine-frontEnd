@@ -26,6 +26,8 @@ export default defineConfig({
       '/ordenes': 'http://localhost:4002',
       '/salas': 'http://localhost:4002',
       '/categorias': 'http://localhost:4002',
+      // Gestion de codigos de descuento (la vista del front es /admin/descuentos).
+      '/descuentos': 'http://localhost:4002',
     },
   },
 })

@@ -5,6 +5,7 @@ import { useCarrito } from '../../context/CarritoContext';
 import CarritoItem from '../carrito/CarritoItem';
 import AvisoReservaButacas from '../carrito/AvisoReservaButacas';
 import useEdicionCarrito from '../carrito/useEdicionCarrito';
+import CampoDescuento from './CampoDescuento';
 import OrdenConfirmada from './OrdenConfirmada';
 import PagoExitoso from './PagoExitoso';
 import PagoTarjeta from './PagoTarjeta';
@@ -26,6 +27,11 @@ const CheckoutDetalle = () => {
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
   const [exitoTerminado, setExitoTerminado] = useState(false);
+  // Codigo de descuento: lo que el usuario aplico, lo que el backend calculo (subtotal, monto, total) y el error.
+  const [codigoAplicado, setCodigoAplicado] = useState(null);
+  const [descuento, setDescuento] = useState(null);
+  const [errorDescuento, setErrorDescuento] = useState(null);
+  const [revalidacion, setRevalidacion] = useState(0);
   const navigate = useNavigate();
   
   const { refrescarCantidad } = useCarrito();
@@ -44,9 +50,50 @@ const CheckoutDetalle = () => {
     recargar,
   } = useEdicionCarrito();
 
-  // MONTAJE y ACTUALIZACION (compra exitosa): subir al inicio de la pagina y mostrar la
-  // animacion un momento. Con "reducir movimiento" el scroll es directo, sin animacion.
-  // DESMONTAJE: cancelar el temporizador.
+  const totalCarrito = visible?.total;
+  useEffect(() => {
+    if (codigoAplicado === null || guardando) return;
+
+    const controller = new AbortController();
+
+    const validarDescuento = async () => {
+      try {
+        const respuesta = await apiFetch(
+          `/api/checkout/descuento?codigo=${encodeURIComponent(codigoAplicado)}`,
+          { signal: controller.signal }
+        );
+        if (respuesta.valido) {
+          setDescuento(respuesta);
+          setErrorDescuento(null);
+        } else {
+          setCodigoAplicado(null);
+          setDescuento(null);
+          setErrorDescuento(respuesta.mensaje);
+        }
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        setCodigoAplicado(null);
+        setDescuento(null);
+        setErrorDescuento(err.message);
+      }
+    };
+
+    validarDescuento();
+    return () => controller.abort();
+  }, [codigoAplicado, totalCarrito, guardando, revalidacion]);
+
+  const aplicarDescuento = (codigo) => {
+    setErrorDescuento(null);
+    setDescuento(null);
+    setCodigoAplicado(codigo);
+  };
+
+  const quitarDescuento = () => {
+    setCodigoAplicado(null);
+    setDescuento(null);
+    setErrorDescuento(null);
+  };
+
   useEffect(() => {
     if (orden === null) return;
     const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -60,8 +107,10 @@ const CheckoutDetalle = () => {
     setError(null);
 
     try {
+      // Solo se manda el codigo: el backend lo vuelve a validar y recalcula el total.
       const compra = await apiFetch('/api/checkout', {
         method: 'POST',
+        body: codigoAplicado !== null ? { codigoDescuento: codigoAplicado } : undefined,
       });
       setOrden(compra);
       
@@ -71,6 +120,8 @@ const CheckoutDetalle = () => {
     } catch (err) {
       // 409: puede ser que el carrito haya vencido; se recarga para que el hook lo detecte.
       if (err.status === 409) recargar();
+      // Si el codigo dejo de ser valido, se revalida para quitarlo y avisar debajo del campo.
+      if (codigoAplicado !== null) setRevalidacion((veces) => veces + 1);
       setError(
         err.message ||
           'No se pudo completar la compra. Revisá el carrito e intentá nuevamente.'
@@ -155,11 +206,20 @@ const CheckoutDetalle = () => {
           <PanelCheckout
             cantidadItems={cantidadTotal}
             total={visible.total}
+            descuento={descuento}
             formatearMoneda={moneda}
-          />
+          >
+            <CampoDescuento
+              codigoAplicado={codigoAplicado}
+              cargando={codigoAplicado !== null && descuento === null}
+              error={errorDescuento}
+              onAplicar={aplicarDescuento}
+              onQuitar={quitarDescuento}
+            />
+          </PanelCheckout>
 
           <PagoTarjeta
-            total={visible.total}
+            total={descuento !== null ? descuento.total : visible.total}
             formatearMoneda={moneda}
             pagando={confirmando}
             bloqueado={guardando}

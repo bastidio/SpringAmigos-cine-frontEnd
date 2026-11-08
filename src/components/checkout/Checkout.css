@@ -122,6 +122,22 @@
   color: var(--dorado-texto);
 }
 
+.checkout-descuento {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.checkout-descuento__fila {
+  display: flex;
+  gap: 8px;
+}
+
+.checkout-descuento__fila .boton {
+  flex-shrink: 0;
+}
+
 .checkout__vacio,
 .checkout-confirmada {
   display: flex;

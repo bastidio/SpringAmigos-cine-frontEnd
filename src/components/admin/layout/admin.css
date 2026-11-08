@@ -771,7 +771,7 @@
    que las columnas se achiquen y no se salgan del modal. */
 .kiosco-form-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   width: 100%;
   margin-bottom: 24px;
@@ -992,6 +992,19 @@
 
 .detalle-item-total {
   align-self: center;
+}
+
+.detalle-descuento {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--admin-text-muted);
+}
+
+.detalle-descuento p {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .detalle-footer {

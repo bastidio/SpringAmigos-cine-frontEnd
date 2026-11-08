@@ -34,6 +34,19 @@ const PanelDetalleOrden = ({ orden }) => {
         ))}
       </ul>
 
+      {orden.codigoDescuento && (
+        <div className="detalle-descuento">
+          <p>
+            <span>Subtotal:</span>
+            <span>${orden.subtotal}</span>
+          </p>
+          <p>
+            <span>Descuento ({orden.codigoDescuento} −{orden.porcentajeDescuento}%):</span>
+            <span>−${orden.montoDescuento}</span>
+          </p>
+        </div>
+      )}
+
       <div className="detalle-footer">
         <span>Total:</span>
         <strong className="detalle-total-valor">${orden.total}</strong>

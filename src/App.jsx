@@ -24,6 +24,7 @@ import AdminFuncionesView from './views/admin/AdminFuncionesView';
 import AdminSalasView from './views/admin/AdminSalasView';
 import AdminKioscoView from './views/admin/AdminKioscoView';
 import AdminOrdenesView from './views/admin/AdminOrdenesView';
+import AdminDescuentosView from './views/admin/AdminDescuentosView';
 
 
 
@@ -241,6 +242,7 @@ function App() {
           <Route path="funciones" element={<AdminFuncionesView />} />
           <Route path="salas" element={<AdminSalasView />} />
           <Route path="kiosco" element={<AdminKioscoView />} />
+          <Route path="descuentos" element={<AdminDescuentosView />} />
           <Route path="ordenes" element={<AdminOrdenesView />} />
         </Route>
 
