@@ -38,8 +38,27 @@ const borrar = async (url, opciones) => {
   }
 };
 
+// Avisa que se terminó el tiempo de reserva. Si la funcion todavia no empezo, el modal
+// ofrece volver a elegir butacas en ella.
+const informarVencimiento = async (funcionId, avisarVencimiento, signal) => {
+  let puedeReelegir = false;
+  if (funcionId !== null) {
+    try {
+      // GET publico: fetch simple, sin token (un token vencido haria fallar el pedido).
+      const respuesta = await fetch(`/funciones/${funcionId}`, { signal });
+      if (respuesta.ok) {
+        const funcion = await respuesta.json();
+        puedeReelegir = new Date(funcion.horario) > new Date();
+      }
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+    }
+  }
+  avisarVencimiento({ funcionId, puedeReelegir });
+};
+
 const useEdicionCarrito = (token) => {
-  const { refrescarCantidad } = useCarrito();
+  const { refrescarCantidad, avisarVencimiento } = useCarrito();
   
   const [carrito, setCarrito] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -49,6 +68,11 @@ const useEdicionCarrito = (token) => {
   const [cambios, setCambios] = useState(SIN_CAMBIOS);
   
   const [errorAccion, setErrorAccion] = useState(null);
+  // Cuando el carrito vence el backend borra la funcion: la recordamos para el modal.
+  const [funcionRecordada, setFuncionRecordada] = useState(null);
+  if (carrito?.funcionId && carrito.funcionId !== funcionRecordada) {
+    setFuncionRecordada(carrito.funcionId);
+  }
 
   
   
@@ -132,6 +156,30 @@ const useEdicionCarrito = (token) => {
     return () => controller.abort();
   }, [cambios, token, refrescarCantidad]);
 
+  // Vencimiento: por tiempo (solo si el carrito tiene butacas) o porque el backend ya lo marco
+  // (el scheduler vacio el carrito o fallo el pago). El temporizador se limpia al desmontar o
+  // cuando cambia expiraEn (por ejemplo, al agregar otra butaca).
+  const hayButacas = (carrito?.items ?? []).some((item) => item.tipo === 'BUTACA');
+  const expiraEn = carrito?.expiraEn;
+  const vencidoEnBackend = carrito?.vencido === true;
+  const hayVencimiento = vencidoEnBackend || (hayButacas && Boolean(expiraEn));
+
+  useEffect(() => {
+    if (!hayVencimiento) return;
+
+    const controller = new AbortController();
+    const espera = vencidoEnBackend ? 0 : Math.max(new Date(expiraEn) - Date.now(), 0);
+    const temporizador = setTimeout(
+      () => informarVencimiento(funcionRecordada, avisarVencimiento, controller.signal),
+      espera
+    );
+
+    return () => {
+      clearTimeout(temporizador);
+      controller.abort();
+    };
+  }, [hayVencimiento, vencidoEnBackend, expiraEn, funcionRecordada, avisarVencimiento]);
+
   const cambiarCantidad = (item, cantidad) => {
     setCambios({ ...cambios, cantidades: { ...cambios.cantidades, [item.itemId]: cantidad } });
   };
@@ -142,10 +190,13 @@ const useEdicionCarrito = (token) => {
     setCambios({ vaciar: true, cantidades: {} });
   };
 
+  // Vuelve a pedir el carrito sin mostrar el spinner (no desmonta la pantalla).
+  const recargar = () => setIntento((veces) => veces + 1);
+
   const reintentar = () => {
     setCargando(true);
     setError(null);
-    setIntento(intento + 1);
+    recargar();
   };
 
   const visible = aplicarCambios(carrito, cambios);
@@ -166,6 +217,7 @@ const useEdicionCarrito = (token) => {
     quitarItem,
     vaciarCarrito,
     reintentar,
+    recargar,
   };
 };
 

@@ -12,6 +12,7 @@ import Butacas from './views/Butacas';
 import Kiosco from './views/Kiosco';
 import Carrito from './views/Carrito';
 import CarritoView from './views/CarritoView';
+import ModalReservaVencida from './components/carrito/ModalReservaVencida';
 import Checkout from './views/Checkout';
 import MisEntradas from './views/MisEntradas';
 import Login from './views/Login';
@@ -59,6 +60,8 @@ function App() {
   const [carritoAbierto, setCarritoAbierto] = useState(false);
   
   const [cantidadCarrito, setCantidadCarrito] = useState(0);
+  // Datos del modal "se terminó el tiempo de reserva" (null = cerrado).
+  const [vencimiento, setVencimiento] = useState(null);
   const navigate = useNavigate();
   const location = useLocation(); 
 
@@ -184,7 +187,7 @@ function App() {
   }
 
   return (
-    <CarritoContext.Provider value={{ refrescarCantidad, version: avisosCarrito }}>
+    <CarritoContext.Provider value={{ refrescarCantidad, version: avisosCarrito, avisarVencimiento: setVencimiento }}>
       {}
       {!esRutaAdmin && (
         <Navigation
@@ -247,6 +250,13 @@ function App() {
       </Routes>
 
       {!esRutaAdmin && location.pathname !== '/login' && <Footer haySesion={token !== ''} />}
+
+      <ModalReservaVencida
+        vencimiento={vencimiento}
+        token={token}
+        onNavegar={navegarDesdeCarrito}
+        onCerrar={() => setVencimiento(null)}
+      />
     </CarritoContext.Provider>
   );
 }
