@@ -1,3 +1,4 @@
+import FavoritoBoton from '../cartelera/FavoritoBoton';
 
 
 const PeliculaFicha = ({ pelicula }) => {
@@ -16,7 +17,10 @@ const PeliculaFicha = ({ pelicula }) => {
           <span className="etiqueta">{pelicula.clasificacion}</span>
         </p>
 
-        <h1 className="detalle_titulo">{pelicula.titulo}</h1>
+        <div className="flex items-start gap-3">
+          <h1 className="detalle_titulo">{pelicula.titulo}</h1>
+          <FavoritoBoton pelicula={pelicula} className="mt-0.5" />
+        </div>
 
         <p className="detalle_resumen">
           <span>{pelicula.duracion} min</span>

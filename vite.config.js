@@ -28,6 +28,8 @@ export default defineConfig({
       '/categorias': 'http://localhost:4002',
       // Gestion de codigos de descuento (la vista del front es /admin/descuentos).
       '/descuentos': 'http://localhost:4002',
+      // Favoritos del usuario logueado (la vista del front no usa esta ruta).
+      '/favoritos': 'http://localhost:4002',
     },
   },
 })

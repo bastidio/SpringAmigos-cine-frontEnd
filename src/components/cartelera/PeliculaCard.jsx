@@ -2,6 +2,8 @@
 
 
 
+import FavoritoBoton from './FavoritoBoton';
+
 const DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const dosDigitos = (n) => String(n).padStart(2, '0');
 
@@ -56,6 +58,11 @@ const PeliculaCard = ({
           </button>
 
           {clasificacion && <span className="pelicula-card_clasificacion">{clasificacion}</span>}
+
+          <FavoritoBoton
+            pelicula={{ id, titulo, poster_url, clasificacion }}
+            className="absolute left-2.5 top-2.5 z-[1]"
+          />
         </div>
 
         <h3 className="pelicula-card_titulo">

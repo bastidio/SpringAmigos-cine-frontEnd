@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { apiFetch } from './services/api';
 import { CarritoContext } from './context/CarritoContext';
+import { FavoritosContext } from './context/FavoritosContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import Cartelera from './views/Cartelera';
@@ -91,6 +92,48 @@ function App() {
 
   
   const cantidadVisible = token === '' ? 0 : cantidadCarrito;
+
+  // Favoritos del usuario: se piden una sola vez por sesion y los comparten cartelera, detalle y perfil.
+  const [favoritos, setFavoritos] = useState([]);
+
+  useEffect(() => {
+    if (token === '') return;
+
+    const controller = new AbortController();
+    apiFetch('/favoritos', { token, signal: controller.signal })
+      .then((data) => setFavoritos(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        if (err.name !== 'AbortError') console.error('No se pudieron cargar los favoritos', err);
+      });
+
+    return () => controller.abort();
+  }, [token]);
+
+  const favoritosVisibles = token === '' ? [] : favoritos;
+
+  const esFavorita = (idPelicula) => favoritosVisibles.some((f) => f.peliculaId === idPelicula);
+
+  // Agrega o quita sin recargar: actualiza la lista al instante y la revierte si el pedido falla.
+  const alternarFavorita = (pelicula) => {
+    const quitar = esFavorita(pelicula.id);
+    const nuevo = {
+      peliculaId: pelicula.id,
+      titulo: pelicula.titulo,
+      poster_url: pelicula.poster_url,
+      clasificacion: pelicula.clasificacion,
+      agregadoEn: new Date().toISOString(),
+    };
+    const aplicar = (agregar) => (lista) => {
+      const sinPelicula = lista.filter((f) => f.peliculaId !== pelicula.id);
+      return agregar ? [nuevo, ...sinPelicula] : sinPelicula;
+    };
+
+    setFavoritos(aplicar(!quitar));
+    apiFetch(`/favoritos/${pelicula.id}`, { token, method: quitar ? 'DELETE' : 'POST' }).catch((err) => {
+      console.error('No se pudo actualizar el favorito', err);
+      setFavoritos(aplicar(quitar));
+    });
+  };
 
   const esAdmin = rol === 'ADMIN';
 
@@ -189,6 +232,9 @@ function App() {
 
   return (
     <CarritoContext.Provider value={{ refrescarCantidad, version: avisosCarrito, avisarVencimiento: setVencimiento }}>
+    <FavoritosContext.Provider
+      value={{ haySesion: token !== '', favoritos: favoritosVisibles, esFavorita, alternar: alternarFavorita }}
+    >
       {}
       {!esRutaAdmin && (
         <Navigation
@@ -259,6 +305,7 @@ function App() {
         onNavegar={navegarDesdeCarrito}
         onCerrar={() => setVencimiento(null)}
       />
+    </FavoritosContext.Provider>
     </CarritoContext.Provider>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import PerfilLayout from './PerfilLayout';
 import PerfilHeader from './PerfilHeader';
 import DatosPersonales from './DatosPersonales';
+import MisFavoritos from './MisFavoritos';
 import AccionesPerfil from './AccionesPerfil';
 import Spinner from './Spinner';
 import MensajeError from './MensajeError';
@@ -96,6 +97,7 @@ const PerfilDetalle = ({ token, onLogout, onIrAEntradas }) => {
         email={usuario.email}
         telefono={usuario.telefono}
       />
+      <MisFavoritos />
       <AccionesPerfil onIrAEntradas={onIrAEntradas} onLogout={onLogout} />
     </PerfilLayout>
   );
