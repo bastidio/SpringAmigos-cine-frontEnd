@@ -8,7 +8,7 @@ const CarritoItem = ({ item, formatearMoneda, onQuitar, onCambiarCantidad, ocupa
   const esProducto = item.tipo === 'PRODUCTO';
 
   return (
-    <article className="flex items-center justify-between gap-2 rounded-lg border border-solid border-white/10 bg-[#16101f] px-3 py-2 text-white">
+    <article className="flex items-center justify-between gap-2 rounded-lg border border-solid border-white/10 bg-[var(--superficie)] px-3 py-2 text-white">
       <div className="flex min-w-0 flex-col gap-0.5">
         <h2 className="m-0 truncate text-xs font-semibold text-white">{item.nombre}</h2>
         <p className="m-0 text-[11px] text-gray-400">

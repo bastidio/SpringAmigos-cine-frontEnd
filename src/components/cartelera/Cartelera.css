@@ -205,6 +205,14 @@
   text-align: center;
 }
 
+/* Los botones del poster y del titulo son solo una imagen o un texto clickeable */
+.pelicula-card_boton-poster,
+.pelicula-card_boton-titulo {
+  padding: 0;
+  border: none;
+  background: none;
+}
+
 /* Poster */
 .pelicula-card_marco {
   position: relative;
@@ -213,9 +221,6 @@
 .pelicula-card_boton-poster {
   display: block;
   width: 100%;
-  padding: 0;
-  border: none;
-  background: none;
   border-radius: calc(var(--radio-card) - 6px);
   cursor: pointer;
 }
@@ -266,9 +271,6 @@
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
-  padding: 0;
-  border: none;
-  background: none;
   color: inherit;
   font: inherit;
   text-align: center;
@@ -315,7 +317,7 @@
   gap: 2px;
   line-height: 1.2;
   padding: 8px 0;
-  border: 1px solid #3b3b3b;
+  border: 1px solid var(--borde);
   border-radius: 15px;
   background: var(--elevado);
   color: var(--texto);
