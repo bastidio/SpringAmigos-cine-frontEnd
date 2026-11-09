@@ -1,6 +1,6 @@
 
 import './tema.css';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { apiFetch } from './services/api';
 import { CarritoContext } from './context/CarritoContext';
@@ -61,37 +61,67 @@ function App() {
   
   const [carritoAbierto, setCarritoAbierto] = useState(false);
   
-  const [cantidadCarrito, setCantidadCarrito] = useState(0);
+  const [carrito, setCarrito] = useState(null);
+  const [errorCarrito, setErrorCarrito] = useState(null);
   // Datos del modal "se terminó el tiempo de reserva" (null = cerrado).
   const [vencimiento, setVencimiento] = useState(null);
   const navigate = useNavigate();
   const location = useLocation(); 
 
   
-  const [avisosCarrito, setAvisosCarrito] = useState(0);
-  const refrescarCantidad = useCallback(() => {
-    setAvisosCarrito((avisos) => avisos + 1);
+  const [recargasCarrito, setRecargasCarrito] = useState(0);
+  const pedidoCarritoRef = useRef(null);
+
+  const recargarCarrito = useCallback(() => {
+    setRecargasCarrito((veces) => veces + 1);
   }, []);
 
-  
   useEffect(() => {
     if (token === '') return;
 
     const controller = new AbortController();
+    pedidoCarritoRef.current = controller;
     apiFetch('/api/carritos', { token, signal: controller.signal })
       .then((data) => {
-        setCantidadCarrito((data?.items ?? []).reduce((total, item) => total + (item.cantidad ?? 1), 0));
+        setCarrito(data);
+        setErrorCarrito(null);
       })
       .catch((err) => {
-        if (err.name !== 'AbortError') console.error('No se pudo actualizar el contador del carrito', err);
+        if (err.name === 'AbortError') return;
+        console.error('No se pudo cargar el carrito', err);
+        setErrorCarrito(err.message || 'No se pudo cargar el carrito.');
       });
 
-    
     return () => controller.abort();
-  }, [token, location.pathname, avisosCarrito]);
+  }, [token, location.pathname, recargasCarrito]);
 
-  
-  const cantidadVisible = token === '' ? 0 : cantidadCarrito;
+  const actualizarCarrito = useCallback((nuevoCarrito) => {
+    pedidoCarritoRef.current?.abort();
+    setCarrito(nuevoCarrito);
+    setErrorCarrito(null);
+  }, []);
+
+  const vaciarCarritoLocal = useCallback(() => {
+    pedidoCarritoRef.current?.abort();
+    setCarrito((actual) =>
+      actual === null
+        ? actual
+        : { ...actual, items: [], total: 0, funcionId: null, expiraEn: null, vencido: false }
+    );
+    setErrorCarrito(null);
+  }, []);
+
+  const reintentarCarrito = useCallback(() => {
+    setErrorCarrito(null);
+    recargarCarrito();
+  }, [recargarCarrito]);
+
+  const carritoVisible = token === '' ? null : carrito;
+  const cantidadVisible = (carritoVisible?.items ?? []).reduce(
+    (total, item) => total + (item.cantidad ?? 1),
+    0
+  );
+  const errorCarritoVisible = carritoVisible === null ? errorCarrito : null;
 
   // Favoritos del usuario: se piden una sola vez por sesion y los comparten cartelera, detalle y perfil.
   const [favoritos, setFavoritos] = useState([]);
@@ -141,6 +171,7 @@ function App() {
   const cerrarSesion = (destino = '/') => {
     setToken('');
     setRol(null);
+    setCarrito(null);
     setCarritoAbierto(false);
     localStorage.removeItem('token');
     navigate(destino);
@@ -200,6 +231,7 @@ function App() {
       navigate('/login');
       return;
     }
+    if (!carritoAbierto) recargarCarrito();
     setCarritoAbierto(!carritoAbierto);
   };
 
@@ -231,7 +263,18 @@ function App() {
   }
 
   return (
-    <CarritoContext.Provider value={{ refrescarCantidad, version: avisosCarrito, avisarVencimiento: setVencimiento }}>
+    <CarritoContext.Provider
+      value={{
+        carrito: carritoVisible,
+        cantidad: cantidadVisible,
+        error: errorCarritoVisible,
+        actualizarCarrito,
+        vaciarCarritoLocal,
+        recargarCarrito,
+        reintentarCarrito,
+        avisarVencimiento: setVencimiento,
+      }}
+    >
     <FavoritosContext.Provider
       value={{ haySesion: token !== '', favoritos: favoritosVisibles, esFavorita, alternar: alternarFavorita }}
     >

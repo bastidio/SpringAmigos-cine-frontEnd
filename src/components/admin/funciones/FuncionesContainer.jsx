@@ -68,10 +68,6 @@ const FuncionesContainer = () => {
     if (datos.salas !== undefined) setSalas(datos.salas);
   };
 
-  const actualizarDatos = async () => {
-    aplicarDatos(await cargarDatos());
-  };
-
   useEffect(() => {
     cargarDatos().then(aplicarDatos);
   }, []);
@@ -87,7 +83,8 @@ const FuncionesContainer = () => {
   };
 
   const manejarGuardar = async (formData) => {
-    const metodo = funcionEditando ? 'PUT' : 'POST';
+    const editando = funcionEditando !== null;
+    const metodo = editando ? 'PUT' : 'POST';
     const url = funcionEditando
       ? `http://localhost:4002/funciones/${funcionEditando.id}`
       : 'http://localhost:4002/funciones';
@@ -106,8 +103,13 @@ const FuncionesContainer = () => {
 
       if (!response.ok) throw new Error(`Error al guardar: ${response.status}`);
 
+      const guardada = await response.json();
+      setFunciones((lista) =>
+        editando
+          ? lista.map((f) => (f.id === guardada.id ? guardada : f))
+          : [...lista, guardada]
+      );
       cerrarModal();
-      actualizarDatos();
     } catch (error) {
       console.error('Error al guardar:', error);
     }
@@ -141,7 +143,8 @@ const FuncionesContainer = () => {
         throw new Error(mensajeBackend || `Error al eliminar (Código ${response.status})`);
       }
 
-      actualizarDatos();
+      const idBorrado = funcionAEliminar;
+      setFunciones((lista) => lista.filter((f) => f.id !== idBorrado));
       setFuncionAEliminar(null);
     } catch (error) {
       console.error('Error al eliminar:', error);

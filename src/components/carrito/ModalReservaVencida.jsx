@@ -9,7 +9,7 @@ const claseBoton =
 // afuera). Lo dispara useEdicionCarrito a traves del contexto y se muestra una sola vez, en App,
 // fuera del nav (el backdrop-filter del nav rompe el "fixed" de los hijos).
 const ModalReservaVencida = ({ vencimiento, token, onNavegar, onCerrar }) => {
-  const { refrescarCantidad } = useCarrito();
+  const { vaciarCarritoLocal } = useCarrito();
   const [ocupado, setOcupado] = useState(false);
 
   if (vencimiento === null) return null;
@@ -21,12 +21,12 @@ const ModalReservaVencida = ({ vencimiento, token, onNavegar, onCerrar }) => {
     setOcupado(true);
     try {
       await apiFetch('/api/carritos', { method: 'DELETE', token });
+      vaciarCarritoLocal();
     } catch {
       // Si no se pudo vaciar, el backend lo limpia solo al pasar el vencimiento.
     }
     setOcupado(false);
     onCerrar();
-    refrescarCantidad();
     onNavegar(ruta);
   };
 

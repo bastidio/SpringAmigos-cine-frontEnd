@@ -142,6 +142,10 @@ const AdminSalasView = () => {
     let hechas = 0;
     let salaId = editando ? salaAEditar.id : null;
     let salaGuardada = false;
+    let todoOk = false;
+    let salaRespuesta = null;
+    const butacasCreadas = [];
+    const idsButacasBorradas = new Set();
 
     setGuardando(true);
     setProgreso({ hechas, total });
@@ -157,9 +161,8 @@ const AdminSalasView = () => {
         throw new Error(mensajeDeError(respuestaSala.status, 'guardar la sala'));
       }
       salaGuardada = true;
-      if (!editando) {
-        salaId = (await respuestaSala.json()).id;
-      }
+      salaRespuesta = await respuestaSala.json();
+      salaId = salaRespuesta.id;
 
       
       for (const deLaFila of agruparPorFila(nuevas)) {
@@ -173,6 +176,7 @@ const AdminSalasView = () => {
             if (!response.ok) {
               throw new Error(mensajeDeError(response.status, 'una butaca'));
             }
+            butacasCreadas.push(await response.json());
           })
         );
         hechas += deLaFila.length;
@@ -190,12 +194,24 @@ const AdminSalasView = () => {
             if (!response.ok) {
               throw new Error(mensajeDeError(response.status, 'quitar una butaca'));
             }
+            idsButacasBorradas.add(butaca.id);
           })
         );
         hechas += deLaFila.length;
         setProgreso({ hechas, total });
       }
 
+      todoOk = true;
+      setSalas((lista) =>
+        editando
+          ? lista.map((s) => (s.id === salaRespuesta.id ? salaRespuesta : s))
+          : [...lista, salaRespuesta]
+      );
+      setSalaSeleccionada(salaRespuesta);
+      setAsientos((lista) => [
+        ...lista.filter((a) => !idsButacasBorradas.has(a.id)),
+        ...butacasCreadas,
+      ]);
       cerrarModal();
     } catch (error) {
       if (salaGuardada) {
@@ -210,8 +226,10 @@ const AdminSalasView = () => {
     } finally {
       setGuardando(false);
       setProgreso(null);
-      setVersionAsientos((version) => version + 1);
-      if (salaId !== null) await cargarSalas(salaId);
+      if (!todoOk) {
+        setVersionAsientos((version) => version + 1);
+        if (salaId !== null) await cargarSalas(salaId);
+      }
     }
   };
 

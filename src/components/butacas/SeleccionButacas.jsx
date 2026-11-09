@@ -18,7 +18,7 @@ const pedir = (url) => {
 const SeleccionButacas = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { refrescarCantidad } = useCarrito();
+  const { actualizarCarrito } = useCarrito();
 
   const [funcion, setFuncion] = useState(null);
   const [butacas, setButacas] = useState([]);
@@ -83,10 +83,12 @@ const SeleccionButacas = () => {
 
     setAgregando(true);
     setErrorCarrito(null);
+    let ultimoCarrito = null;
     try {
       
       
       const carrito = await apiFetch('/api/carritos');
+      ultimoCarrito = carrito;
       const yaEnCarrito = (carrito?.items ?? [])
         .filter((item) => item.tipo === 'BUTACA')
         .map((item) => item.referenciaId);
@@ -99,7 +101,7 @@ const SeleccionButacas = () => {
 
       for (const butaca of elegidas) {
         if (!yaEnCarrito.includes(butaca.id)) {
-          await apiFetch('/api/carritos/items', {
+          ultimoCarrito = await apiFetch('/api/carritos/items', {
             method: 'POST',
             body: { asientoId: butaca.id, funcionId: funcion.id, cantidad: 1 },
           });
@@ -114,7 +116,7 @@ const SeleccionButacas = () => {
       setErrorCarrito(err.message);
     } finally {
       
-      refrescarCantidad();
+      if (ultimoCarrito !== null) actualizarCarrito(ultimoCarrito);
       setAgregando(false);
     }
   };

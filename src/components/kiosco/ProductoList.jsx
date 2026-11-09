@@ -14,14 +14,13 @@ const elegirImagen = (producto) => {
 
 
 const ProductoList = ({ token }) => {
-  const { refrescarCantidad, version } = useCarrito();
+  const { carrito, actualizarCarrito, recargarCarrito } = useCarrito();
   const [productos, setProductos] = useState([]);
   const [categoria, setCategoria] = useState('Todo');
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const [carrito, setCarrito] = useState(null);
   const [ocupadoId, setOcupadoId] = useState(null);
   const [errorCarrito, setErrorCarrito] = useState(null);
 
@@ -41,10 +40,11 @@ const ProductoList = ({ token }) => {
     setOcupadoId(producto.id);
     setErrorCarrito(null);
     try {
-      await pedido();
-      refrescarCantidad();
+      actualizarCarrito(await pedido());
+      setOcupadoId(null);
     } catch (err) {
       setOcupadoId(null);
+      if (err.status === 409) recargarCarrito();
       if (err.status === 401) {
         navigate('/login');
         return;
@@ -81,24 +81,6 @@ const ProductoList = ({ token }) => {
           })
     );
   };
-
-  useEffect(() => {
-    if (token === '') return;
-
-    const controller = new AbortController();
-    apiFetch('/api/carritos', { token, signal: controller.signal })
-      .then((data) => {
-        setCarrito(data);
-        setOcupadoId(null);
-      })
-      .catch((err) => {
-        if (err.name === 'AbortError') return;
-        console.error('No se pudo cargar el carrito en el kiosco', err);
-        setOcupadoId(null);
-      });
-
-    return () => controller.abort();
-  }, [token, version]);
 
   
   

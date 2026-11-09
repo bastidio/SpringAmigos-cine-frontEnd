@@ -32,9 +32,10 @@ const aplicarCambios = (carrito, cambios) => {
 
 const borrar = async (url, opciones) => {
   try {
-    await apiFetch(url, { ...opciones, method: 'DELETE' });
+    return await apiFetch(url, { ...opciones, method: 'DELETE' });
   } catch (err) {
     if (err.status !== 404) throw err;
+    return null;
   }
 };
 
@@ -58,15 +59,19 @@ const informarVencimiento = async (funcionId, avisarVencimiento, signal) => {
 };
 
 const useEdicionCarrito = (token) => {
-  const { refrescarCantidad, avisarVencimiento, version } = useCarrito();
-  
-  const [carrito, setCarrito] = useState(null);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
-  
-  const [intento, setIntento] = useState(0);
+  const {
+    carrito,
+    error,
+    actualizarCarrito,
+    vaciarCarritoLocal,
+    recargarCarrito,
+    reintentarCarrito,
+    avisarVencimiento,
+  } = useCarrito();
+
+  const cargando = carrito === null && error === null;
   const [cambios, setCambios] = useState(SIN_CAMBIOS);
-  
+
   const [errorAccion, setErrorAccion] = useState(null);
   // Cuando el carrito vence el backend borra la funcion: la recordamos para el modal.
   const [funcionRecordada, setFuncionRecordada] = useState(null);
@@ -74,39 +79,6 @@ const useEdicionCarrito = (token) => {
     setFuncionRecordada(carrito.funcionId);
   }
 
-  
-  
-  
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const cargarCarrito = async () => {
-      try {
-        const data = await apiFetch('/api/carritos', { token, signal: controller.signal });
-        setCarrito(data);
-        setError(null);
-      } catch (err) {
-        
-        if (err.name === 'AbortError') return;
-        setError(err.message || 'No se pudo cargar el carrito.');
-      } finally {
-        
-        if (!controller.signal.aborted) setCargando(false);
-      }
-    };
-
-    cargarCarrito();
-
-    
-    return () => controller.abort();
-    // "version" cambia cuando otra parte de la app modifica el carrito (ej: el kiosco).
-  }, [token, intento, version]);
-
-  
-  
-  
-  
-  
   useEffect(() => {
     if (!hayCambios(cambios)) return;
 
@@ -114,48 +86,50 @@ const useEdicionCarrito = (token) => {
     const { signal } = controller;
 
     const enviarCambios = async () => {
+      let ultimoCarrito = null;
+      let fallo = false;
+
       try {
         if (cambios.vaciar) {
           await borrar('/api/carritos', { token, signal });
-        } else {
-          await Promise.all(
-            Object.entries(cambios.cantidades).map(([itemId, cantidad]) =>
-              cantidad === 0
-                ? borrar(`/api/carritos/items/${itemId}`, { token, signal })
-                : apiFetch(`/api/carritos/items/${itemId}`, {
-                    method: 'PUT',
-                    body: { cantidad },
-                    token,
-                    signal,
-                  })
-            )
-          );
+          vaciarCarritoLocal();
+          setErrorAccion(null);
+          return;
+        }
+
+        for (const [itemId, cantidad] of Object.entries(cambios.cantidades)) {
+          const respuesta =
+            cantidad === 0
+              ? await borrar(`/api/carritos/items/${itemId}`, { token, signal })
+              : await apiFetch(`/api/carritos/items/${itemId}`, {
+                  method: 'PUT',
+                  body: { cantidad },
+                  token,
+                  signal,
+                });
+          if (respuesta) ultimoCarrito = respuesta;
         }
         setErrorAccion(null);
       } catch (err) {
         if (err.name === 'AbortError') return;
-        
-        
-        setErrorAccion(err.message);
-      }
-
-      try {
-        setCarrito(await apiFetch('/api/carritos', { token, signal }));
-        
-        refrescarCantidad();
-      } catch (err) {
-        if (err.name === 'AbortError') return;
+        fallo = true;
         setErrorAccion(err.message);
       } finally {
         if (!signal.aborted) setCambios(SIN_CAMBIOS);
+      }
+
+      if (signal.aborted) return;
+      if (ultimoCarrito !== null && !fallo) {
+        actualizarCarrito(ultimoCarrito);
+      } else {
+        recargarCarrito();
       }
     };
 
     enviarCambios();
 
-    
     return () => controller.abort();
-  }, [cambios, token, refrescarCantidad]);
+  }, [cambios, token, actualizarCarrito, vaciarCarritoLocal, recargarCarrito]);
 
   // Vencimiento: por tiempo (solo si el carrito tiene butacas) o porque el backend ya lo marco
   // (el scheduler vacio el carrito o fallo el pago). El temporizador se limpia al desmontar o
@@ -191,15 +165,6 @@ const useEdicionCarrito = (token) => {
     setCambios({ vaciar: true, cantidades: {} });
   };
 
-  // Vuelve a pedir el carrito sin mostrar el spinner (no desmonta la pantalla).
-  const recargar = () => setIntento((veces) => veces + 1);
-
-  const reintentar = () => {
-    setCargando(true);
-    setError(null);
-    recargar();
-  };
-
   const visible = aplicarCambios(carrito, cambios);
   const items = visible?.items ?? [];
   const cantidadTotal = items.reduce((total, item) => total + item.cantidad, 0);
@@ -217,8 +182,7 @@ const useEdicionCarrito = (token) => {
     cambiarCantidad,
     quitarItem,
     vaciarCarrito,
-    reintentar,
-    recargar,
+    reintentar: reintentarCarrito,
   };
 };
 

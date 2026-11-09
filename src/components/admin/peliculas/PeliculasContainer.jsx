@@ -29,14 +29,6 @@ const PeliculasContainer = () => {
     return data;
   };
 
-  const actualizarPeliculas = async () => {
-    try {
-      setPeliculas(await fetchPeliculas());
-    } catch (error) {
-      console.error('Error cargando películas:', error);
-    }
-  };
-
   useEffect(() => {
     fetchPeliculas()
       .then(setPeliculas)
@@ -56,7 +48,8 @@ const PeliculasContainer = () => {
   };
 
   const manejarGuardar = async (formData) => {
-    const metodo = peliculaEditando ? 'PUT' : 'POST';
+    const editando = peliculaEditando !== null;
+    const metodo = editando ? 'PUT' : 'POST';
     const url = peliculaEditando ? `/peliculas/${peliculaEditando.id}` : '/peliculas';
     const token = localStorage.getItem('token');
 
@@ -81,8 +74,13 @@ const PeliculasContainer = () => {
         return;
       }
 
+      const guardada = await res.json();
+      setPeliculas((lista) =>
+        editando
+          ? lista.map((p) => (p.id === guardada.id ? guardada : p))
+          : [...lista, guardada]
+      );
       cerrarModal();
-      actualizarPeliculas();
     } catch (error) {
       console.error('Error guardando película:', error);
       setErrorGuardar('No se pudo conectar con el servidor.');
@@ -114,7 +112,8 @@ const PeliculasContainer = () => {
         throw new Error(datos?.message || `No se pudo borrar la película (${res.status})`);
       }
 
-      actualizarPeliculas();
+      const idBorrado = peliculaABorrar;
+      setPeliculas((lista) => lista.filter((p) => p.id !== idBorrado));
     } catch (error) {
       setErrorEliminar(error.message);
     } finally {

@@ -8,7 +8,6 @@ import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const DescuentosContainer = () => {
   const [descuentos, setDescuentos] = useState([]);
-  const [intento, setIntento] = useState(0);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [descuentoEditando, setDescuentoEditando] = useState(null);
   const [errorGuardar, setErrorGuardar] = useState(null);
@@ -30,9 +29,7 @@ const DescuentosContainer = () => {
 
     cargar();
     return () => controller.abort();
-  }, [intento]);
-
-  const recargar = () => setIntento((veces) => veces + 1);
+  }, []);
 
   const abrirModal = (descuento = null) => {
     setDescuentoEditando(descuento);
@@ -49,12 +46,17 @@ const DescuentosContainer = () => {
   const manejarGuardar = async (formData) => {
     setErrorGuardar(null);
     try {
-      await apiFetch(descuentoEditando ? `/descuentos/${descuentoEditando.id}` : '/descuentos', {
-        method: descuentoEditando ? 'PUT' : 'POST',
+      const editando = descuentoEditando !== null;
+      const guardado = await apiFetch(editando ? `/descuentos/${descuentoEditando.id}` : '/descuentos', {
+        method: editando ? 'PUT' : 'POST',
         body: formData,
       });
+      setDescuentos((lista) =>
+        editando
+          ? lista.map((d) => (d.id === guardado.id ? guardado : d))
+          : [...lista, guardado]
+      );
       cerrarModal();
-      recargar();
     } catch (err) {
       setErrorGuardar(err.message);
     }
@@ -63,8 +65,10 @@ const DescuentosContainer = () => {
   const cambiarActivo = async (descuento, metodo, ruta, mensajeError) => {
     setProcesando(true);
     try {
-      await apiFetch(`/descuentos/${descuento.id}${ruta}`, { method: metodo });
-      recargar();
+      const actualizado = await apiFetch(`/descuentos/${descuento.id}${ruta}`, { method: metodo });
+      setDescuentos((lista) =>
+        lista.map((d) => (d.id === descuento.id ? (actualizado ?? { ...d, activo: false }) : d))
+      );
     } catch (err) {
       setErrorAccion(err.message || mensajeError);
     } finally {

@@ -39,7 +39,7 @@ const AdminKioscoView = () => {
   const manejarActualizacionStock = async (productoId, nuevoStock) => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`/productos/${productoId}/stock`, {
+      const response = await fetch(`/productos/${productoId}/stock`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
@@ -47,8 +47,13 @@ const AdminKioscoView = () => {
         },
         body: JSON.stringify({ stock: nuevoStock })
       });
-      
-      setProductos(productos.map(p => 
+
+      if (!response.ok) {
+        setErrorAccion(`No se pudo actualizar el stock (${response.status})`);
+        return;
+      }
+
+      setProductos((lista) => lista.map((p) =>
         p.id === productoId ? { ...p, stock: nuevoStock } : p
       ));
     } catch (error) {
@@ -68,7 +73,10 @@ const AdminKioscoView = () => {
         setErrorAccion(`${mensajeError} (${response.status})`);
         return;
       }
-      await cargarDatos();
+      const actualizado = metodo === 'DELETE' ? null : await response.json();
+      setProductos((lista) => lista.map((p) =>
+        p.id === producto.id ? (actualizado ?? { ...p, activo: false }) : p
+      ));
     } catch (error) {
       console.error(mensajeError, error);
       setErrorAccion('No se pudo conectar con el servidor.');
@@ -105,6 +113,7 @@ const AdminKioscoView = () => {
       : `${baseUrl}/productos`;
       
     const method = productoEditando ? 'PUT' : 'POST';
+    const idEditado = productoEditando?.id;
     const token = localStorage.getItem('token');
 
     const response = await fetch(url, {
@@ -126,8 +135,13 @@ const AdminKioscoView = () => {
       return;
     }
 
+    const guardado = await response.json();
+    setProductos((lista) =>
+      idEditado !== undefined
+        ? lista.map((p) => (p.id === guardado.id ? guardado : p))
+        : [...lista, guardado]
+    );
     cerrarModal();
-    cargarDatos();
   } catch (error) {
     console.error("Error guardando producto:", error);
     setErrorGuardar('No se pudo conectar con el servidor.');

@@ -34,7 +34,7 @@ const CheckoutDetalle = () => {
   const [revalidacion, setRevalidacion] = useState(0);
   const navigate = useNavigate();
   
-  const { refrescarCantidad } = useCarrito();
+  const { vaciarCarritoLocal, recargarCarrito } = useCarrito();
 
   // Mismo carrito editable que el desplegable (cantidad, quitar, vaciar).
   const {
@@ -47,7 +47,6 @@ const CheckoutDetalle = () => {
     guardando,
     cambiarCantidad,
     quitarItem,
-    recargar,
   } = useEdicionCarrito();
 
   const totalCarrito = visible?.total;
@@ -114,12 +113,11 @@ const CheckoutDetalle = () => {
       });
       setOrden(compra);
       
-      refrescarCantidad();
-      // El carrito ya esta vacio: se vuelve a pedir para frenar el temporizador de vencimiento.
-      recargar();
+      // El backend vacio el carrito al comprar: se refleja en el estado (frena tambien el temporizador).
+      vaciarCarritoLocal();
     } catch (err) {
-      // 409: puede ser que el carrito haya vencido; se recarga para que el hook lo detecte.
-      if (err.status === 409) recargar();
+      // 409: puede ser que el carrito haya vencido; eso lo define el servidor, asi que se vuelve a pedir.
+      if (err.status === 409) recargarCarrito();
       // Si el codigo dejo de ser valido, se revalida para quitarlo y avisar debajo del campo.
       if (codigoAplicado !== null) setRevalidacion((veces) => veces + 1);
       setError(

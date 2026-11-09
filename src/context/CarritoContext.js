@@ -1,8 +1,13 @@
 import { createContext, useContext } from 'react';
 
 export const CarritoContext = createContext({
-  refrescarCantidad: () => {},
-  version: 0,
+  carrito: null,
+  cantidad: 0,
+  error: null,
+  actualizarCarrito: () => {},
+  vaciarCarritoLocal: () => {},
+  recargarCarrito: () => {},
+  reintentarCarrito: () => {},
   avisarVencimiento: () => {},
 });
 
