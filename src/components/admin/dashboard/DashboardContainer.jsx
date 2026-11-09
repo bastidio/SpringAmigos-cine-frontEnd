@@ -53,10 +53,7 @@ const DashboardContainer = () => {
       });
   }, []);
 
-  const ingresosDelMes = datos.ordenes
-    .filter(o => o.estado === 'COMPLETADA' || o.estado === 'CONFIRMADA')
-    .reduce((acc, curr) => acc + curr.total, 0);
-  const ordenesPendientes = datos.ordenes.filter(o => o.estado === 'PENDIENTE').length;
+  const ingresosDelMes = datos.ordenes.reduce((acc, curr) => acc + curr.total, 0);
 
   if (cargando) return <div className="texto-muted">Cargando métricas del sistema...</div>;
 
@@ -68,7 +65,6 @@ const DashboardContainer = () => {
 
       <div className="tarjetas-resumen-grid">
         <TarjetaResumen titulo="Ingresos Totales" valor={`$${ingresosDelMes.toLocaleString('es-AR')}`} />
-        <TarjetaResumen titulo="Órdenes Pendientes" valor={ordenesPendientes} />
         <TarjetaResumen titulo="Productos en Kiosco" valor={datos.productos.length} />
       </div>
 

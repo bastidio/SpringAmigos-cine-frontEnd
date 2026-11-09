@@ -447,15 +447,13 @@
   border-color: rgba(52, 211, 153, 0.3);
 }
 
-.badge-alerta,
-.estado-pendiente {
+.badge-alerta {
   color: var(--admin-gold);
   background-color: rgba(212, 175, 55, 0.1);
   border-color: rgba(212, 175, 55, 0.35);
 }
 
-.etiqueta--inactiva,
-.estado-cancelada {
+.etiqueta--inactiva {
   color: var(--admin-rojo);
   background-color: rgba(248, 113, 113, 0.1);
   border-color: rgba(248, 113, 113, 0.3);

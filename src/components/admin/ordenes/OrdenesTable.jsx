@@ -4,12 +4,6 @@ import BotonAccion from '../ui/BotonAccion';
 const OrdenesTable = ({ ordenes, onVerDetalle }) => {
   if (ordenes.length === 0) return <p className="texto-muted">No se encontraron órdenes.</p>;
 
-  const getClaseEstado = (estado) => {
-    if (estado === 'PENDIENTE') return 'estado-pendiente';
-    if (estado === 'COMPLETADA' || estado === 'CONFIRMADA') return 'estado-completada';
-    return 'estado-cancelada';
-  };
-
   return (
     <div className="admin-table-container">
       <table className="admin-table">
@@ -31,7 +25,7 @@ const OrdenesTable = ({ ordenes, onVerDetalle }) => {
               <td>{o.usuario?.nombre || `Usuario #${o.usuario?.id}`}</td>
               <td>${o.total}</td>
               <td>
-                <span className={`etiqueta-estado-btn etiqueta-estado-fija ${getClaseEstado(o.estado)}`}>
+                <span className={`etiqueta-estado-btn etiqueta-estado-fija estado-completada`}>
                   {o.estado}
                 </span>
               </td>

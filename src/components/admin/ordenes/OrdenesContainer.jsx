@@ -6,7 +6,6 @@ import AdminModal from '../ui/AdminModal';
 
 const AdminOrdenesView = () => {
   const [ordenes, setOrdenes] = useState([]);
-  const [filtroEstado, setFiltroEstado] = useState('Todas');
   const [busqueda, setBusqueda] = useState('');
   
   const [modalDetalleAbierto, setModalDetalleAbierto] = useState(false);
@@ -43,17 +42,15 @@ const AdminOrdenesView = () => {
   }, []);
 
   const ordenesFiltradas = ordenes.filter(o => {
-    const coincideEstado = filtroEstado === 'Todas' || o.estado === filtroEstado;
     const busquedaLower = busqueda.toLowerCase();
     const coincideBusqueda = 
       o.usuario?.nombre?.toLowerCase().includes(busquedaLower) || 
       o.id.toString().includes(busquedaLower);
     
-    return coincideEstado && coincideBusqueda;
+    return coincideBusqueda;
   });
 
-  const totalIngresos = ordenes.filter(o => o.estado === 'COMPLETADA' || o.estado === 'CONFIRMADA').reduce((acc, curr) => acc + curr.total, 0);
-  const pendientesCount = ordenes.filter(o => o.estado === 'PENDIENTE').length;
+  const totalIngresos = ordenes.reduce((acc, curr) => acc + curr.total, 0);
   return (
     <div>
       <div className="admin-view-header">
@@ -64,8 +61,7 @@ const AdminOrdenesView = () => {
 
       <div className="tarjetas-resumen-grid">
         <TarjetaResumen titulo="Total Órdenes" valor={ordenes.length} />
-        <TarjetaResumen titulo="Pendientes" valor={pendientesCount} />
-        <TarjetaResumen titulo="Ingresos (Confirmadas)" valor={`$${totalIngresos.toLocaleString('es-AR')}`} />
+        <TarjetaResumen titulo="Ingresos"valor={`$${totalIngresos.toLocaleString('es-AR')}`} />
       </div>
 
       <div className="barra-busqueda-container">
@@ -76,18 +72,6 @@ const AdminOrdenesView = () => {
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
-      </div>
-
-      <div className="filtros-categorias-container">
-        {['Todas', 'PENDIENTE', 'CONFIRMADA', 'COMPLETADA', 'CANCELADA'].map(estado => (
-          <button 
-            key={estado}
-            className={`btn-filtro-dia ${filtroEstado === estado ? 'activo' : ''}`}
-            onClick={() => setFiltroEstado(estado)}
-          >
-            {estado}
-          </button>
-        ))}
       </div>
 
       <OrdenesTable 
