@@ -1,18 +1,17 @@
 import { useState } from 'react';
 
 
-const ControlStockInline = ({ productoId, stockInicial, onActualizarStock }) => {
-  const [stock, setStock] = useState(stockInicial);
+const ControlStockInline = ({ productoId, stock, onActualizarStock }) => {
   const [cargando, setCargando] = useState(false);
 
   const manejarCambio = async (nuevoStock) => {
     if (nuevoStock < 0) return;
     setCargando(true);
-    setStock(nuevoStock);
-    
-    await onActualizarStock(productoId, nuevoStock);
-    
-    setCargando(false);
+    try {
+      await onActualizarStock(productoId, nuevoStock);
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (

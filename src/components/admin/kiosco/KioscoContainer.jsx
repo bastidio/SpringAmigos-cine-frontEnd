@@ -53,9 +53,8 @@ const AdminKioscoView = () => {
         return;
       }
 
-      setProductos((lista) => lista.map((p) =>
-        p.id === productoId ? { ...p, stock: nuevoStock } : p
-      ));
+      const actualizado = await response.json();
+      setProductos((lista) => lista.map((p) => (p.id === actualizado.id ? actualizado : p)));
     } catch (error) {
       console.error("Error actualizando stock:", error);
     }

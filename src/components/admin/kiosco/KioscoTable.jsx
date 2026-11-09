@@ -55,7 +55,7 @@ const KioscoTable = ({ productos, onEditar, onActualizarStock, onEliminar, onRea
                 <td>
                   <ControlStockInline 
                     productoId={p.id} 
-                    stockInicial={p.stock} 
+                    stock={p.stock} 
                     onActualizarStock={onActualizarStock} 
                   />
                 </td>
