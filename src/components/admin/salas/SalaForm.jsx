@@ -50,9 +50,8 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
   return (
     <form className="admin-form" onSubmit={handleSubmit}>
       <div className="kiosco-form-group">
-        <label className="kiosco-form-label" htmlFor="sala-nombre">Nombre de la sala</label>
+        <label className="kiosco-form-label">Nombre de la sala</label>
         <input
-          id="sala-nombre"
           className="admin-input"
           name="nombre"
           placeholder="Ej: Sala 1 - IMAX"
@@ -65,9 +64,8 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
 
       <div className="admin-form-row">
         <div className="kiosco-form-group">
-          <label className="kiosco-form-label" htmlFor="sala-filas">Filas (máx. {MAX_FILAS})</label>
+          <label className="kiosco-form-label">Filas (máx. {MAX_FILAS})</label>
           <input
-            id="sala-filas"
             className="admin-input"
             name="filas"
             type="number"
@@ -81,9 +79,8 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
         </div>
 
         <div className="kiosco-form-group">
-          <label className="kiosco-form-label" htmlFor="sala-por-fila">Butacas por fila (máx. {MAX_POR_FILA})</label>
+          <label className="kiosco-form-label">Butacas por fila (máx. {MAX_POR_FILA})</label>
           <input
-            id="sala-por-fila"
             className="admin-input"
             name="porFila"
             type="number"
