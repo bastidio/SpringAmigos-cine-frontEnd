@@ -16,6 +16,7 @@ const PeliculasTable = ({ peliculas, onEditar, onEliminar }) => {
           <tr>
             <th>ID</th>
             <th>Poster</th>
+            <th>Banner</th>
             <th>Título</th>
             <th>Clasificación</th>
             <th>Idioma</th>
@@ -37,6 +38,15 @@ const PeliculasTable = ({ peliculas, onEditar, onEliminar }) => {
                 ) : (
                   <div className="img-miniatura-placeholder img-poster">
                     <span>Sin imagen</span>
+                  </div>
+                )}
+              </td>
+              <td>
+                {p.bannerUrl ? (
+                  <img src={p.bannerUrl} alt={`Banner de ${p.titulo}`} className="img-miniatura-tabla img-banner" />
+                ) : (
+                  <div className="img-miniatura-placeholder img-banner">
+                    <span>Sin banner</span>
                   </div>
                 )}
               </td>

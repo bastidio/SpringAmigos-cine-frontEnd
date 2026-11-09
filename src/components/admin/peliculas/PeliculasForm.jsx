@@ -4,7 +4,7 @@ import BotonAccion from '../ui/BotonAccion';
 
 const PeliculasForm = ({ peliculaAEditar, onGuardar, onCancelar }) => {
   const [formData, setFormData] = useState({
-    titulo: '', sinopsis: '', duracion: '', clasificacion: '', idioma: '', poster_url: ''
+    titulo: '', sinopsis: '', duracion: '', clasificacion: '', idioma: '', poster_url: '', bannerUrl: ''
   });
 
   useEffect(() => {
@@ -29,6 +29,10 @@ const PeliculasForm = ({ peliculaAEditar, onGuardar, onCancelar }) => {
       
       <input className="admin-input" name="idioma" value={formData.idioma} onChange={handleChange} placeholder="Idioma (Ej: Subtitulada)" />
       <input className="admin-input" name="poster_url" value={formData.poster_url} onChange={handleChange} placeholder="URL del Póster" />
+      <input className="admin-input" name="bannerUrl" value={formData.bannerUrl ?? ''} onChange={handleChange} placeholder="Imagen del banner (horizontal)" />
+      {formData.bannerUrl && (
+        <img src={formData.bannerUrl} alt="Vista previa del banner" className="img-miniatura-tabla img-banner" />
+      )}
       <textarea className="admin-input admin-textarea" name="sinopsis" value={formData.sinopsis} onChange={handleChange} placeholder="Sinopsis" rows="4" />
       
       <div className="admin-form-actions">
