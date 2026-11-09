@@ -24,7 +24,7 @@
 .footer_contenido {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 48px 24px 32px;
+  padding: 30px;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   gap: 40px;

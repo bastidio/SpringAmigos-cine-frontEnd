@@ -16,10 +16,8 @@
 }
 
 .nav_contenido {
-  max-width: 1280px;
-  height: 64px;
-  margin: 0 auto;
-  padding: 0 24px;
+  height: 65px;
+  padding: 0 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
