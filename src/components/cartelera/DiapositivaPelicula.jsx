@@ -1,18 +1,24 @@
-
-
-
-
 import { Link } from 'react-router-dom';
 
-const DiapositivaPelicula = ({ pelicula, activa, posicion, total }) => {
-
+// Componente tonto: recibe cada dato de la película por props y solo lo muestra.
+const DiapositivaPelicula = ({
+  id,
+  titulo,
+  imagen,
+  clasificacion,
+  duracion,
+  idioma,
+  sinopsis,
+  activa,
+  posicion,
+  total,
+}) => {
   const tabIndex = activa ? 0 : -1;
-  const imagen = pelicula.bannerUrl || pelicula.poster_url;
 
   return (
     <article
       aria-roledescription="diapositiva"
-      aria-label={`${posicion} de ${total}: ${pelicula.titulo}`}
+      aria-label={`${posicion} de ${total}: ${titulo}`}
       aria-hidden={!activa}
       className={`absolute inset-0 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${
         activa ? 'opacity-100' : 'pointer-events-none opacity-0'
@@ -23,8 +29,8 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total }) => {
           lleve al detalle, salvo el texto y los botones. */}
       {imagen && (
         <Link
-          to={`/pelicula/${pelicula.id}`}
-          aria-label={`Ver detalle de ${pelicula.titulo}`}
+          to={`/pelicula/${id}`}
+          aria-label={`Ver detalle de ${titulo}`}
           tabIndex={tabIndex}
           className="absolute inset-0 cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-[var(--morado-texto)]"
         >
@@ -45,25 +51,24 @@ const DiapositivaPelicula = ({ pelicula, activa, posicion, total }) => {
       <div className="pointer-events-none relative z-10 mx-auto flex h-full max-w-[1280px] flex-col justify-center px-20 max-md:px-6">
         <div className="pointer-events-auto max-w-xl">
           <h2 className="mb-4 text-6xl font-bold leading-tight text-[var(--texto)] [font-family:var(--titulos)] max-md:text-4xl">
-            {pelicula.titulo}
+            {titulo}
           </h2>
 
           <p className="mb-4 flex flex-wrap items-center gap-3 text-sm text-[var(--texto-suave)]">
-            {}
             <span className="rounded border border-solid border-[var(--dorado)]/30 bg-[var(--dorado)]/12 px-2.5 py-0.5 text-[11.2px] font-bold uppercase tracking-wider text-[var(--dorado-texto)]">
-              {pelicula.clasificacion}
+              {clasificacion}
             </span>
-            <span>{pelicula.duracion} min</span>
-            <span>{pelicula.idioma}</span>
+            <span>{duracion} min</span>
+            <span>{idioma}</span>
           </p>
 
           <p className="mb-6 line-clamp-3 text-sm leading-relaxed text-[var(--texto-suave)]">
-            {pelicula.sinopsis}
+            {sinopsis}
           </p>
 
           <div className="flex flex-wrap gap-3">
             <Link
-              to={`/pelicula/${pelicula.id}#funciones`}
+              to={`/pelicula/${id}#funciones`}
               tabIndex={tabIndex}
               className="inline-flex cursor-pointer items-center justify-center rounded-lg border-0 bg-linear-135 from-[var(--morado)] to-[var(--morado-hover)] px-6 py-3 text-[14.4px] font-semibold text-[var(--texto)] no-underline transition-all hover:-translate-y-px hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]"
             >

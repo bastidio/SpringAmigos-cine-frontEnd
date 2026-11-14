@@ -1,85 +1,78 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPeliculas, fetchFunciones } from '../../redux/carteleraSlice';
 import CarruselDestacadas from './CarruselDestacadas';
 import PeliculaCard from './PeliculaCard';
 import Filtro from './Filtro';
 import './Cartelera.css';
 
-const aFuncionCard = (f) => ({
-  id: f.id,
-  fechaHora: f.horario,
-  idioma: /sub/i.test(f.idioma) ? 'Sub' : 'Dob',
-  disponible: f.entradasVendidas < f.sala.capacidad,
-  sala: f.sala.nombre,
-  premium: /premium|vip/i.test(f.sala.nombre),
-});
+const DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const dosDigitos = (n) => String(n).padStart(2, '0');
+
+const etiquetaDia = (fecha, ahora) => {
+  const inicioDia = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const dias = Math.round((inicioDia(fecha) - inicioDia(ahora)) / 86400000);
+  if (dias === 0) return 'Hoy';
+  if (dias === 1) return 'Mañana';
+  return `${DIAS[fecha.getDay()]} ${dosDigitos(fecha.getDate())}/${dosDigitos(fecha.getMonth() + 1)}`;
+};
+
+// Las 3 próximas funciones de una película, ya listas para mostrar en la tarjeta.
+const proximasFunciones = (funciones, peliculaId, ahora) =>
+  funciones
+    .filter((f) => f.pelicula.id === peliculaId && new Date(f.horario) > ahora)
+    .sort((a, b) => new Date(a.horario) - new Date(b.horario))
+    .slice(0, 3)
+    .map((f) => {
+      const fecha = new Date(f.horario);
+      return {
+        id: f.id,
+        dia: etiquetaDia(fecha, ahora),
+        hora: `${dosDigitos(fecha.getHours())}:${dosDigitos(fecha.getMinutes())}`,
+        idioma: /sub/i.test(f.idioma) ? 'Sub' : 'Dob',
+        disponible: f.entradasVendidas < f.sala.capacidad,
+        sala: f.sala.nombre,
+        premium: /premium|vip/i.test(f.sala.nombre),
+      };
+    });
 
 const PeliculaList = () => {
-  const [peliculas, setPeliculas] = useState([]);
+  const dispatch = useDispatch();
+  const { peliculas, funciones, loading, error } = useSelector((state) => state.cartelera);
   const [clasificacion, setClasificacion] = useState('Todos');
   const [idioma, setIdioma] = useState('Todos');
-  const [funciones, setFunciones] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
-  
-  
-  
-  
+  // Montaje: pide películas y funciones. Desmontaje: cancela los pedidos en curso.
   useEffect(() => {
-    fetch('/peliculas/cartelera')
-      .then((response) => {
-        
-        
-        if (!response.ok) {
-          throw new Error('Error ' + response.status);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setPeliculas(data);
-        setError(null);
-        setCargando(false);
-      })
-      .catch((error) => {
-        console.error('Error al mostrar la cartelera', error);
-        setError('No se pudo cargar la cartelera. Revisá que el backend esté levantado.');
-        setCargando(false);
-      });
-  }, []);
+    const pedidoPeliculas = dispatch(fetchPeliculas());
+    const pedidoFunciones = dispatch(fetchFunciones());
+    return () => {
+      pedidoPeliculas.abort();
+      pedidoFunciones.abort();
+    };
+  }, [dispatch]);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch('/funciones', { signal: controller.signal })
-      .then((response) => (response.ok ? response.json() : []))
-      .then((data) => setFunciones(data))
-      .catch((error) => {
-        if (error.name !== 'AbortError') {
-          console.error('Error al traer las funciones', error);
-        }
-      });
-    return () => controller.abort();
-  }, []);
-
-  
-  
   const verDetalle = (id) => {
     navigate(`/pelicula/${id}`);
   };
 
-  const reservar = (funcion) => {
-    navigate(`/funcion/${funcion.id}/butacas`);
+  const reservar = (funcionId) => {
+    navigate(`/funcion/${funcionId}/butacas`);
   };
 
-  
-  if (cargando) {
+  if (loading) {
     return <p className="pagina_mensaje">Cargando cartelera...</p>;
   }
 
-  if (error !== null) {
-    return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
+  if (error) {
+    return (
+      <p className="pagina_mensaje pagina_mensaje--error">
+        No se pudo cargar la cartelera: {error}
+      </p>
+    );
   }
 
   if (peliculas.length === 0) {
@@ -102,9 +95,10 @@ const PeliculaList = () => {
     return true;
   });
 
+  const ahora = new Date();
+
   return (
     <>
-      {}
       <CarruselDestacadas peliculas={peliculas.slice(0, 5)} />
 
       <div className="cartelera_contenido">
@@ -136,7 +130,7 @@ const PeliculaList = () => {
                 titulo={pelicula.titulo}
                 poster_url={pelicula.poster_url}
                 clasificacion={pelicula.clasificacion}
-                funciones={funciones.filter((f) => f.pelicula.id === pelicula.id).map(aFuncionCard)}
+                funciones={proximasFunciones(funciones, pelicula.id, ahora)}
                 verDetalle={verDetalle}
                 reservar={reservar}
               />

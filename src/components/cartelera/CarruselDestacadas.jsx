@@ -56,7 +56,13 @@ const CarruselDestacadas = ({ peliculas }) => {
       {peliculas.map((pelicula, posicion) => (
         <DiapositivaPelicula
           key={pelicula.id}
-          pelicula={pelicula}
+          id={pelicula.id}
+          titulo={pelicula.titulo}
+          imagen={pelicula.bannerUrl || pelicula.poster_url}
+          clasificacion={pelicula.clasificacion}
+          duracion={pelicula.duracion}
+          idioma={pelicula.idioma}
+          sinopsis={pelicula.sinopsis}
           activa={posicion === indice}
           posicion={posicion + 1}
           total={cantidad}
