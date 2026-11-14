@@ -2,7 +2,9 @@
 import './tema.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { apiFetch } from './services/api';
+import { obtenerRol, sesionIniciada, sesionCerrada } from './redux/usuarioSlice';
 import { CarritoContext } from './context/CarritoContext';
 import { FavoritosContext } from './context/FavoritosContext';
 import Navigation from './components/Navigation';
@@ -35,28 +37,10 @@ import AdminDescuentosView from './views/admin/AdminDescuentosView';
 
 
 
-const obtenerRol = async (token, signal) => {
-  const res = await fetch('/ordenes', {
-    headers: { Authorization: `Bearer ${token}` },
-    signal,
-  });
-
-  if (res.status === 401) {
-    throw new Error('SESION_VENCIDA');
-  }
-  if (res.status === 403) {
-    return 'USER';
-  }
-  if (!res.ok) {
-    throw new Error(`Error ${res.status} al consultar el rol`);
-  }
-  return 'ADMIN';
-};
-
 function App() {
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
-  
-  const [rol, setRol] = useState(null);
+  // El usuario (token y rol) vive en Redux: ver src/redux/usuarioSlice.js
+  const { token, rol } = useSelector((state) => state.usuario);
+  const dispatch = useDispatch();
   
   
   const [carritoAbierto, setCarritoAbierto] = useState(false);
@@ -169,8 +153,7 @@ function App() {
 
   
   const cerrarSesion = (destino = '/') => {
-    setToken('');
-    setRol(null);
+    dispatch(sesionCerrada());
     setCarrito(null);
     setCarritoAbierto(false);
     localStorage.removeItem('token');
@@ -186,17 +169,15 @@ function App() {
       return;
     }
     console.error(err);
-    setRol('');
   };
 
-  
+
   const iniciarSesion = async (nuevoToken) => {
-    setToken(nuevoToken);
+    dispatch(sesionIniciada(nuevoToken));
     localStorage.setItem('token', nuevoToken);
 
     try {
-      const rolNuevo = await obtenerRol(nuevoToken);
-      setRol(rolNuevo);
+      const rolNuevo = await dispatch(obtenerRol(nuevoToken)).unwrap();
       navigate(rolNuevo === 'ADMIN' ? '/admin/dashboard' : '/');
     } catch (err) {
       manejarErrorRol(err);
@@ -209,15 +190,13 @@ function App() {
   useEffect(() => {
     if (token === '') return;
 
-    const controller = new AbortController();
-    obtenerRol(token, controller.signal)
-      .then(setRol)
-      .catch((err) => {
-        if (err.name !== 'AbortError') manejarErrorRol(err);
-      });
+    // Montaje: pide el rol. Desmontaje: cancela el pedido si sigue en curso.
+    const pedido = dispatch(obtenerRol(token));
+    pedido.unwrap().catch((err) => {
+      if (err.name !== 'AbortError') manejarErrorRol(err);
+    });
 
-    
-    return () => controller.abort();
+    return () => pedido.abort();
     
   }, []);
 
