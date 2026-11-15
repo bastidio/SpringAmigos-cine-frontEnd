@@ -53,7 +53,7 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: var(--texto-suave);
+  color: #9d9d9d;
   text-decoration: none;
   transition: color 0.15s ease;
 }
@@ -64,7 +64,7 @@
 
 .nav_link--activo,
 .nav_link--activo:hover {
-  color: var(--morado-texto);
+  color: #c6c6c6;
 }
 
 .nav_acciones {
