@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiFetch } from '../../services/api';
-import { useCarrito } from '../../context/CarritoContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { agregarItem, modificarCantidad, eliminarItem } from '../../redux/carritoSlice';
 import CategoriaTabs from './CategoriaTabs';
 import ProductoCard from './ProductoCard';
 import './Kiosco.css';
@@ -13,8 +13,10 @@ const elegirImagen = (producto) => {
 
 
 
-const ProductoList = ({ token }) => {
-  const { carrito, actualizarCarrito, recargarCarrito } = useCarrito();
+const ProductoList = () => {
+  const { token } = useSelector((state) => state.usuario);
+  const { carrito } = useSelector((state) => state.carrito);
+  const dispatch = useDispatch();
   const [productos, setProductos] = useState([]);
   const [categoria, setCategoria] = useState('Todo');
   const [cargando, setCargando] = useState(true);
@@ -31,7 +33,8 @@ const ProductoList = ({ token }) => {
     );
   };
 
-  const cambiarCarrito = async (producto, pedido) => {
+  // accion: el thunk a despachar; el carrito del store se actualiza en su fulfilled.
+  const cambiarCarrito = async (producto, accion) => {
     if (token === '') {
       navigate('/login');
       return;
@@ -39,46 +42,26 @@ const ProductoList = ({ token }) => {
 
     setOcupadoId(producto.id);
     setErrorCarrito(null);
-    try {
-      actualizarCarrito(await pedido());
-      setOcupadoId(null);
-    } catch (err) {
-      setOcupadoId(null);
-      if (err.status === 409) recargarCarrito();
-      if (err.status === 401) {
-        navigate('/login');
-        return;
-      }
-      setErrorCarrito(
-        err.status === 400 || err.status === 409
-          ? `No se pudo agregar ${producto.nombre}: no hay stock suficiente o el carrito venció.`
-          : err.message
-      );
+    const res = await dispatch(accion);
+    setOcupadoId(null);
+    if (res.error) {
+      setErrorCarrito(`No se pudo agregar ${producto.nombre}: no hay stock suficiente o el carrito venció.`);
     }
   };
 
   const agregar = (producto) => {
-    cambiarCarrito(producto, () =>
-      apiFetch('/api/carritos/items', {
-        method: 'POST',
-        body: { productoId: producto.id, cantidad: 1 },
-        token,
-      })
-    );
+    cambiarCarrito(producto, agregarItem({ productoId: producto.id, cantidad: 1 }));
   };
 
   const cambiarCantidad = (producto, cantidad) => {
     const item = itemDe(producto);
     if (item === undefined) return;
 
-    cambiarCarrito(producto, () =>
+    cambiarCarrito(
+      producto,
       cantidad === 0
-        ? apiFetch(`/api/carritos/items/${item.itemId}`, { method: 'DELETE', token })
-        : apiFetch(`/api/carritos/items/${item.itemId}`, {
-            method: 'PUT',
-            body: { cantidad },
-            token,
-          })
+        ? eliminarItem(item.itemId)
+        : modificarCantidad({ itemId: item.itemId, cantidad })
     );
   };
 

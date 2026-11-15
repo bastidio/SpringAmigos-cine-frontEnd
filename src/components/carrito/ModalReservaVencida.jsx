@@ -1,31 +1,24 @@
-import { useState } from 'react';
-import { apiFetch } from '../../services/api';
-import { useCarrito } from '../../context/CarritoContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { vaciarCarrito } from '../../redux/carritoSlice';
 
 const claseBoton =
   'cursor-pointer rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]';
 
 // Se terminó el tiempo de reserva: modal obligatorio (no se cierra con Escape ni haciendo clic
-// afuera). Lo dispara useEdicionCarrito a traves del contexto y se muestra una sola vez, en App,
+// afuera). Lo dispara useEdicionCarrito con setVencimiento (store) y se muestra una sola vez, en App,
 // fuera del nav (el backdrop-filter del nav rompe el "fixed" de los hijos).
-const ModalReservaVencida = ({ vencimiento, token, onNavegar, onCerrar }) => {
-  const { vaciarCarritoLocal } = useCarrito();
-  const [ocupado, setOcupado] = useState(false);
+const ModalReservaVencida = ({ vencimiento, onNavegar, onCerrar }) => {
+  const { loading: ocupado } = useSelector((state) => state.carrito);
+  const dispatch = useDispatch();
 
   if (vencimiento === null) return null;
 
   const hayFuncion = vencimiento.puedeReelegir && vencimiento.funcionId !== null;
 
   // Vacia el carrito en el backend (limpia la marca de "vencido") y despues navega.
+  // Si no se pudo vaciar, el backend lo limpia solo al pasar el vencimiento.
   const elegir = async (ruta) => {
-    setOcupado(true);
-    try {
-      await apiFetch('/api/carritos', { method: 'DELETE', token });
-      vaciarCarritoLocal();
-    } catch {
-      // Si no se pudo vaciar, el backend lo limpia solo al pasar el vencimiento.
-    }
-    setOcupado(false);
+    await dispatch(vaciarCarrito());
     onCerrar();
     onNavegar(ruta);
   };

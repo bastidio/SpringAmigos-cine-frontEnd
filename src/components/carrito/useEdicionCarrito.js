@@ -1,47 +1,13 @@
 import { useEffect, useState } from 'react';
-import { apiFetch } from '../../services/api';
-import { useCarrito } from '../../context/CarritoContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCarrito, modificarCantidad, eliminarItem, vaciarCarrito, setVencimiento } from '../../redux/carritoSlice';
 
 // Logica de edicion del carrito (cargar, cambiar cantidad, quitar, vaciar).
 // La usan el carrito desplegable y el checkout, para no duplicarla.
 
-const SIN_CAMBIOS = { vaciar: false, cantidades: {} };
-
-const hayCambios = (cambios) => cambios.vaciar || Object.keys(cambios.cantidades).length > 0;
-
-
-
-
-const aplicarCambios = (carrito, cambios) => {
-  if (carrito === null || !hayCambios(cambios)) return carrito;
-  if (cambios.vaciar) return { ...carrito, items: [], total: 0 };
-
-  const items = (carrito.items ?? [])
-    .map((item) => {
-      const cantidad = cambios.cantidades[item.itemId];
-      if (cantidad === undefined) return item;
-      return { ...item, cantidad, subtotal: item.precioUnitario * cantidad };
-    })
-    .filter((item) => item.cantidad > 0);
-
-  const total = items.reduce((suma, item) => suma + item.subtotal, 0);
-  return { ...carrito, items, total };
-};
-
-
-
-const borrar = async (url, opciones) => {
-  try {
-    return await apiFetch(url, { ...opciones, method: 'DELETE' });
-  } catch (err) {
-    if (err.status !== 404) throw err;
-    return null;
-  }
-};
-
 // Avisa que se terminó el tiempo de reserva. Si la funcion todavia no empezo, el modal
 // ofrece volver a elegir butacas en ella.
-const informarVencimiento = async (funcionId, avisarVencimiento, signal) => {
+const informarVencimiento = async (funcionId, dispatch, signal) => {
   let puedeReelegir = false;
   if (funcionId !== null) {
     try {
@@ -55,22 +21,17 @@ const informarVencimiento = async (funcionId, avisarVencimiento, signal) => {
       if (err.name === 'AbortError') return;
     }
   }
-  avisarVencimiento({ funcionId, puedeReelegir });
+  dispatch(setVencimiento({ funcionId, puedeReelegir }));
 };
 
-const useEdicionCarrito = (token) => {
-  const {
-    carrito,
-    error,
-    actualizarCarrito,
-    vaciarCarritoLocal,
-    recargarCarrito,
-    reintentarCarrito,
-    avisarVencimiento,
-  } = useCarrito();
+const useEdicionCarrito = () => {
+  const { carrito, error: errorCarga } = useSelector((state) => state.carrito);
+  const dispatch = useDispatch();
 
+  // El error de carga solo se muestra si no hay carrito (un error al editar va en errorAccion).
+  const error = carrito === null ? errorCarga : null;
   const cargando = carrito === null && error === null;
-  const [cambios, setCambios] = useState(SIN_CAMBIOS);
+  const [guardando, setGuardando] = useState(false);
 
   const [errorAccion, setErrorAccion] = useState(null);
   // Cuando el carrito vence el backend borra la funcion: la recordamos para el modal.
@@ -78,58 +39,6 @@ const useEdicionCarrito = (token) => {
   if (carrito?.funcionId && carrito.funcionId !== funcionRecordada) {
     setFuncionRecordada(carrito.funcionId);
   }
-
-  useEffect(() => {
-    if (!hayCambios(cambios)) return;
-
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    const enviarCambios = async () => {
-      let ultimoCarrito = null;
-      let fallo = false;
-
-      try {
-        if (cambios.vaciar) {
-          await borrar('/api/carritos', { token, signal });
-          vaciarCarritoLocal();
-          setErrorAccion(null);
-          return;
-        }
-
-        for (const [itemId, cantidad] of Object.entries(cambios.cantidades)) {
-          const respuesta =
-            cantidad === 0
-              ? await borrar(`/api/carritos/items/${itemId}`, { token, signal })
-              : await apiFetch(`/api/carritos/items/${itemId}`, {
-                  method: 'PUT',
-                  body: { cantidad },
-                  token,
-                  signal,
-                });
-          if (respuesta) ultimoCarrito = respuesta;
-        }
-        setErrorAccion(null);
-      } catch (err) {
-        if (err.name === 'AbortError') return;
-        fallo = true;
-        setErrorAccion(err.message);
-      } finally {
-        if (!signal.aborted) setCambios(SIN_CAMBIOS);
-      }
-
-      if (signal.aborted) return;
-      if (ultimoCarrito !== null && !fallo) {
-        actualizarCarrito(ultimoCarrito);
-      } else {
-        recargarCarrito();
-      }
-    };
-
-    enviarCambios();
-
-    return () => controller.abort();
-  }, [cambios, token, actualizarCarrito, vaciarCarritoLocal, recargarCarrito]);
 
   // Vencimiento: por tiempo (solo si el carrito tiene butacas) o porque el backend ya lo marco
   // (el scheduler vacio el carrito o fallo el pago). El temporizador se limpia al desmontar o
@@ -145,7 +54,7 @@ const useEdicionCarrito = (token) => {
     const controller = new AbortController();
     const espera = vencidoEnBackend ? 0 : Math.max(new Date(expiraEn) - Date.now(), 0);
     const temporizador = setTimeout(
-      () => informarVencimiento(funcionRecordada, avisarVencimiento, controller.signal),
+      () => informarVencimiento(funcionRecordada, dispatch, controller.signal),
       espera
     );
 
@@ -153,23 +62,38 @@ const useEdicionCarrito = (token) => {
       clearTimeout(temporizador);
       controller.abort();
     };
-  }, [hayVencimiento, vencidoEnBackend, expiraEn, funcionRecordada, avisarVencimiento]);
+  }, [hayVencimiento, vencidoEnBackend, expiraEn, funcionRecordada, dispatch]);
+
+  // Cada cambio va al back con su thunk; el carrito del store se actualiza en el fulfilled.
+  const ejecutar = async (accion) => {
+    setGuardando(true);
+    setErrorAccion(null);
+    const res = await dispatch(accion);
+    setGuardando(false);
+    if (res.error) setErrorAccion(res.error.message);
+  };
 
   const cambiarCantidad = (item, cantidad) => {
-    setCambios({ ...cambios, cantidades: { ...cambios.cantidades, [item.itemId]: cantidad } });
+    ejecutar(
+      cantidad === 0
+        ? eliminarItem(item.itemId)
+        : modificarCantidad({ itemId: item.itemId, cantidad })
+    );
   };
 
   const quitarItem = (item) => cambiarCantidad(item, 0);
 
-  const vaciarCarrito = () => {
-    setCambios({ vaciar: true, cantidades: {} });
+  const vaciar = () => {
+    ejecutar(vaciarCarrito());
   };
 
-  const visible = aplicarCambios(carrito, cambios);
+  const reintentar = () => {
+    dispatch(fetchCarrito());
+  };
+
+  const visible = carrito;
   const items = visible?.items ?? [];
   const cantidadTotal = items.reduce((total, item) => total + item.cantidad, 0);
-  
-  const guardando = hayCambios(cambios);
 
   return {
     visible,
@@ -181,8 +105,8 @@ const useEdicionCarrito = (token) => {
     guardando,
     cambiarCantidad,
     quitarItem,
-    vaciarCarrito,
-    reintentar: reintentarCarrito,
+    vaciarCarrito: vaciar,
+    reintentar,
   };
 };
 

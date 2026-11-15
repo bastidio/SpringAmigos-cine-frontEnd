@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../services/api';
-import { useCarrito } from '../../context/CarritoContext';
+import { useDispatch } from 'react-redux';
+import { fetchCarrito, vaciarCarritoLocal } from '../../redux/carritoSlice';
 import CarritoItem from '../carrito/CarritoItem';
 import AvisoReservaButacas from '../carrito/AvisoReservaButacas';
 import useEdicionCarrito from '../carrito/useEdicionCarrito';
@@ -34,7 +35,7 @@ const CheckoutDetalle = () => {
   const [revalidacion, setRevalidacion] = useState(0);
   const navigate = useNavigate();
   
-  const { vaciarCarritoLocal, recargarCarrito } = useCarrito();
+  const dispatch = useDispatch();
 
   // Mismo carrito editable que el desplegable (cantidad, quitar, vaciar).
   const {
@@ -114,10 +115,10 @@ const CheckoutDetalle = () => {
       setOrden(compra);
       
       // El backend vacio el carrito al comprar: se refleja en el estado (frena tambien el temporizador).
-      vaciarCarritoLocal();
+      dispatch(vaciarCarritoLocal());
     } catch (err) {
       // 409: puede ser que el carrito haya vencido; eso lo define el servidor, asi que se vuelve a pedir.
-      if (err.status === 409) recargarCarrito();
+      if (err.status === 409) dispatch(fetchCarrito());
       // Si el codigo dejo de ser valido, se revalida para quitarlo y avisar debajo del campo.
       if (codigoAplicado !== null) setRevalidacion((veces) => veces + 1);
       setError(

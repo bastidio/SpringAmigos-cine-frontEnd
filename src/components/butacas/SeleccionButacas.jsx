@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import MapaButacas from './MapaButacas';
 import PanelSeleccion from './PanelSeleccion';
-import { apiFetch } from '../../services/api';
-import { useCarrito } from '../../context/CarritoContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { agregarButacas } from '../../redux/carritoSlice';
 import './Butacas.css';
 
 const pedir = (url) => {
@@ -18,14 +18,15 @@ const pedir = (url) => {
 const SeleccionButacas = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { actualizarCarrito } = useCarrito();
+  const { token } = useSelector((state) => state.usuario);
+  const { loading: agregando } = useSelector((state) => state.carrito);
+  const dispatch = useDispatch();
 
   const [funcion, setFuncion] = useState(null);
   const [butacas, setButacas] = useState([]);
   const [seleccionadas, setSeleccionadas] = useState([]);
   const [error, setError] = useState(null);
   const [errorCarrito, setErrorCarrito] = useState(null);
-  const [agregando, setAgregando] = useState(false);
 
   useEffect(() => {
     Promise.all([pedir(`/funciones/${id}`), pedir('/asientos'), pedir(`/entradas/funcion/${id}`)])
@@ -75,49 +76,21 @@ const SeleccionButacas = () => {
 
   
   
+  // La logica (no mezclar funciones, no repetir butacas) esta en el thunk agregarButacas.
   const agregarAlCarritoEIr = async (destino) => {
-    if (!localStorage.getItem('token')) {
+    if (token === '') {
       navigate('/login');
       return;
     }
 
-    setAgregando(true);
     setErrorCarrito(null);
-    let ultimoCarrito = null;
-    try {
-      
-      
-      const carrito = await apiFetch('/api/carritos');
-      ultimoCarrito = carrito;
-      const yaEnCarrito = (carrito?.items ?? [])
-        .filter((item) => item.tipo === 'BUTACA')
-        .map((item) => item.referenciaId);
-
-      if (yaEnCarrito.length > 0 && carrito.funcionId !== funcion.id) {
-        throw new Error(
-          'Tu carrito ya tiene butacas de otra función. Quitalas desde el carrito para elegir estas.'
-        );
-      }
-
-      for (const butaca of elegidas) {
-        if (!yaEnCarrito.includes(butaca.id)) {
-          ultimoCarrito = await apiFetch('/api/carritos/items', {
-            method: 'POST',
-            body: { asientoId: butaca.id, funcionId: funcion.id, cantidad: 1 },
-          });
-        }
-      }
+    const res = await dispatch(
+      agregarButacas({ funcionId: funcion.id, asientos: elegidas.map((butaca) => butaca.id) })
+    );
+    if (!res.error) {
       navigate(destino);
-    } catch (err) {
-      if (err.status === 401) {
-        navigate('/login');
-        return;
-      }
-      setErrorCarrito(err.message);
-    } finally {
-      
-      if (ultimoCarrito !== null) actualizarCarrito(ultimoCarrito);
-      setAgregando(false);
+    } else {
+      setErrorCarrito(res.error.message);
     }
   };
 
