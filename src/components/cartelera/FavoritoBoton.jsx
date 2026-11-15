@@ -1,19 +1,24 @@
 import { useNavigate } from 'react-router-dom';
-import { useFavoritos } from '../../context/FavoritosContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { agregarFavorito, quitarFavorito } from '../../redux/favoritosSlice';
 
-// Corazon para marcar/quitar una pelicula favorita. Todo sale del FavoritosContext.
+// Corazon para marcar/quitar una pelicula favorita. La lista sale del store (favoritos).
 // pelicula: { id, titulo, poster_url, clasificacion }
 const FavoritoBoton = ({ pelicula, className = '' }) => {
-  const { haySesion, esFavorita, alternar } = useFavoritos();
+  const { token } = useSelector((state) => state.usuario);
+  const { items } = useSelector((state) => state.favoritos);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const activa = esFavorita(pelicula.id);
+  const haySesion = token !== '';
+  const activa = items.some((f) => f.peliculaId === pelicula.id);
 
+  // La lista cambia cuando responde el back (en el fulfilled del thunk).
   const manejarClick = () => {
     if (!haySesion) {
       navigate('/login');
       return;
     }
-    alternar(pelicula);
+    dispatch(activa ? quitarFavorito(pelicula.id) : agregarFavorito(pelicula));
   };
 
   return (
