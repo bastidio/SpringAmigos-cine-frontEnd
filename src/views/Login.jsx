@@ -2,8 +2,8 @@ import Auth from '../components/auth/Auth';
 
 
 
-const Login = ({ onAutenticado }) => {
-  return <Auth onAutenticado={onAutenticado} />;
+const Login = () => {
+  return <Auth />;
 };
 
 export default Login;

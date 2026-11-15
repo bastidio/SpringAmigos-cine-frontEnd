@@ -1,40 +1,28 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../../redux/usuarioSlice';
 
 
-const API_BASE = '';
 
-
-
-function Login({ onAutenticado, onIrARegistro }) {
+function Login({ onIrARegistro }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
-  const [enviando, setEnviando] = useState(false);
+  const { loading: enviando } = useSelector((state) => state.usuario);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  function handleSubmit(evento) {
+  async function handleSubmit(evento) {
     evento.preventDefault();
     setError(null);
-    setEnviando(true);
 
-    fetch(`${API_BASE}/api/v1/auth/authenticate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((respuesta) => {
-        if (!respuesta.ok) {
-          throw new Error('Email o contraseña incorrectos');
-        }
-        return respuesta.json();
-      })
-      .then((data) => {
-        setEnviando(false);
-        onAutenticado(data.access_token);
-      })
-      .catch((err) => {
-        setEnviando(false);
-        setError(err.message);
-      });
+    const res = await dispatch(login({ email, password }));
+    if (!res.error) {
+      navigate(res.payload.rol === 'ADMIN' ? '/admin/dashboard' : '/');
+    } else {
+      setError('Email o contraseña incorrectos');
+    }
   }
 
   return (

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import PerfilAvatarBoton from './PerfilAvatarBoton';
 import PerfilDetalle from './PerfilDetalle';
 
@@ -9,36 +10,10 @@ import PerfilDetalle from './PerfilDetalle';
 
 
 
-const PerfilMenu = ({ token, onLogout, onIrAEntradas }) => {
+const PerfilMenu = ({ onLogout, onIrAEntradas }) => {
   const [abierto, setAbierto] = useState(false);
-  
-  const [usuarioNav, setUsuarioNav] = useState(null);
-
-  
-  
-  
-  useEffect(() => {
-    if (token === '') return;
-
-    const controller = new AbortController();
-    fetch('/users/me', {
-      headers: { Authorization: `Bearer ${token}` },
-      signal: controller.signal,
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error ${res.status} al cargar el perfil`);
-        }
-        return res.json();
-      })
-      .then((data) => setUsuarioNav({ nombre: data.nombre, fotoPerfil: data.fotoPerfil }))
-      .catch((err) => {
-        
-        if (err.name !== 'AbortError') console.error('No se pudo cargar la foto del nav', err);
-      });
-
-    return () => controller.abort();
-  }, [token]);
+  // El perfil lo pide App una sola vez (fetchPerfil); acá solo se lee del store.
+  const { perfil } = useSelector((state) => state.usuario);
 
   const alternar = () => {
     setAbierto(!abierto);
@@ -75,9 +50,9 @@ const PerfilMenu = ({ token, onLogout, onIrAEntradas }) => {
       onBlur={cerrarSiSaleElFoco}
       onKeyDown={cerrarConEscape}
     >
-      <PerfilAvatarBoton abierto={abierto} usuario={token === '' ? null : usuarioNav} onClick={alternar} />
+      <PerfilAvatarBoton abierto={abierto} usuario={perfil} onClick={alternar} />
 
-      {abierto && <PerfilDetalle token={token} onLogout={onLogout} onIrAEntradas={irAEntradas} />}
+      {abierto && <PerfilDetalle onLogout={onLogout} onIrAEntradas={irAEntradas} />}
     </div>
   );
 };

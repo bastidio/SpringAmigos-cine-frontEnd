@@ -7,7 +7,7 @@ import logo from '../../assets/lumiere-logo.svg';
 
 
 
-function Auth({ onAutenticado }) {
+function Auth() {
   const [modo, setModo] = useState('login'); 
 
   return (
@@ -21,12 +21,10 @@ function Auth({ onAutenticado }) {
       <div className="auth_panel">
         {modo === 'login' ? (
           <Login
-            onAutenticado={onAutenticado}
             onIrARegistro={() => setModo('registro')}
           />
         ) : (
           <Register
-            onAutenticado={onAutenticado}
             onIrALogin={() => setModo('login')}
           />
         )}

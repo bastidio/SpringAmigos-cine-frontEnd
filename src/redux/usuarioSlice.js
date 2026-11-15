@@ -1,60 +1,95 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// /ordenes solo lo puede ver un ADMIN: según la respuesta sabemos el rol.
-const URL = "/ordenes";
+const URL_AUTH = "/api/v1/auth";
+const URL_PERFIL = "/users/me";
 
-export const obtenerRol = createAsyncThunk("usuario/obtenerRol", async (token, { signal }) => {
-  const { status } = await axios(URL, {
-    headers: { Authorization: `Bearer ${token}` },
-    signal,
-    validateStatus: (s) => (s >= 200 && s < 300) || s === 401 || s === 403,
+// El back responde { access_token, rol }. El token se guarda acá, nunca en el reducer.
+export const login = createAsyncThunk("usuario/login", async ({ email, password }) => {
+  const { data } = await axios.post(`${URL_AUTH}/authenticate`, { email, password });
+  localStorage.setItem("token", data.access_token);
+  return { accessToken: data.access_token, rol: data.rol };
+});
+
+// Registrarse también deja la sesión iniciada (el back devuelve lo mismo que el login).
+export const register = createAsyncThunk("usuario/register", async (datos) => {
+  const { data } = await axios.post(`${URL_AUTH}/register`, datos);
+  localStorage.setItem("token", data.access_token);
+  return { accessToken: data.access_token, rol: data.rol };
+});
+
+// Perfil del usuario logueado; trae el rol, así que sirve también para saber si es ADMIN.
+export const fetchPerfil = createAsyncThunk("usuario/fetchPerfil", async () => {
+  const { data } = await axios.get(URL_PERFIL, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   });
-
-  if (status === 401) throw new Error("SESION_VENCIDA");
-  if (status === 403) return "USER";
-  return "ADMIN";
+  return data;
 });
 
 const usuarioSlice = createSlice({
   name: "usuario",
   initialState: {
     token: localStorage.getItem("token") || "",
-    rol: null, 
+    rol: null,
+    perfil: null,
     loading: false,
     error: null,
   },
   reducers: {
-    sesionIniciada: (state, action) => {
-      state.token = action.payload;
-      state.rol = null;
-      state.error = null;
-    },
-    sesionCerrada: (state) => {
+    cerrarSesion: (state) => {
       state.token = "";
       state.rol = null;
+      state.perfil = null;
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(obtenerRol.pending, (state) => {
+      .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(obtenerRol.fulfilled, (state, action) => {
+      .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.rol = action.payload;
+        state.token = action.payload.accessToken;
+        state.rol = action.payload.rol;
+        state.perfil = null;
       })
-      .addCase(obtenerRol.rejected, (state, action) => {
+      .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        // Cancelado o sesión vencida: no se toca el rol, de eso se encarga cerrar sesión.
-        if (action.meta.aborted || action.error.message === "SESION_VENCIDA") return;
         state.error = action.error.message;
-        state.rol = ""; // no se pudo saber: se trata como no-admin
+      })
+      .addCase(register.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.accessToken;
+        state.rol = action.payload.rol;
+        state.perfil = null;
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetchPerfil.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPerfil.fulfilled, (state, action) => {
+        state.loading = false;
+        // Si cerró sesión mientras el pedido seguía en curso, no se guarda nada.
+        if (state.token === "") return;
+        state.perfil = action.payload;
+        state.rol = action.payload.rol;
+      })
+      .addCase(fetchPerfil.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });
 
-export const { sesionIniciada, sesionCerrada } = usuarioSlice.actions;
+export const { cerrarSesion } = usuarioSlice.actions;
 export default usuarioSlice.reducer;

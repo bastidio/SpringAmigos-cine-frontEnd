@@ -1,14 +1,14 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import RegisterForm from './RegisterForm';
-
-
-const API_BASE = '';
+import { register } from '../../redux/usuarioSlice';
 
 
 
 
 
-function Register({ onAutenticado, onIrALogin }) {
+function Register({ onIrALogin }) {
   
   const [datos, setDatos] = useState({
     username: '',
@@ -19,7 +19,9 @@ function Register({ onAutenticado, onIrALogin }) {
     password: '',
   });
   const [error, setError] = useState(null);
-  const [enviando, setEnviando] = useState(false);
+  const { loading: enviando } = useSelector((state) => state.usuario);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   
   
@@ -28,31 +30,17 @@ function Register({ onAutenticado, onIrALogin }) {
     setDatos({ ...datos, [name]: value });
   }
 
-  function handleSubmit(evento) {
+  async function handleSubmit(evento) {
     evento.preventDefault();
     setError(null);
-    setEnviando(true);
 
-    fetch(`${API_BASE}/api/v1/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      
-      body: JSON.stringify({ ...datos, telefono: datos.telefono.trim() || null }),
-    })
-      .then((respuesta) => {
-        if (!respuesta.ok) {
-          throw new Error('No se pudo crear la cuenta (el email puede ya estar registrado)');
-        }
-        return respuesta.json();
-      })
-      .then((data) => {
-        setEnviando(false);
-        onAutenticado(data.access_token);
-      })
-      .catch((err) => {
-        setEnviando(false);
-        setError(err.message);
-      });
+    // Teléfono vacío viaja como null. Registrarse deja la sesión iniciada.
+    const res = await dispatch(register({ ...datos, telefono: datos.telefono.trim() || null }));
+    if (!res.error) {
+      navigate(res.payload.rol === 'ADMIN' ? '/admin/dashboard' : '/');
+    } else {
+      setError('No se pudo crear la cuenta (el email puede ya estar registrado)');
+    }
   }
 
   return (

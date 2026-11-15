@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PerfilLayout from './PerfilLayout';
 import PerfilHeader from './PerfilHeader';
 import DatosPersonales from './DatosPersonales';
@@ -10,62 +10,11 @@ import MensajeError from './MensajeError';
 
 
 
-const PerfilDetalle = ({ token, onLogout, onIrAEntradas }) => {
-  const [usuario, setUsuario] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const PerfilDetalle = ({ onLogout, onIrAEntradas }) => {
+  // El perfil ya lo pidió App (fetchPerfil); mientras no llega se muestra el spinner.
+  const { perfil: usuario, error } = useSelector((state) => state.usuario);
 
-  
-  
-  
-  
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const cargarPerfil = async () => {
-      try {
-        
-        const res = await fetch('/users/me', {
-          headers: { Authorization: `Bearer ${token}` },
-          signal: controller.signal,
-        });
-
-        
-        
-        if (!res.ok) {
-          throw new Error(`Error ${res.status} al cargar el perfil`);
-        }
-
-        const data = await res.json();
-        setUsuario(data);
-      } catch (err) {
-        
-        if (err.name === 'AbortError') {
-          return;
-        }
-        
-        setError(err.message);
-      } finally {
-        
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    cargarPerfil();
-
-    
-    
-    return () => controller.abort();
-  }, [token]);
-
-  
-  
-  
-  
-
-  if (loading) {
+  if (usuario === null && error === null) {
     return (
       <PerfilLayout>
         <Spinner />
@@ -75,7 +24,7 @@ const PerfilDetalle = ({ token, onLogout, onIrAEntradas }) => {
 
   
   
-  if (error !== null) {
+  if (usuario === null) {
     return (
       <PerfilLayout>
         <MensajeError mensaje={error} />
