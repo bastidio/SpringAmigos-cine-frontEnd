@@ -1,12 +1,11 @@
 
 import './tema.css';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { apiFetch } from './services/api';
-import { obtenerRol, sesionIniciada, sesionCerrada } from './redux/usuarioSlice';
-import { CarritoContext } from './context/CarritoContext';
-import { FavoritosContext } from './context/FavoritosContext';
+import { fetchPerfil, cerrarSesion as cerrarSesionStore } from './redux/usuarioSlice';
+import { fetchCarrito, limpiarCarrito, setVencimiento } from './redux/carritoSlice';
+import { fetchFavoritos, limpiarFavoritos } from './redux/favoritosSlice';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import Cartelera from './views/Cartelera';
@@ -44,161 +43,50 @@ function App() {
   
   
   const [carritoAbierto, setCarritoAbierto] = useState(false);
-  
-  const [carrito, setCarrito] = useState(null);
-  const [errorCarrito, setErrorCarrito] = useState(null);
-  // Datos del modal "se terminó el tiempo de reserva" (null = cerrado).
-  const [vencimiento, setVencimiento] = useState(null);
+  // Carrito y favoritos viven en Redux: ver src/redux/carritoSlice.js y favoritosSlice.js
+  const { carrito, vencimiento } = useSelector((state) => state.carrito);
   const navigate = useNavigate();
   const location = useLocation(); 
 
-  
-  const [recargasCarrito, setRecargasCarrito] = useState(0);
-  const pedidoCarritoRef = useRef(null);
-
-  const recargarCarrito = useCallback(() => {
-    setRecargasCarrito((veces) => veces + 1);
-  }, []);
-
-  useEffect(() => {
-    if (token === '') return;
-
-    const controller = new AbortController();
-    pedidoCarritoRef.current = controller;
-    apiFetch('/api/carritos', { token, signal: controller.signal })
-      .then((data) => {
-        setCarrito(data);
-        setErrorCarrito(null);
-      })
-      .catch((err) => {
-        if (err.name === 'AbortError') return;
-        console.error('No se pudo cargar el carrito', err);
-        setErrorCarrito(err.message || 'No se pudo cargar el carrito.');
-      });
-
-    return () => controller.abort();
-  }, [token, location.pathname, recargasCarrito]);
-
-  const actualizarCarrito = useCallback((nuevoCarrito) => {
-    pedidoCarritoRef.current?.abort();
-    setCarrito(nuevoCarrito);
-    setErrorCarrito(null);
-  }, []);
-
-  const vaciarCarritoLocal = useCallback(() => {
-    pedidoCarritoRef.current?.abort();
-    setCarrito((actual) =>
-      actual === null
-        ? actual
-        : { ...actual, items: [], total: 0, funcionId: null, expiraEn: null, vencido: false }
-    );
-    setErrorCarrito(null);
-  }, []);
-
-  const reintentarCarrito = useCallback(() => {
-    setErrorCarrito(null);
-    recargarCarrito();
-  }, [recargarCarrito]);
-
-  const carritoVisible = token === '' ? null : carrito;
-  const cantidadVisible = (carritoVisible?.items ?? []).reduce(
+  const cantidadVisible = (carrito?.items ?? []).reduce(
     (total, item) => total + (item.cantidad ?? 1),
     0
   );
-  const errorCarritoVisible = carritoVisible === null ? errorCarrito : null;
-
-  // Favoritos del usuario: se piden una sola vez por sesion y los comparten cartelera, detalle y perfil.
-  const [favoritos, setFavoritos] = useState([]);
-
-  useEffect(() => {
-    if (token === '') return;
-
-    const controller = new AbortController();
-    apiFetch('/favoritos', { token, signal: controller.signal })
-      .then((data) => setFavoritos(Array.isArray(data) ? data : []))
-      .catch((err) => {
-        if (err.name !== 'AbortError') console.error('No se pudieron cargar los favoritos', err);
-      });
-
-    return () => controller.abort();
-  }, [token]);
-
-  const favoritosVisibles = token === '' ? [] : favoritos;
-
-  const esFavorita = (idPelicula) => favoritosVisibles.some((f) => f.peliculaId === idPelicula);
-
-  // Agrega o quita sin recargar: actualiza la lista al instante y la revierte si el pedido falla.
-  const alternarFavorita = (pelicula) => {
-    const quitar = esFavorita(pelicula.id);
-    const nuevo = {
-      peliculaId: pelicula.id,
-      titulo: pelicula.titulo,
-      poster_url: pelicula.poster_url,
-      clasificacion: pelicula.clasificacion,
-      agregadoEn: new Date().toISOString(),
-    };
-    const aplicar = (agregar) => (lista) => {
-      const sinPelicula = lista.filter((f) => f.peliculaId !== pelicula.id);
-      return agregar ? [nuevo, ...sinPelicula] : sinPelicula;
-    };
-
-    setFavoritos(aplicar(!quitar));
-    apiFetch(`/favoritos/${pelicula.id}`, { token, method: quitar ? 'DELETE' : 'POST' }).catch((err) => {
-      console.error('No se pudo actualizar el favorito', err);
-      setFavoritos(aplicar(quitar));
-    });
-  };
 
   const esAdmin = rol === 'ADMIN';
 
   
-  const cerrarSesion = (destino = '/') => {
-    dispatch(sesionCerrada());
-    setCarrito(null);
-    setCarritoAbierto(false);
-    localStorage.removeItem('token');
-    navigate(destino);
-  };
+  const cerrarSesion = useCallback(
+    (destino = '/') => {
+      localStorage.removeItem('token');
+      dispatch(cerrarSesionStore());
+      dispatch(limpiarCarrito());
+      dispatch(limpiarFavoritos());
+      setCarritoAbierto(false);
+      navigate(destino);
+    },
+    [dispatch, navigate]
+  );
 
-  
-  
-  
-  const manejarErrorRol = (err) => {
-    if (err.message === 'SESION_VENCIDA') {
-      cerrarSesion('/login');
-      return;
-    }
-    console.error(err);
-  };
-
-
-  const iniciarSesion = async (nuevoToken) => {
-    dispatch(sesionIniciada(nuevoToken));
-    localStorage.setItem('token', nuevoToken);
-
-    try {
-      const rolNuevo = await dispatch(obtenerRol(nuevoToken)).unwrap();
-      navigate(rolNuevo === 'ADMIN' ? '/admin/dashboard' : '/');
-    } catch (err) {
-      manejarErrorRol(err);
-      if (err.message !== 'SESION_VENCIDA') navigate('/');
-    }
-  };
-
-  
-  
+  // Montaje (si ya habia token) y actualizacion (cuando se inicia sesion): pide el perfil,
+  // que trae el rol. Si falla (token vencido o invalido), se cierra la sesion y va a /login.
   useEffect(() => {
     if (token === '') return;
 
-    // Montaje: pide el rol. Desmontaje: cancela el pedido si sigue en curso.
-    const pedido = dispatch(obtenerRol(token));
-    pedido.unwrap().catch((err) => {
-      if (err.name !== 'AbortError') manejarErrorRol(err);
-    });
+    const cargarPerfil = async () => {
+      const res = await dispatch(fetchPerfil());
+      if (res.error) cerrarSesion('/login');
+    };
+    cargarPerfil();
+  }, [dispatch, token, cerrarSesion]);
 
-    return () => pedido.abort();
-    
-  }, []);
+  // Carrito y favoritos: se piden una sola vez por sesion (al montar con token o al iniciar sesion).
+  useEffect(() => {
+    if (token === '') return;
+
+    dispatch(fetchCarrito());
+    dispatch(fetchFavoritos());
+  }, [dispatch, token]);
 
   const irAEntradas = () => {
     navigate('/mis-entradas');
@@ -210,7 +98,7 @@ function App() {
       navigate('/login');
       return;
     }
-    if (!carritoAbierto) recargarCarrito();
+    if (!carritoAbierto) dispatch(fetchCarrito());
     setCarritoAbierto(!carritoAbierto);
   };
 
@@ -242,30 +130,15 @@ function App() {
   }
 
   return (
-    <CarritoContext.Provider
-      value={{
-        carrito: carritoVisible,
-        cantidad: cantidadVisible,
-        error: errorCarritoVisible,
-        actualizarCarrito,
-        vaciarCarritoLocal,
-        recargarCarrito,
-        reintentarCarrito,
-        avisarVencimiento: setVencimiento,
-      }}
-    >
-    <FavoritosContext.Provider
-      value={{ haySesion: token !== '', favoritos: favoritosVisibles, esFavorita, alternar: alternarFavorita }}
-    >
+    <>
       {}
       {!esRutaAdmin && (
         <Navigation
           haySesion={token !== ''}
           esAdmin={esAdmin}
-          perfil={<PerfilView token={token} onLogout={() => cerrarSesion()} onIrAEntradas={irAEntradas} />}
+          perfil={<PerfilView onLogout={() => cerrarSesion()} onIrAEntradas={irAEntradas} />}
           carrito={
             <CarritoView
-              token={token}
               abierto={carritoAbierto}
               cantidad={cantidadVisible}
               onAlternar={alternarCarrito}
@@ -280,15 +153,15 @@ function App() {
         <Route path="/" element={<Cartelera />} />
         <Route path="/pelicula/:id" element={<DetallePelicula />} />
         <Route path="/funcion/:id/butacas" element={<Butacas />} />
-        <Route path="/kiosco" element={<Kiosco token={token} />} />
-        <Route path="/login" element={<Login onAutenticado={iniciarSesion} />} />
+        <Route path="/kiosco" element={<Kiosco />} />
+        <Route path="/login" element={<Login />} />
 
         {}
         <Route
           path="/carrito"
           element={
             token !== '' ? (
-              <Carrito token={token} onNavegar={navigate} />
+              <Carrito onNavegar={navigate} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -323,12 +196,10 @@ function App() {
 
       <ModalReservaVencida
         vencimiento={vencimiento}
-        token={token}
         onNavegar={navegarDesdeCarrito}
-        onCerrar={() => setVencimiento(null)}
+        onCerrar={() => dispatch(setVencimiento(null))}
       />
-    </FavoritosContext.Provider>
-    </CarritoContext.Provider>
+    </>
   );
 }
 
