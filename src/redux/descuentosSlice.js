@@ -39,7 +39,7 @@ export const reactivarDescuento = createAsyncThunk("descuentos/reactivarDescuent
   return data;
 });
 
-// Checkout - valida el código contra el carrito actual y devuelve { valido, mensaje, subtotal, monto, total }.
+// valida el código contra el carrito actual y devuelve si es valido, mensaje, subtotal, monto y total
 export const validarDescuento = createAsyncThunk("descuentos/validarDescuento", async (codigo) => {
   const { data } = await axios.get(`/api/checkout/descuento?codigo=${encodeURIComponent(codigo)}`, {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

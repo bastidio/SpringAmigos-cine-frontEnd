@@ -16,7 +16,7 @@ const claseError = `${claseAviso} border-red-400/40 bg-red-400/10 text-red-300`;
 
 
 
-const CarritoDetalle = ({ onNavegar }) => {
+const CarritoDetalle = ({ irA }) => {
   
   const {
     visible,
@@ -86,7 +86,7 @@ const CarritoDetalle = ({ onNavegar }) => {
           </p>
           <button
             type="button"
-            onClick={() => onNavegar('/')}
+            onClick={() => irA('/')}
             className="cursor-pointer rounded-xl border-0 bg-[var(--morado)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--morado-hover)]"
           >
             Ver cartelera
@@ -111,7 +111,7 @@ const CarritoDetalle = ({ onNavegar }) => {
             cantidadArticulos={cantidadTotal}
             total={visible.total}
             formatearMoneda={moneda}
-            onIrACheckout={() => onNavegar('/checkout')}
+            onIrACheckout={() => irA('/checkout')}
             ocupado={guardando}
           />
         </>

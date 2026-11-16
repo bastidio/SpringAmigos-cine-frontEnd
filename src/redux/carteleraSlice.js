@@ -116,7 +116,6 @@ const carteleraSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Películas
       .addCase(fetchPeliculas.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -163,7 +162,6 @@ const carteleraSlice = createSlice({
       .addCase(deletePelicula.fulfilled, (state, action) => {
         state.peliculas = state.peliculas.filter((p) => p.id !== action.payload);
       })
-      // Funciones
       .addCase(fetchFunciones.pending, (state) => {
         state.loading = true;
       })

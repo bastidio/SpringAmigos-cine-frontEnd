@@ -3,7 +3,6 @@ import axios from "axios";
 
 const URL = "/favoritos";
 
-// items: [{ peliculaId, titulo, poster_url, clasificacion, agregadoEn }]
 export const fetchFavoritos = createAsyncThunk("favoritos/fetchFavoritos", async () => {
   const { data } = await axios.get(URL, {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -11,7 +10,6 @@ export const fetchFavoritos = createAsyncThunk("favoritos/fetchFavoritos", async
   return data;
 });
 
-// El back responde vacío: se devuelve el favorito armado con los datos de la película.
 export const agregarFavorito = createAsyncThunk("favoritos/agregarFavorito", async (pelicula) => {
   await axios.post(`${URL}/${pelicula.id}`, null, {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -21,7 +19,6 @@ export const agregarFavorito = createAsyncThunk("favoritos/agregarFavorito", asy
     titulo: pelicula.titulo,
     poster_url: pelicula.poster_url,
     clasificacion: pelicula.clasificacion,
-    agregadoEn: new Date().toISOString(),
   };
 });
 
@@ -34,7 +31,11 @@ export const quitarFavorito = createAsyncThunk("favoritos/quitarFavorito", async
 
 const favoritosSlice = createSlice({
   name: "favoritos",
-  initialState: { items: [], loading: false, error: null },
+  initialState: { 
+    items: [], 
+    loading: false, 
+    error: null 
+  },
   reducers: {
     limpiarFavoritos: (state) => {
       state.items = [];

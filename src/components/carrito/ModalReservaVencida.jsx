@@ -7,7 +7,7 @@ const claseBoton =
 // Se terminó el tiempo de reserva: modal obligatorio (no se cierra con Escape ni haciendo clic
 // afuera). Lo dispara useEdicionCarrito con setVencimiento (store) y se muestra una sola vez, en App,
 // fuera del nav (el backdrop-filter del nav rompe el "fixed" de los hijos).
-const ModalReservaVencida = ({ vencimiento, onNavegar, onCerrar }) => {
+const ModalReservaVencida = ({ vencimiento, irA, onCerrar }) => {
   const { loading: ocupado } = useSelector((state) => state.carrito);
   const dispatch = useDispatch();
 
@@ -20,7 +20,7 @@ const ModalReservaVencida = ({ vencimiento, onNavegar, onCerrar }) => {
   const elegir = async (ruta) => {
     await dispatch(vaciarCarrito());
     onCerrar();
-    onNavegar(ruta);
+    irA(ruta);
   };
 
   // Trampa de foco: con dos botones, Tab y Shift+Tab alternan entre ellos; con uno, se queda.

@@ -8,7 +8,7 @@ import CarritoDetalle from './CarritoDetalle';
 
 
 
-const CarritoMenu = ({ abierto, cantidad, onAlternar, onCerrar, onNavegar }) => {
+const CarritoMenu = ({ abierto, cantidad, onAlternar, onCerrar, irA }) => {
   
   
   
@@ -58,7 +58,7 @@ const CarritoMenu = ({ abierto, cantidad, onAlternar, onCerrar, onNavegar }) => 
 
       {abierto && (
         <CarritoLayout>
-          <CarritoDetalle onNavegar={onNavegar} />
+          <CarritoDetalle irA={irA} />
         </CarritoLayout>
       )}
     </div>

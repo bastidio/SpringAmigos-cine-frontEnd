@@ -143,7 +143,7 @@ function App() {
               cantidad={cantidadVisible}
               onAlternar={alternarCarrito}
               onCerrar={cerrarCarrito}
-              onNavegar={navegarDesdeCarrito}
+              irA={navegarDesdeCarrito}
             />
           }
         />
@@ -153,7 +153,7 @@ function App() {
         <Route path="/" element={<Cartelera />} />
         <Route path="/pelicula/:id" element={<DetallePelicula />} />
         <Route path="/funcion/:id/butacas" element={<Butacas />} />
-        <Route path="/kiosco" element={<Kiosco />} />
+        <Route path="/kiosco" element={<Kiosco haySesion={token !== ''} irA={navigate} />} />
         <Route path="/login" element={<Login />} />
 
         {}
@@ -161,7 +161,7 @@ function App() {
           path="/carrito"
           element={
             token !== '' ? (
-              <Carrito onNavegar={navigate} />
+              <Carrito irA={navigate} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -196,7 +196,7 @@ function App() {
 
       <ModalReservaVencida
         vencimiento={vencimiento}
-        onNavegar={navegarDesdeCarrito}
+        irA={navegarDesdeCarrito}
         onCerrar={() => dispatch(setVencimiento(null))}
       />
     </>

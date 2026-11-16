@@ -4,21 +4,19 @@ import axios from "axios";
 const URL_AUTH = "/api/v1/auth";
 const URL_PERFIL = "/users/me";
 
-// El back responde { access_token, rol }. El token se guarda acá, nunca en el reducer.
 export const login = createAsyncThunk("usuario/login", async ({ email, password }) => {
   const { data } = await axios.post(`${URL_AUTH}/authenticate`, { email, password });
   localStorage.setItem("token", data.access_token);
   return { accessToken: data.access_token, rol: data.rol };
 });
 
-// Registrarse también deja la sesión iniciada (el back devuelve lo mismo que el login).
 export const register = createAsyncThunk("usuario/register", async (datos) => {
   const { data } = await axios.post(`${URL_AUTH}/register`, datos);
   localStorage.setItem("token", data.access_token);
   return { accessToken: data.access_token, rol: data.rol };
 });
 
-// Perfil del usuario logueado; trae el rol, así que sirve también para saber si es ADMIN.
+// como el perfil del usuario ya trae el rol, tambien sirve para saber si es ADMIN
 export const fetchPerfil = createAsyncThunk("usuario/fetchPerfil", async () => {
   const { data } = await axios.get(URL_PERFIL, {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -79,7 +77,7 @@ const usuarioSlice = createSlice({
       })
       .addCase(fetchPerfil.fulfilled, (state, action) => {
         state.loading = false;
-        // Si cerró sesión mientras el pedido seguía en curso, no se guarda nada.
+        // Si cerro sesion mientras habia un pedido sin terminar, no se guarda
         if (state.token === "") return;
         state.perfil = action.payload;
         state.rol = action.payload.rol;

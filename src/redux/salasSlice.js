@@ -72,7 +72,7 @@ const salasSlice = createSlice({
         state.items = [...state.items, action.payload];
       })
       .addCase(updateSala.fulfilled, (state, action) => {
-        const index = state.items.findIndex((s) => s.id === action.payload.id);
+        const index = state.items.findIndex((sala) => sala.id === action.payload.id);
         if (index !== -1) state.items[index] = action.payload;
       })
       .addCase(fetchAsientos.pending, (state) => {
@@ -91,7 +91,7 @@ const salasSlice = createSlice({
         state.asientos = [...state.asientos, action.payload];
       })
       .addCase(deleteAsiento.fulfilled, (state, action) => {
-        state.asientos = state.asientos.filter((a) => a.id !== action.payload);
+        state.asientos = state.asientos.filter((asiento) => asiento.id !== action.payload);
       });
   },
 });

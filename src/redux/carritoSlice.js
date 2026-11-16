@@ -3,7 +3,7 @@ import axios from "axios";
 
 const URL = "/api/carritos";
 
-// Todos los pedidos del carrito devuelven el carrito entero: { items, total, funcionId, expiraEn, vencido }.
+// todos los pedidos devuelven el carrito entero, tiene items, total, funcionId, expiraEn y vencido
 export const fetchCarrito = createAsyncThunk("carrito/fetchCarrito", async () => {
   const { data } = await axios.get(URL, {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -32,14 +32,12 @@ export const eliminarItem = createAsyncThunk("carrito/eliminarItem", async (item
   return data;
 });
 
-// El back responde vacío: el fulfilled deja el carrito vacío.
 export const vaciarCarrito = createAsyncThunk("carrito/vaciarCarrito", async () => {
   await axios.delete(URL, {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   });
 });
 
-// Agrega las butacas elegidas de una función. No se pueden mezclar butacas de dos funciones.
 export const agregarButacas = createAsyncThunk("carrito/agregarButacas", async ({ funcionId, asientos }) => {
   const { data: carrito } = await axios.get(URL, {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -71,13 +69,12 @@ const carritoSlice = createSlice({
   name: "carrito",
   initialState,
   reducers: {
-    // El checkout vacía el carrito en el back al comprar: acá solo se refleja.
     vaciarCarritoLocal: (state) => {
       if (state.carrito === null) return;
       state.carrito = { ...state.carrito, items: [], total: 0, funcionId: null, expiraEn: null, vencido: false };
       state.error = null;
     },
-    // Datos del modal "se terminó el tiempo de reserva" (null = cerrado).
+    // cartel de "se termino el tiempo de reserva"
     setVencimiento: (state, action) => {
       state.vencimiento = action.payload;
     },

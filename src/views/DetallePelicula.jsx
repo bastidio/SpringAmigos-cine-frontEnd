@@ -1,7 +1,5 @@
 import PeliculaDetalle from '../components/pelicula/PeliculaDetalle';
 
-
-
 const DetallePelicula = () => {
   return (
     <section className="pagina">
