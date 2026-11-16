@@ -1,45 +1,22 @@
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchOrdenes } from '../../../redux/ordenesSlice';
 import TarjetaResumen from './TarjetaResumen';
 import OrdenesTable from './OrdenesTable';
 import PanelDetalleOrden from './PanelDetalleOrden';
 import AdminModal from '../ui/AdminModal';
 
 const AdminOrdenesView = () => {
-  const [ordenes, setOrdenes] = useState([]);
+  const dispatch = useDispatch();
+  const { items: ordenes } = useSelector((state) => state.ordenes);
   const [busqueda, setBusqueda] = useState('');
   
   const [modalDetalleAbierto, setModalDetalleAbierto] = useState(false);
   const [ordenActiva, setOrdenActiva] = useState(null);
 
-  const cargarDatos = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      
-      const response = await fetch('http://localhost:4002/ordenes', {
-        headers: {
-          'Authorization': `Bearer ${token}` 
-        }
-      });
-      
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("El servidor devolvió HTML. Asegurate de usar http://localhost:4002/ordenes");
-      }
-
-      if (!response.ok) {
-        throw new Error(`Error del servidor: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setOrdenes(data);
-    } catch (error) {
-      console.error("Error cargando órdenes:", error);
-    }
-  };
-
   useEffect(() => {
-    cargarDatos();
-  }, []);
+    dispatch(fetchOrdenes());
+  }, [dispatch]);
 
   const ordenesFiltradas = ordenes.filter(o => {
     const busquedaLower = busqueda.toLowerCase();

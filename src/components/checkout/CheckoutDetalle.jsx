@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { apiFetch } from '../../services/api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchCarrito, vaciarCarritoLocal } from '../../redux/carritoSlice';
+import { confirmarCompra } from '../../redux/ordenesSlice';
+import { validarDescuento, limpiarValidacion } from '../../redux/descuentosSlice';
 import CarritoItem from '../carrito/CarritoItem';
 import AvisoReservaButacas from '../carrito/AvisoReservaButacas';
 import useEdicionCarrito from '../carrito/useEdicionCarrito';
@@ -20,7 +21,7 @@ const moneda = (valor) =>
     maximumFractionDigits: 2,
   });
 
-// Cuanto se muestra la animacion de confirmacion antes del mensaje de compra exitosa.
+// El tiempo que se muestra la animacion de confirmacion
 const DURACION_EXITO_MS = 1800;
 
 const CheckoutDetalle = () => {
@@ -28,16 +29,16 @@ const CheckoutDetalle = () => {
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
   const [exitoTerminado, setExitoTerminado] = useState(false);
-  // Codigo de descuento: lo que el usuario aplico, lo que el backend calculo (subtotal, monto, total) y el error.
   const [codigoAplicado, setCodigoAplicado] = useState(null);
-  const [descuento, setDescuento] = useState(null);
   const [errorDescuento, setErrorDescuento] = useState(null);
   const [revalidacion, setRevalidacion] = useState(0);
   const navigate = useNavigate();
-  
-  const dispatch = useDispatch();
 
-  // Mismo carrito editable que el desplegable (cantidad, quitar, vaciar).
+  const dispatch = useDispatch();
+  const { validacion } = useSelector((state) => state.descuentos);
+  // Solo cuenta si hay un codigo aplicado en esta pantalla y el back lo dio por valido.
+  const descuento = codigoAplicado !== null && validacion !== null && validacion.valido ? validacion : null;
+
   const {
     visible,
     items,
@@ -54,43 +55,31 @@ const CheckoutDetalle = () => {
   useEffect(() => {
     if (codigoAplicado === null || guardando) return;
 
-    const controller = new AbortController();
-
-    const validarDescuento = async () => {
-      try {
-        const respuesta = await apiFetch(
-          `/api/checkout/descuento?codigo=${encodeURIComponent(codigoAplicado)}`,
-          { signal: controller.signal }
-        );
-        if (respuesta.valido) {
-          setDescuento(respuesta);
-          setErrorDescuento(null);
-        } else {
-          setCodigoAplicado(null);
-          setDescuento(null);
-          setErrorDescuento(respuesta.mensaje);
-        }
-      } catch (err) {
-        if (err.name === 'AbortError') return;
+    const revalidarDescuento = async () => {
+      const res = await dispatch(validarDescuento(codigoAplicado));
+      if (res.error) {
         setCodigoAplicado(null);
-        setDescuento(null);
-        setErrorDescuento(err.message);
+        setErrorDescuento('No se pudo validar el código. Intentá nuevamente.');
+      } else if (res.payload.valido) {
+        setErrorDescuento(null);
+      } else {
+        setCodigoAplicado(null);
+        setErrorDescuento(res.payload.mensaje);
       }
     };
 
-    validarDescuento();
-    return () => controller.abort();
-  }, [codigoAplicado, totalCarrito, guardando, revalidacion]);
+    revalidarDescuento();
+  }, [dispatch, codigoAplicado, totalCarrito, guardando, revalidacion]);
 
   const aplicarDescuento = (codigo) => {
     setErrorDescuento(null);
-    setDescuento(null);
+    dispatch(limpiarValidacion());
     setCodigoAplicado(codigo);
   };
 
   const quitarDescuento = () => {
     setCodigoAplicado(null);
-    setDescuento(null);
+    dispatch(limpiarValidacion());
     setErrorDescuento(null);
   };
 
@@ -102,32 +91,21 @@ const CheckoutDetalle = () => {
     return () => clearTimeout(temporizador);
   }, [orden]);
 
-  const confirmarCompra = async () => {
+  const pagar = async () => {
     setConfirmando(true);
     setError(null);
 
-    try {
-      // Solo se manda el codigo: el backend lo vuelve a validar y recalcula el total.
-      const compra = await apiFetch('/api/checkout', {
-        method: 'POST',
-        body: codigoAplicado !== null ? { codigoDescuento: codigoAplicado } : undefined,
-      });
-      setOrden(compra);
-      
+    const res = await dispatch(confirmarCompra(codigoAplicado !== null ? { codigoDescuento: codigoAplicado } : undefined));
+    setConfirmando(false);
+    if (!res.error) {
+      setOrden(res.payload);
       // El backend vacio el carrito al comprar: se refleja en el estado (frena tambien el temporizador).
       dispatch(vaciarCarritoLocal());
-    } catch (err) {
-      // 409: puede ser que el carrito haya vencido; eso lo define el servidor, asi que se vuelve a pedir.
-      if (err.status === 409) dispatch(fetchCarrito());
-      // Si el codigo dejo de ser valido, se revalida para quitarlo y avisar debajo del campo.
-      if (codigoAplicado !== null) setRevalidacion((veces) => veces + 1);
-      setError(
-        err.message ||
-          'No se pudo completar la compra. Revisá el carrito e intentá nuevamente.'
-      );
-    } finally {
-      setConfirmando(false);
+      return;
     }
+    dispatch(fetchCarrito());
+    if (codigoAplicado !== null) setRevalidacion((veces) => veces + 1);
+    setError('No se pudo completar la compra. Revisá el carrito e intentá nuevamente.');
   };
 
   if (cargando) {
@@ -222,7 +200,7 @@ const CheckoutDetalle = () => {
             formatearMoneda={moneda}
             pagando={confirmando}
             bloqueado={guardando}
-            onPagar={confirmarCompra}
+            onPagar={pagar}
           />
         </div>
       )}

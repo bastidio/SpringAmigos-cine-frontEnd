@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { apiFetch } from '../../services/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMisEntradas } from '../../redux/ordenesSlice';
 import EntradaCard from './EntradaCard';
 import './Entradas.css';
 
@@ -24,49 +25,16 @@ const formatoFecha = (horario) => {
 };
 
 const HistorialEntradas = () => {
-  const [entradas, setEntradas] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { misEntradas: entradas, loading: cargando, error } = useSelector((state) => state.ordenes);
 
-  const cargarEntradas = useCallback(async () => {
-    setCargando(true);
-    setError(null);
-
-    try {
-      const data = await apiFetch('/entradas/mis-entradas');
-      setEntradas(Array.isArray(data) ? data : []);
-    } catch (err) {
-      setError(err.message || 'No se pudo cargar tu historial.');
-    } finally {
-      setCargando(false);
-    }
-  }, []);
+  const cargarEntradas = () => {
+    dispatch(fetchMisEntradas());
+  };
 
   useEffect(() => {
-    let activo = true;
-
-    apiFetch('/entradas/mis-entradas')
-      .then((data) => {
-        if (activo) {
-          setEntradas(Array.isArray(data) ? data : []);
-          setError(null);
-        }
-      })
-      .catch((err) => {
-        if (activo) {
-          setError(err.message || 'No se pudo cargar tu historial.');
-        }
-      })
-      .finally(() => {
-        if (activo) {
-          setCargando(false);
-        }
-      });
-
-    return () => {
-      activo = false;
-    };
-  }, []);
+    dispatch(fetchMisEntradas());
+  }, [dispatch]);
 
   if (cargando) {
     return <p className="pagina_mensaje">Cargando historial de entradas...</p>;
@@ -76,7 +44,7 @@ const HistorialEntradas = () => {
     return (
       <div className="entradas">
         <p role="alert" className="pagina_mensaje pagina_mensaje--error">
-          {error}
+          No se pudo cargar tu historial.
         </p>
         <button
           type="button"
@@ -135,4 +103,4 @@ const HistorialEntradas = () => {
   );
 };
 
-export default HistorialEntradas;
+export default HistorialEntradas;
