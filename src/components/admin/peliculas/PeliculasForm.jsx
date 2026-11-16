@@ -1,15 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import BotonAccion from '../ui/BotonAccion';
 
 
 const PeliculasForm = ({ peliculaAEditar, onGuardar, onCancelar }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(peliculaAEditar ?? {
     titulo: '', sinopsis: '', duracion: '', clasificacion: '', idioma: '', poster_url: '', bannerUrl: ''
   });
-
-  useEffect(() => {
-    if (peliculaAEditar) setFormData(peliculaAEditar);
-  }, [peliculaAEditar]);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
