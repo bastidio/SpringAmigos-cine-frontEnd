@@ -55,7 +55,7 @@ const productosSlice = createSlice({
   name: "productos",
   initialState: {
     items: [],
-    loading: false,
+    loading: true,
     error: null,
   },
   reducers: {},

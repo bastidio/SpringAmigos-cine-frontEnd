@@ -6,6 +6,8 @@ import favoritosReducer from './favoritosSlice';
 import salasReducer from './salasSlice';
 import productosReducer from './productosSlice';
 import categoriasReducer from './categoriasSlice';
+import ordenesReducer from './ordenesSlice';
+import descuentosReducer from './descuentosSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +18,7 @@ export const store = configureStore({
     salas: salasReducer,
     productos: productosReducer,
     categorias: categoriasReducer,
+    ordenes: ordenesReducer,
+    descuentos: descuentosReducer,
   },
 });

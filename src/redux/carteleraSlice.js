@@ -110,7 +110,7 @@ const carteleraSlice = createSlice({
     funcionSeleccionada: null,
     funcionCarrito: null,
     butacas: [],
-    loading: false,
+    loading: true,
     error: null,
   },
   reducers: {},

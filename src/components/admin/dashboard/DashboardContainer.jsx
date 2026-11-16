@@ -1,59 +1,36 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchOrdenes } from '../../../redux/ordenesSlice';
+import { fetchProductos } from '../../../redux/productosSlice';
+import { fetchFunciones } from '../../../redux/carteleraSlice';
 import TarjetaResumen from '../ordenes/TarjetaResumen';
 import AlertaStockWidget from './AlertaStockWidget';
 import FuncionesHoyWidget from './FuncionesHoyWidget';
 import UltimasOrdenesWidget from './UltimasOrdenesWidget';
 
 const DashboardContainer = () => {
-  const [datos, setDatos] = useState({
-    ordenes: [],
-    productos: [],
-    funciones: []
-  });
+  const dispatch = useDispatch();
+  const { items: ordenes } = useSelector((state) => state.ordenes);
+  const { items: productos } = useSelector((state) => state.productos);
+  const { funciones } = useSelector((state) => state.cartelera);
+  // Son tres slices distintos: este cargando espera a los tres pedidos.
   const [cargando, setCargando] = useState(true);
 
+  // Montaje: los tres pedidos en paralelo. Si alguno falla, su widget muestra la lista vacia.
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const opciones = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+    const cargarMetricas = async () => {
+      await Promise.all([dispatch(fetchOrdenes()), dispatch(fetchProductos()), dispatch(fetchFunciones())]);
+      setCargando(false);
     };
+    cargarMetricas();
+  }, [dispatch]);
 
-    const fecha = new Date();
-    const hoy = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
+  // Funciones de hoy: las del store cuyo horario ("2026-11-15T20:00:00") empieza con la fecha local de hoy.
+  const fecha = new Date();
+  const hoy = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
+  const funcionesDeHoy = funciones.filter((f) => f.horario?.startsWith(hoy));
 
-    Promise.allSettled([
-      fetch('http://localhost:4002/ordenes', opciones),
-      fetch('http://localhost:4002/productos', opciones),
-      fetch(`http://localhost:4002/funciones?fecha=${hoy}`, opciones)
-    ])
-      .then(async ([resOrdenes, resProductos, resFunciones]) => {
-        const ordenesData = (resOrdenes.status === 'fulfilled' && resOrdenes.value.ok)
-          ? await resOrdenes.value.json()
-          : [];
-        const productosData = (resProductos.status === 'fulfilled' && resProductos.value.ok)
-          ? await resProductos.value.json()
-          : [];
-        const funcionesData = (resFunciones.status === 'fulfilled' && resFunciones.value.ok)
-          ? await resFunciones.value.json()
-          : [];
-
-        setDatos({
-          ordenes: ordenesData,
-          productos: productosData,
-          funciones: funcionesData
-        });
-      })
-      .catch(error => {
-        console.error('Error cargando dashboard:', error);
-      })
-      .finally(() => {
-        setCargando(false);
-      });
-  }, []);
-
-  const ingresosDelMes = datos.ordenes.reduce((acc, curr) => acc + curr.total, 0);
+  const ingresosDelMes = ordenes.reduce((acc, curr) => acc + curr.total, 0);
 
   if (cargando) return <div className="texto-muted">Cargando métricas del sistema...</div>;
 
@@ -65,15 +42,15 @@ const DashboardContainer = () => {
 
       <div className="tarjetas-resumen-grid">
         <TarjetaResumen titulo="Ingresos Totales" valor={`$${ingresosDelMes.toLocaleString('es-AR')}`} />
-        <TarjetaResumen titulo="Productos en Kiosco" valor={datos.productos.length} />
+        <TarjetaResumen titulo="Productos en Kiosco" valor={productos.length} />
       </div>
 
       <div className="dashboard-fila-dividida">
-        <FuncionesHoyWidget funciones={datos.funciones} />
-        <AlertaStockWidget productos={datos.productos} />
+        <FuncionesHoyWidget funciones={funcionesDeHoy} />
+        <AlertaStockWidget productos={productos} />
       </div>
 
-      <UltimasOrdenesWidget ordenes={datos.ordenes} />
+      <UltimasOrdenesWidget ordenes={ordenes} />
     </div>
   );
 };
