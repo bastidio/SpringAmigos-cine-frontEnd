@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { agregarItem, modificarCantidad, eliminarItem } from '../../redux/carritoSlice';
+import { fetchProductos } from '../../redux/productosSlice';
 import CategoriaTabs from './CategoriaTabs';
 import ProductoCard from './ProductoCard';
 import './Kiosco.css';
@@ -17,10 +18,8 @@ const ProductoList = () => {
   const { token } = useSelector((state) => state.usuario);
   const { carrito } = useSelector((state) => state.carrito);
   const dispatch = useDispatch();
-  const [productos, setProductos] = useState([]);
+  const { items: productos, loading: cargando, error } = useSelector((state) => state.productos);
   const [categoria, setCategoria] = useState('Todo');
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const [ocupadoId, setOcupadoId] = useState(null);
@@ -69,32 +68,20 @@ const ProductoList = () => {
   
   
   useEffect(() => {
-    fetch('/productos')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error ' + response.status);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProductos(data);
-        setError(null);
-        setCargando(false);
-      })
-      .catch((error) => {
-        console.error('Error al mostrar los productos', error);
-        setError('No se pudo cargar el kiosco. Revisá que el backend esté levantado.');
-        setCargando(false);
-      });
-  }, []);
+    dispatch(fetchProductos());
+  }, [dispatch]);
 
-  
+
   if (cargando) {
     return <p className="pagina_mensaje">Cargando kiosco...</p>;
   }
 
   if (error !== null) {
-    return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
+    return (
+      <p className="pagina_mensaje pagina_mensaje--error">
+        No se pudo cargar el kiosco. Revisá que el backend esté levantado.
+      </p>
+    );
   }
 
   

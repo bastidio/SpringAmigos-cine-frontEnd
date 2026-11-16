@@ -7,11 +7,9 @@ const ControlStockInline = ({ productoId, stock, onActualizarStock }) => {
   const manejarCambio = async (nuevoStock) => {
     if (nuevoStock < 0) return;
     setCargando(true);
-    try {
-      await onActualizarStock(productoId, nuevoStock);
-    } finally {
-      setCargando(false);
-    }
+    // onActualizarStock despacha el thunk: no tira errores (los maneja con res.error).
+    await onActualizarStock(productoId, nuevoStock);
+    setCargando(false);
   };
 
   return (

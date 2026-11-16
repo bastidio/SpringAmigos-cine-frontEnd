@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProductosAdmin, createProducto, updateProducto, actualizarStock, reactivarProducto, deleteProducto } from '../../../redux/productosSlice';
+import { fetchCategorias } from '../../../redux/categoriasSlice';
 import KioscoTable from './KioscoTable';
 import KioscoForm from './KioscoForm';
 import BotonAccion from '../ui/BotonAccion';
@@ -6,8 +9,9 @@ import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const AdminKioscoView = () => {
-  const [productos, setProductos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
+  const dispatch = useDispatch();
+  const { items: productos } = useSelector((state) => state.productos);
+  const { items: categorias } = useSelector((state) => state.categorias);
   const [categoriaActivaId, setCategoriaActivaId] = useState('Todos');
   const [modalAbierto, setModalAbierto] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
@@ -16,80 +20,31 @@ const AdminKioscoView = () => {
   const [procesando, setProcesando] = useState(false);
   const [errorAccion, setErrorAccion] = useState(null);
 
-  const cargarDatos = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const opciones = { headers: { 'Authorization': `Bearer ${token}` } };
-
-      const [resProd, resCat] = await Promise.all([
-        fetch('/productos?incluirInactivos=true', opciones),
-        fetch('/categorias', opciones)
-      ]);
-      setProductos(await resProd.json());
-      setCategorias(await resCat.json());
-    } catch (error) {
-      console.error("Error cargando base de datos:", error);
-    }
-  };
-
   useEffect(() => {
-    cargarDatos();
-  }, []);
+    dispatch(fetchProductosAdmin());
+    dispatch(fetchCategorias());
+  }, [dispatch]);
 
+  // La lista se actualiza en el fulfilled de cada thunk: no se vuelve a pedir.
   const manejarActualizacionStock = async (productoId, nuevoStock) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/productos/${productoId}/stock`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify({ stock: nuevoStock })
-      });
-
-      if (!response.ok) {
-        setErrorAccion(`No se pudo actualizar el stock (${response.status})`);
-        return;
-      }
-
-      const actualizado = await response.json();
-      setProductos((lista) => lista.map((p) => (p.id === actualizado.id ? actualizado : p)));
-    } catch (error) {
-      console.error("Error actualizando stock:", error);
-    }
+    const res = await dispatch(actualizarStock({ id: productoId, stock: nuevoStock }));
+    if (res.error) setErrorAccion('No se pudo actualizar el stock.');
   };
 
-  const cambiarActivo = async (producto, metodo, ruta, mensajeError) => {
+  // accion: el thunk a despachar (baja logica o reactivacion).
+  const cambiarActivo = async (accion, mensajeError) => {
     setProcesando(true);
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/productos/${producto.id}${ruta}`, {
-        method: metodo,
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (!response.ok) {
-        setErrorAccion(`${mensajeError} (${response.status})`);
-        return;
-      }
-      const actualizado = metodo === 'DELETE' ? null : await response.json();
-      setProductos((lista) => lista.map((p) =>
-        p.id === producto.id ? (actualizado ?? { ...p, activo: false }) : p
-      ));
-    } catch (error) {
-      console.error(mensajeError, error);
-      setErrorAccion('No se pudo conectar con el servidor.');
-    } finally {
-      setProcesando(false);
-      setProductoAEliminar(null);
-    }
+    const res = await dispatch(accion);
+    setProcesando(false);
+    setProductoAEliminar(null);
+    if (res.error) setErrorAccion(mensajeError);
   };
 
   const confirmarEliminar = () =>
-    cambiarActivo(productoAEliminar, 'DELETE', '', 'No se pudo eliminar el producto');
+    cambiarActivo(deleteProducto(productoAEliminar.id), 'No se pudo eliminar el producto.');
 
   const manejarReactivar = (producto) =>
-    cambiarActivo(producto, 'PATCH', '/reactivar', 'No se pudo reactivar el producto');
+    cambiarActivo(reactivarProducto(producto.id), 'No se pudo reactivar el producto.');
 
   const manejarGuardar = async (formData) => {
     const payload = {
@@ -103,49 +58,13 @@ const AdminKioscoView = () => {
 };
 
     setErrorGuardar(null);
-    try {
-      
-    
-    const baseUrl = 'http://localhost:4002';
-    const url = productoEditando 
-      ? `${baseUrl}/productos/${productoEditando.id}` 
-      : `${baseUrl}/productos`;
-      
-    const method = productoEditando ? 'PUT' : 'POST';
-    const idEditado = productoEditando?.id;
-    const token = localStorage.getItem('token');
-
-    const response = await fetch(url, {
-      method: method,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` 
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      const datos = await response.json().catch(() => null);
-      const motivos = datos?.validationErrors ? Object.values(datos.validationErrors) : [];
-      const mensaje = motivos.length > 0
-        ? motivos.join(', ')
-        : datos?.message || `No se pudo guardar el producto (${response.status})`;
-      setErrorGuardar(mensaje);
+    const res = await dispatch(productoEditando ? updateProducto({ ...payload, id: productoEditando.id }) : createProducto(payload));
+    if (res.error) {
+      setErrorGuardar('No se pudo guardar el producto. Revisá que los datos estén completos y sean válidos.');
       return;
     }
-
-    const guardado = await response.json();
-    setProductos((lista) =>
-      idEditado !== undefined
-        ? lista.map((p) => (p.id === guardado.id ? guardado : p))
-        : [...lista, guardado]
-    );
     cerrarModal();
-  } catch (error) {
-    console.error("Error guardando producto:", error);
-    setErrorGuardar('No se pudo conectar con el servidor.');
-  }
-};
+  };
 
   const abrirModal = (producto = null) => {
     setProductoEditando(producto);
