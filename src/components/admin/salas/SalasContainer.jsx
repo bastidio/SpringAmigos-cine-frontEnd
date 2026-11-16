@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSalas, createSala, updateSala, fetchAsientos, createAsiento, deleteAsiento } from '../../../redux/salasSlice';
+import { fetchFunciones } from '../../../redux/carteleraSlice';
 import SalasList from './SalasList';
 import SalaForm from './SalaForm';
 import { butacasFaltantes, butacasSobrantes, butacasTotales, agruparPorFila } from './calculoButacas';
@@ -8,117 +10,34 @@ import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
 import MapaSala from './MapaSala';
 
-const mensajeDeError = (status, queSeIntentaba) => {
-  if (status === 401 || status === 403) {
-    return 'Tu sesión de administrador venció o no tiene permisos. Volvé a iniciar sesión.';
-  }
-  if (status === 409) {
-    return 'La sala tiene funciones asignadas: su configuración no se puede modificar.';
-  }
-  return `El servidor rechazó ${queSeIntentaba} (error ${status}).`;
-};
-
 const AdminSalasView = () => {
-  const { token } = useOutletContext();
-  const [salas, setSalas] = useState([]);
+  const dispatch = useDispatch();
+  const { items: salas, asientos, loading, error } = useSelector((state) => state.salas);
+  const { funciones } = useSelector((state) => state.cartelera);
   const [salaSeleccionada, setSalaSeleccionada] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [salaAEditar, setSalaAEditar] = useState(null);
   const [errorGuardar, setErrorGuardar] = useState(null);
-  const [asientos, setAsientos] = useState([]);
-  const [estadoAsientos, setEstadoAsientos] = useState('cargando');
-  const [funciones, setFunciones] = useState([]);
+  // fetchFunciones no guarda el error en el store, y sin saber si la sala tiene funciones
+  // no se la puede dejar editar: por eso este estado queda local.
   const [estadoFunciones, setEstadoFunciones] = useState('cargando');
   const [guardando, setGuardando] = useState(false);
   const [progreso, setProgreso] = useState(null);
-  const [versionAsientos, setVersionAsientos] = useState(0);
 
-  const cargarSalas = async (salaIdSeleccionada = salaSeleccionada?.id) => {
-    try {
-      const response = await fetch('/salas');
-      if (!response.ok) {
-        throw new Error(`No se pudieron cargar las salas (${response.status})`);
-      }
-
-      const data = await response.json();
-      setSalas(data);
-      setSalaSeleccionada(
-        data.find((sala) => sala.id === salaIdSeleccionada) ?? data[0] ?? null
-      );
-    } catch (error) {
-      console.error('Error al cargar salas:', error);
-    }
-  };
+  let estadoAsientos = 'listo';
+  if (loading) estadoAsientos = 'cargando';
+  else if (error !== null) estadoAsientos = 'error';
 
   useEffect(() => {
-    let activa = true;
-
-    fetch('/salas')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`No se pudieron cargar las salas (${response.status})`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (!activa) return;
-        setSalas(data);
-        setSalaSeleccionada(data[0] ?? null);
-      })
-      .catch((error) => {
-        if (activa) console.error('Error al cargar salas:', error);
-      });
-
-    return () => {
-      activa = false;
+    const cargarDatos = async () => {
+      const res = await dispatch(fetchSalas());
+      if (!res.error) setSalaSeleccionada(res.payload[0] ?? null);
+      dispatch(fetchAsientos());
+      const resFunciones = await dispatch(fetchFunciones());
+      setEstadoFunciones(resFunciones.error ? 'error' : 'listo');
     };
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    fetch('/asientos', { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`No se pudieron cargar las butacas (${response.status})`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAsientos(data);
-        setEstadoAsientos('listo');
-      })
-      .catch((error) => {
-        if (error.name === 'AbortError') return;
-        console.error('Error al cargar las butacas:', error);
-        setEstadoAsientos('error');
-      });
-
-    return () => controller.abort();
-  }, [versionAsientos]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    fetch('/funciones', { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`No se pudieron cargar las funciones (${response.status})`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setFunciones(data);
-        setEstadoFunciones('listo');
-      })
-      .catch((error) => {
-        if (error.name === 'AbortError') return;
-        console.error('Error al cargar las funciones:', error);
-        setEstadoFunciones('error');
-      });
-
-    return () => controller.abort();
-  }, []);
+    cargarDatos();
+  }, [dispatch]);
 
   const abrirModal = (sala = null) => {
     setSalaAEditar(sala);
@@ -138,98 +57,49 @@ const AdminSalasView = () => {
     const nuevas = butacasFaltantes(actuales, filas, porFila);
     const sobrantes = butacasSobrantes(actuales, filas, porFila);
     const total = nuevas.length + sobrantes.length;
-    const cabeceras = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
     let hechas = 0;
-    let salaId = editando ? salaAEditar.id : null;
-    let salaGuardada = false;
-    let todoOk = false;
-    let salaRespuesta = null;
-    const butacasCreadas = [];
-    const idsButacasBorradas = new Set();
+    let errorButacas = null;
 
     setGuardando(true);
     setProgreso({ hechas, total });
 
-    try {
-      
-      const respuestaSala = await fetch(editando ? `/salas/${salaAEditar.id}` : '/salas', {
-        method: editando ? 'PUT' : 'POST',
-        headers: cabeceras,
-        body: JSON.stringify({ nombre, capacidad }),
-      });
-      if (!respuestaSala.ok) {
-        throw new Error(mensajeDeError(respuestaSala.status, 'guardar la sala'));
-      }
-      salaGuardada = true;
-      salaRespuesta = await respuestaSala.json();
-      salaId = salaRespuesta.id;
-
-      
-      for (const deLaFila of agruparPorFila(nuevas)) {
-        await Promise.all(
-          deLaFila.map(async (butaca) => {
-            const response = await fetch('/asientos', {
-              method: 'POST',
-              headers: cabeceras,
-              body: JSON.stringify({ salaId, fila: butaca.fila, numero: butaca.numero }),
-            });
-            if (!response.ok) {
-              throw new Error(mensajeDeError(response.status, 'una butaca'));
-            }
-            butacasCreadas.push(await response.json());
-          })
-        );
-        hechas += deLaFila.length;
-        setProgreso({ hechas, total });
-      }
-
-      
-      for (const deLaFila of agruparPorFila(sobrantes)) {
-        await Promise.all(
-          deLaFila.map(async (butaca) => {
-            const response = await fetch(`/asientos/${butaca.id}`, {
-              method: 'DELETE',
-              headers: cabeceras,
-            });
-            if (!response.ok) {
-              throw new Error(mensajeDeError(response.status, 'quitar una butaca'));
-            }
-            idsButacasBorradas.add(butaca.id);
-          })
-        );
-        hechas += deLaFila.length;
-        setProgreso({ hechas, total });
-      }
-
-      todoOk = true;
-      setSalas((lista) =>
-        editando
-          ? lista.map((s) => (s.id === salaRespuesta.id ? salaRespuesta : s))
-          : [...lista, salaRespuesta]
-      );
-      setSalaSeleccionada(salaRespuesta);
-      setAsientos((lista) => [
-        ...lista.filter((a) => !idsButacasBorradas.has(a.id)),
-        ...butacasCreadas,
-      ]);
-      cerrarModal();
-    } catch (error) {
-      if (salaGuardada) {
-        
-        cerrarModal();
-        setErrorGuardar(
-          `${error.message} La sala se guardó y se procesaron ${hechas} de ${total} butacas; al volver a guardar se completa lo que falte.`
-        );
-      } else {
-        setErrorGuardar(error.message);
-      }
-    } finally {
+    const res = await dispatch(editando ? updateSala({ id: salaAEditar.id, nombre, capacidad }) : createSala({ nombre, capacidad }));
+    if (res.error) {
       setGuardando(false);
       setProgreso(null);
-      if (!todoOk) {
-        setVersionAsientos((version) => version + 1);
-        if (salaId !== null) await cargarSalas(salaId);
+      setErrorGuardar('El servidor rechazó guardar la sala. Puede que tu sesión haya vencido o que la sala tenga funciones asignadas.');
+      return;
+    }
+    const salaId = res.payload.id;
+    setSalaSeleccionada(res.payload);
+
+    for (const deLaFila of agruparPorFila(nuevas)) {
+      const resultados = await Promise.all(deLaFila.map((butaca) => dispatch(createAsiento({ salaId, fila: butaca.fila, numero: butaca.numero }))));
+      hechas += resultados.filter((r) => !r.error).length;
+      setProgreso({ hechas, total });
+      if (resultados.some((r) => r.error)) {
+        errorButacas = 'El servidor rechazó una butaca.';
+        break;
       }
+    }
+
+    if (errorButacas === null) {
+      for (const deLaFila of agruparPorFila(sobrantes)) {
+        const resultados = await Promise.all(deLaFila.map((butaca) => dispatch(deleteAsiento(butaca.id))));
+        hechas += resultados.filter((r) => !r.error).length;
+        setProgreso({ hechas, total });
+        if (resultados.some((r) => r.error)) {
+          errorButacas = 'El servidor rechazó quitar una butaca.';
+          break;
+        }
+      }
+    }
+
+    setGuardando(false);
+    setProgreso(null);
+    cerrarModal();
+    if (errorButacas !== null) {
+      setErrorGuardar(`${errorButacas} La sala se guardó y se procesaron ${hechas} de ${total} butacas; al volver a guardar se completa lo que falte.`);
     }
   };
 

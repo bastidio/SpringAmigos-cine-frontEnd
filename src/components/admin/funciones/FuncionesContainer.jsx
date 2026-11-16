@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFunciones, fetchTodasPeliculas, createFuncion, updateFuncion, deleteFuncion } from '../../../redux/carteleraSlice';
+import { fetchSalas } from '../../../redux/salasSlice';
 import FuncionesTable from './FuncionesTable';
 import FuncionesForm from './FuncionForm';
 import BotonAccion from '../ui/BotonAccion';
@@ -6,9 +9,9 @@ import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const FuncionesContainer = () => {
-  const [funciones, setFunciones] = useState([]);
-  const [peliculas, setPeliculas] = useState([]);
-  const [salas, setSalas] = useState([]);
+  const dispatch = useDispatch();
+  const { funciones, peliculas } = useSelector((state) => state.cartelera);
+  const { items: salas } = useSelector((state) => state.salas);
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [funcionEditando, setFuncionEditando] = useState(null);
@@ -35,42 +38,11 @@ const FuncionesContainer = () => {
   const mananaValue = formatearValue(fechaManana);
   const [diaSeleccionado, setDiaSeleccionado] = useState('todas');
 
-  const cargarDatos = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const opciones = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-
-      const [resFunc, resPeli, resSalas] = await Promise.all([
-        fetch('http://localhost:4002/funciones', opciones),
-        fetch('http://localhost:4002/peliculas', opciones),
-        fetch('http://localhost:4002/salas', opciones)
-      ]);
-
-      return {
-        funciones: resFunc.ok ? await resFunc.json() : undefined,
-        peliculas: resPeli.ok ? await resPeli.json() : undefined,
-        salas: resSalas.ok ? await resSalas.json() : undefined
-      };
-    } catch (error) {
-      console.error('Error cargando la base de datos:', error);
-      return null;
-    }
-  };
-
-  const aplicarDatos = (datos) => {
-    if (!datos) return;
-    if (datos.funciones !== undefined) setFunciones(datos.funciones);
-    if (datos.peliculas !== undefined) setPeliculas(datos.peliculas);
-    if (datos.salas !== undefined) setSalas(datos.salas);
-  };
-
   useEffect(() => {
-    cargarDatos().then(aplicarDatos);
-  }, []);
+    dispatch(fetchFunciones());
+    dispatch(fetchTodasPeliculas());
+    dispatch(fetchSalas());
+  }, [dispatch]);
 
   const abrirModal = (funcion = null) => {
     setFuncionEditando(funcion);
@@ -82,37 +54,14 @@ const FuncionesContainer = () => {
     setModalAbierto(false);
   };
 
+  // La lista se actualiza en el fulfilled del thunk: no se vuelve a pedir.
   const manejarGuardar = async (formData) => {
-    const editando = funcionEditando !== null;
-    const metodo = editando ? 'PUT' : 'POST';
-    const url = funcionEditando
-      ? `http://localhost:4002/funciones/${funcionEditando.id}`
-      : 'http://localhost:4002/funciones';
-
-    const token = localStorage.getItem('token');
-
-    try {
-      const response = await fetch(url, {
-        method: metodo,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) throw new Error(`Error al guardar: ${response.status}`);
-
-      const guardada = await response.json();
-      setFunciones((lista) =>
-        editando
-          ? lista.map((f) => (f.id === guardada.id ? guardada : f))
-          : [...lista, guardada]
-      );
-      cerrarModal();
-    } catch (error) {
-      console.error('Error al guardar:', error);
+    const res = await dispatch( funcionEditando !== null ? updateFuncion({ ...formData, id: funcionEditando.id }) : createFuncion(formData));
+    if (res.error) {
+      console.error('Error al guardar:', res.error.message);
+      return;
     }
+    cerrarModal();
   };
 
   const funcionesFiltradas = diaSeleccionado === 'todas'
@@ -129,29 +78,13 @@ const FuncionesContainer = () => {
     setEliminando(true);
     setErrorOperacion(null);
 
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:4002/funciones/${funcionAEliminar}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        const mensajeBackend = await response.text();
-        throw new Error(mensajeBackend || `Error al eliminar (Código ${response.status})`);
-      }
-
-      const idBorrado = funcionAEliminar;
-      setFunciones((lista) => lista.filter((f) => f.id !== idBorrado));
-      setFuncionAEliminar(null);
-    } catch (error) {
-      console.error('Error al eliminar:', error);
-      setErrorOperacion(error.message);
-    } finally {
-      setEliminando(false);
+    const res = await dispatch(deleteFuncion(funcionAEliminar));
+    setEliminando(false);
+    if (res.error) {
+      setErrorOperacion(`No se pudo eliminar la función: ${res.error.message}`);
+      return;
     }
+    setFuncionAEliminar(null);
   };
 
   return (
