@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { apiFetch } from '../../../services/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchDescuentos, createDescuento, updateDescuento, deleteDescuento, reactivarDescuento } from '../../../redux/descuentosSlice';
 import DescuentosTable from './DescuentosTable';
 import DescuentosForm from './DescuentosForm';
 import BotonAccion from '../ui/BotonAccion';
@@ -7,7 +8,8 @@ import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const DescuentosContainer = () => {
-  const [descuentos, setDescuentos] = useState([]);
+  const dispatch = useDispatch();
+  const { items: descuentos } = useSelector((state) => state.descuentos);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [descuentoEditando, setDescuentoEditando] = useState(null);
   const [errorGuardar, setErrorGuardar] = useState(null);
@@ -16,20 +18,12 @@ const DescuentosContainer = () => {
   const [errorAccion, setErrorAccion] = useState(null);
 
   useEffect(() => {
-    const controller = new AbortController();
-
     const cargar = async () => {
-      try {
-        setDescuentos(await apiFetch('/descuentos', { signal: controller.signal }));
-      } catch (err) {
-        if (err.name === 'AbortError') return;
-        setErrorAccion(err.message);
-      }
+      const res = await dispatch(fetchDescuentos());
+      if (res.error) setErrorAccion('No se pudieron cargar los códigos de descuento.');
     };
-
     cargar();
-    return () => controller.abort();
-  }, []);
+  }, [dispatch]);
 
   const abrirModal = (descuento = null) => {
     setDescuentoEditando(descuento);
@@ -45,43 +39,27 @@ const DescuentosContainer = () => {
 
   const manejarGuardar = async (formData) => {
     setErrorGuardar(null);
-    try {
-      const editando = descuentoEditando !== null;
-      const guardado = await apiFetch(editando ? `/descuentos/${descuentoEditando.id}` : '/descuentos', {
-        method: editando ? 'PUT' : 'POST',
-        body: formData,
-      });
-      setDescuentos((lista) =>
-        editando
-          ? lista.map((d) => (d.id === guardado.id ? guardado : d))
-          : [...lista, guardado]
-      );
-      cerrarModal();
-    } catch (err) {
-      setErrorGuardar(err.message);
+    const res = await dispatch(descuentoEditando !== null ? updateDescuento({ ...formData, id: descuentoEditando.id }) : createDescuento(formData));
+    if (res.error) {
+      setErrorGuardar('No se pudo guardar el código. Revisá que los datos sean válidos y que el código no esté repetido.');
+      return;
     }
+    cerrarModal();
   };
 
-  const cambiarActivo = async (descuento, metodo, ruta, mensajeError) => {
+  const cambiarActivo = async (accion, mensajeError) => {
     setProcesando(true);
-    try {
-      const actualizado = await apiFetch(`/descuentos/${descuento.id}${ruta}`, { method: metodo });
-      setDescuentos((lista) =>
-        lista.map((d) => (d.id === descuento.id ? (actualizado ?? { ...d, activo: false }) : d))
-      );
-    } catch (err) {
-      setErrorAccion(err.message || mensajeError);
-    } finally {
-      setProcesando(false);
-      setDescuentoAEliminar(null);
-    }
+    const res = await dispatch(accion);
+    setProcesando(false);
+    setDescuentoAEliminar(null);
+    if (res.error) setErrorAccion(mensajeError);
   };
 
   const confirmarEliminar = () =>
-    cambiarActivo(descuentoAEliminar, 'DELETE', '', 'No se pudo eliminar el código');
+    cambiarActivo(deleteDescuento(descuentoAEliminar.id), 'No se pudo eliminar el código.');
 
   const manejarReactivar = (descuento) =>
-    cambiarActivo(descuento, 'PATCH', '/reactivar', 'No se pudo reactivar el código');
+    cambiarActivo(reactivarDescuento(descuento.id), 'No se pudo reactivar el código.');
 
   return (
     <div>
