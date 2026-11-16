@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPelicula, fetchFunciones } from '../../redux/carteleraSlice';
@@ -33,14 +33,19 @@ const PeliculaDetalle = () => {
     window.scrollTo(0, 0);
   }, [id, irAFunciones]);
 
-  const irAFuncionesRef = useCallback(
-    (titulo) => {
-      if (titulo === null || !irAFunciones) return;
-      const sinAnimacion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      titulo.scrollIntoView({ behavior: sinAnimacion ? 'auto' : 'smooth' });
-    },
-    [irAFunciones],
-  );
+  const listo = !loading && error === null && pelicula !== null && String(pelicula.id) === id;
+  useEffect(() => {
+    if (!irAFunciones || !listo) return;
+    const titulo = document.getElementById('funciones');
+    if (titulo === null) return;
+    let distancia = 0;
+    let elemento = titulo;
+    while (elemento !== null) {
+      distancia += elemento.offsetTop;
+      elemento = elemento.offsetParent;
+    }
+    window.scrollTo(0, distancia - 88);
+  }, [irAFunciones, listo]);
 
   
   if (error !== null) {
@@ -105,7 +110,7 @@ const PeliculaDetalle = () => {
 
         <hr className="detalle_separador" />
 
-        <h2 ref={irAFuncionesRef} className="detalle_funciones-titulo">Funciones disponibles</h2>
+        <h2 id="funciones" className="detalle_funciones-titulo">Funciones disponibles</h2>
 
         {funcionesDeLaPelicula.length === 0 && (
           <p className="pagina_mensaje">Todavía no hay funciones para esta película.</p>

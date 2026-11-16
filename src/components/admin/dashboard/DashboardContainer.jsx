@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrdenes } from '../../../redux/ordenesSlice';
 import { fetchProductos } from '../../../redux/productosSlice';
@@ -10,22 +10,18 @@ import UltimasOrdenesWidget from './UltimasOrdenesWidget';
 
 const DashboardContainer = () => {
   const dispatch = useDispatch();
-  const { items: ordenes } = useSelector((state) => state.ordenes);
-  const { items: productos } = useSelector((state) => state.productos);
-  const { funciones } = useSelector((state) => state.cartelera);
-  // Son tres slices distintos: este cargando espera a los tres pedidos.
-  const [cargando, setCargando] = useState(true);
+  const { items: ordenes, loading: cargandoOrdenes } = useSelector((state) => state.ordenes);
+  const { items: productos, loading: cargandoProductos } = useSelector((state) => state.productos);
+  const { funciones, loading: cargandoFunciones } = useSelector((state) => state.cartelera);
+  const cargando = cargandoOrdenes || cargandoProductos || cargandoFunciones;
 
-  // Montaje: los tres pedidos en paralelo. Si alguno falla, su widget muestra la lista vacia.
+  // Montaje: los tres pedidos en paralelo.
   useEffect(() => {
-    const cargarMetricas = async () => {
-      await Promise.all([dispatch(fetchOrdenes()), dispatch(fetchProductos()), dispatch(fetchFunciones())]);
-      setCargando(false);
-    };
-    cargarMetricas();
+    dispatch(fetchOrdenes());
+    dispatch(fetchProductos());
+    dispatch(fetchFunciones());
   }, [dispatch]);
 
-  // Funciones de hoy: las del store cuyo horario ("2026-11-15T20:00:00") empieza con la fecha local de hoy.
   const fecha = new Date();
   const hoy = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
   const funcionesDeHoy = funciones.filter((f) => f.horario?.startsWith(hoy));

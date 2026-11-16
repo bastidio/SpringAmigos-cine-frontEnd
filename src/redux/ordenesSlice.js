@@ -28,7 +28,7 @@ const ordenesSlice = createSlice({
     items: [],
     misEntradas: [],
     ultimaOrden: null,
-    loading: false,
+    loading: true,
     error: null,
   },
   reducers: {},

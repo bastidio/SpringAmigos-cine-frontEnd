@@ -1,6 +1,6 @@
 
 import './tema.css';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPerfil, cerrarSesion as cerrarSesionStore } from './redux/usuarioSlice';
@@ -56,31 +56,31 @@ function App() {
   const esAdmin = rol === 'ADMIN';
 
   
-  const cerrarSesion = useCallback(
-    (destino = '/') => {
-      localStorage.removeItem('token');
-      dispatch(cerrarSesionStore());
-      dispatch(limpiarCarrito());
-      dispatch(limpiarFavoritos());
-      setCarritoAbierto(false);
-      navigate(destino);
-    },
-    [dispatch, navigate]
-  );
+  const cerrarSesion = () => {
+    localStorage.removeItem('token');
+    dispatch(cerrarSesionStore());
+    dispatch(limpiarCarrito());
+    dispatch(limpiarFavoritos());
+    setCarritoAbierto(false);
+    navigate('/');
+  };
 
-  // Montaje (si ya habia token) y actualizacion (cuando se inicia sesion): pide el perfil,
-  // que trae el rol. Si falla (token vencido o invalido), se cierra la sesion y va a /login.
   useEffect(() => {
     if (token === '') return;
 
     const cargarPerfil = async () => {
       const res = await dispatch(fetchPerfil());
-      if (res.error) cerrarSesion('/login');
+      if (res.error) {
+        localStorage.removeItem('token');
+        dispatch(cerrarSesionStore());
+        dispatch(limpiarCarrito());
+        dispatch(limpiarFavoritos());
+        navigate('/login');
+      }
     };
     cargarPerfil();
-  }, [dispatch, token, cerrarSesion]);
+  }, [dispatch, token, navigate]);
 
-  // Carrito y favoritos: se piden una sola vez por sesion (al montar con token o al iniciar sesion).
   useEffect(() => {
     if (token === '') return;
 

@@ -14,14 +14,9 @@ const moneda = (valor) =>
 
 const formatoFecha = (horario) => {
   if (!horario) return 'Fecha no disponible';
-
-  const fecha = new Date(horario);
-  if (Number.isNaN(fecha.getTime())) return horario;
-
-  return new Intl.DateTimeFormat('es-AR', {
-    dateStyle: 'full',
-    timeStyle: 'short',
-  }).format(fecha);
+  const dia = horario.slice(8, 10) + '/' + horario.slice(5, 7) + '/' + horario.slice(0, 4);
+  const hora = horario.slice(11, 16);
+  return dia + ' - ' + hora + ' hs';
 };
 
 const HistorialEntradas = () => {

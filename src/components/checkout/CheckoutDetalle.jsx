@@ -85,8 +85,7 @@ const CheckoutDetalle = () => {
 
   useEffect(() => {
     if (orden === null) return;
-    const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollTo({ top: 0, behavior: reducirMovimiento ? 'auto' : 'smooth' });
+    window.scrollTo(0, 0);
     const temporizador = setTimeout(() => setExitoTerminado(true), DURACION_EXITO_MS);
     return () => clearTimeout(temporizador);
   }, [orden]);
@@ -99,7 +98,6 @@ const CheckoutDetalle = () => {
     setConfirmando(false);
     if (!res.error) {
       setOrden(res.payload);
-      // El backend vacio el carrito al comprar: se refleja en el estado (frena tambien el temporizador).
       dispatch(vaciarCarritoLocal());
       return;
     }
