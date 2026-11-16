@@ -4,43 +4,49 @@ import axios from "axios";
 const URL = "/api/carritos";
 
 // todos los pedidos devuelven el carrito entero, tiene items, total, funcionId, expiraEn y vencido
-export const fetchCarrito = createAsyncThunk("carrito/fetchCarrito", async () => {
+export const fetchCarrito = createAsyncThunk("carrito/fetchCarrito", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get(URL, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const agregarItem = createAsyncThunk("carrito/agregarItem", async (body) => {
+export const agregarItem = createAsyncThunk("carrito/agregarItem", async (body, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.post(`${URL}/items`, body, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const modificarCantidad = createAsyncThunk("carrito/modificarCantidad", async ({ itemId, cantidad }) => {
+export const modificarCantidad = createAsyncThunk("carrito/modificarCantidad", async ({ itemId, cantidad }, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.put(`${URL}/items/${itemId}`, { cantidad }, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const eliminarItem = createAsyncThunk("carrito/eliminarItem", async (itemId) => {
+export const eliminarItem = createAsyncThunk("carrito/eliminarItem", async (itemId, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.delete(`${URL}/items/${itemId}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const vaciarCarrito = createAsyncThunk("carrito/vaciarCarrito", async () => {
+export const vaciarCarrito = createAsyncThunk("carrito/vaciarCarrito", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   await axios.delete(URL, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
 });
 
-export const agregarButacas = createAsyncThunk("carrito/agregarButacas", async ({ funcionId, asientos }) => {
+export const agregarButacas = createAsyncThunk("carrito/agregarButacas", async ({ funcionId, asientos }, { getState }) => {
+  const token = getState().usuario.token;
   const { data: carrito } = await axios.get(URL, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
 
   const yaEnCarrito = (carrito?.items ?? [])
@@ -55,7 +61,7 @@ export const agregarButacas = createAsyncThunk("carrito/agregarButacas", async (
   for (const asientoId of asientos) {
     if (!yaEnCarrito.includes(asientoId)) {
       const { data } = await axios.post(`${URL}/items`, { asientoId, funcionId, cantidad: 1 }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       ultimoCarrito = data;
     }

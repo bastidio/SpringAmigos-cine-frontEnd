@@ -9,9 +9,10 @@ export const fetchPeliculas = createAsyncThunk("cartelera/fetchPeliculas", async
   return data;
 });
 
-export const fetchTodasPeliculas = createAsyncThunk("cartelera/fetchTodasPeliculas", async () => {
+export const fetchTodasPeliculas = createAsyncThunk("cartelera/fetchTodasPeliculas", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get(URL_PELICULAS, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
@@ -21,24 +22,27 @@ export const fetchPelicula = createAsyncThunk("cartelera/fetchPelicula", async (
   return data;
 });
 
-export const createPelicula = createAsyncThunk("cartelera/createPelicula", async (pelicula) => {
+export const createPelicula = createAsyncThunk("cartelera/createPelicula", async (pelicula, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.post(URL_PELICULAS, pelicula, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const updatePelicula = createAsyncThunk("cartelera/updatePelicula", async (pelicula) => {
+export const updatePelicula = createAsyncThunk("cartelera/updatePelicula", async (pelicula, { getState }) => {
+  const token = getState().usuario.token;
   const { id, ...datos } = pelicula;
   const { data } = await axios.put(`${URL_PELICULAS}/${id}`, datos, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const deletePelicula = createAsyncThunk("cartelera/deletePelicula", async (id) => {
+export const deletePelicula = createAsyncThunk("cartelera/deletePelicula", async (id, { getState }) => {
+  const token = getState().usuario.token;
   await axios.delete(`${URL_PELICULAS}/${id}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return id;
 });
@@ -54,24 +58,27 @@ export const fetchFuncion = createAsyncThunk("cartelera/fetchFuncion", async (id
   return data;
 });
 
-export const createFuncion = createAsyncThunk("cartelera/createFuncion", async (funcion) => {
+export const createFuncion = createAsyncThunk("cartelera/createFuncion", async (funcion, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.post(URL_FUNCIONES, funcion, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const updateFuncion = createAsyncThunk("cartelera/updateFuncion", async (funcion) => {
+export const updateFuncion = createAsyncThunk("cartelera/updateFuncion", async (funcion, { getState }) => {
+  const token = getState().usuario.token;
   const { id, ...datos } = funcion;
   const { data } = await axios.put(`${URL_FUNCIONES}/${id}`, datos, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const deleteFuncion = createAsyncThunk("cartelera/deleteFuncion", async (id) => {
+export const deleteFuncion = createAsyncThunk("cartelera/deleteFuncion", async (id, { getState }) => {
+  const token = getState().usuario.token;
   await axios.delete(`${URL_FUNCIONES}/${id}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return id;
 });

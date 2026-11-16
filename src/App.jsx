@@ -57,7 +57,6 @@ function App() {
 
   
   const cerrarSesion = () => {
-    localStorage.removeItem('token');
     dispatch(cerrarSesionStore());
     dispatch(limpiarCarrito());
     dispatch(limpiarFavoritos());
@@ -71,7 +70,6 @@ function App() {
     const cargarPerfil = async () => {
       const res = await dispatch(fetchPerfil());
       if (res.error) {
-        localStorage.removeItem('token');
         dispatch(cerrarSesionStore());
         dispatch(limpiarCarrito());
         dispatch(limpiarFavoritos());

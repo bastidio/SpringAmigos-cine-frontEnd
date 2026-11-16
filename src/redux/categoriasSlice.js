@@ -3,9 +3,10 @@ import axios from "axios";
 
 const URL = "/categorias";
 
-export const fetchCategorias = createAsyncThunk("categorias/fetchCategorias", async () => {
+export const fetchCategorias = createAsyncThunk("categorias/fetchCategorias", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get(URL, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });

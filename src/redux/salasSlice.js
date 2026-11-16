@@ -4,24 +4,27 @@ import axios from "axios";
 const URL_SALAS = "/salas";
 const URL_ASIENTOS = "/asientos";
 
-export const fetchSalas = createAsyncThunk("salas/fetchSalas", async () => {
+export const fetchSalas = createAsyncThunk("salas/fetchSalas", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get(URL_SALAS, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const createSala = createAsyncThunk("salas/createSala", async (sala) => {
+export const createSala = createAsyncThunk("salas/createSala", async (sala, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.post(URL_SALAS, sala, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const updateSala = createAsyncThunk("salas/updateSala", async (sala) => {
+export const updateSala = createAsyncThunk("salas/updateSala", async (sala, { getState }) => {
+  const token = getState().usuario.token;
   const { id, ...datos } = sala;
   const { data } = await axios.put(`${URL_SALAS}/${id}`, datos, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
@@ -31,16 +34,18 @@ export const fetchAsientos = createAsyncThunk("salas/fetchAsientos", async () =>
   return data;
 });
 
-export const createAsiento = createAsyncThunk("salas/createAsiento", async (asiento) => {
+export const createAsiento = createAsyncThunk("salas/createAsiento", async (asiento, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.post(URL_ASIENTOS, asiento, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const deleteAsiento = createAsyncThunk("salas/deleteAsiento", async (id) => {
+export const deleteAsiento = createAsyncThunk("salas/deleteAsiento", async (id, { getState }) => {
+  const token = getState().usuario.token;
   await axios.delete(`${URL_ASIENTOS}/${id}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return id;
 });

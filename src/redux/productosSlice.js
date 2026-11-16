@@ -8,45 +8,51 @@ export const fetchProductos = createAsyncThunk("productos/fetchProductos", async
   return data;
 });
 
-export const fetchProductosAdmin = createAsyncThunk("productos/fetchProductosAdmin", async () => {
+export const fetchProductosAdmin = createAsyncThunk("productos/fetchProductosAdmin", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get(`${URL}?incluirInactivos=true`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const createProducto = createAsyncThunk("productos/createProducto", async (producto) => {
+export const createProducto = createAsyncThunk("productos/createProducto", async (producto, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.post(URL, producto, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const updateProducto = createAsyncThunk("productos/updateProducto", async (producto) => {
+export const updateProducto = createAsyncThunk("productos/updateProducto", async (producto, { getState }) => {
+  const token = getState().usuario.token;
   const { id, ...datos } = producto;
   const { data } = await axios.put(`${URL}/${id}`, datos, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const actualizarStock = createAsyncThunk("productos/actualizarStock", async ({ id, stock }) => {
+export const actualizarStock = createAsyncThunk("productos/actualizarStock", async ({ id, stock }, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.patch(`${URL}/${id}/stock`, { stock }, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const reactivarProducto = createAsyncThunk("productos/reactivarProducto", async (id) => {
+export const reactivarProducto = createAsyncThunk("productos/reactivarProducto", async (id, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.patch(`${URL}/${id}/reactivar`, null, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const deleteProducto = createAsyncThunk("productos/deleteProducto", async (id) => {
+export const deleteProducto = createAsyncThunk("productos/deleteProducto", async (id, { getState }) => {
+  const token = getState().usuario.token;
   await axios.delete(`${URL}/${id}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return id;
 });

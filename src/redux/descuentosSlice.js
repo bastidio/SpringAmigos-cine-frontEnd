@@ -3,46 +3,52 @@ import axios from "axios";
 
 const URL = "/descuentos";
 
-export const fetchDescuentos = createAsyncThunk("descuentos/fetchDescuentos", async () => {
+export const fetchDescuentos = createAsyncThunk("descuentos/fetchDescuentos", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get(URL, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const createDescuento = createAsyncThunk("descuentos/createDescuento", async (descuento) => {
+export const createDescuento = createAsyncThunk("descuentos/createDescuento", async (descuento, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.post(URL, descuento, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const updateDescuento = createAsyncThunk("descuentos/updateDescuento", async (descuento) => {
+export const updateDescuento = createAsyncThunk("descuentos/updateDescuento", async (descuento, { getState }) => {
+  const token = getState().usuario.token;
   const { id, ...datos } = descuento;
   const { data } = await axios.put(`${URL}/${id}`, datos, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const deleteDescuento = createAsyncThunk("descuentos/deleteDescuento", async (id) => {
+export const deleteDescuento = createAsyncThunk("descuentos/deleteDescuento", async (id, { getState }) => {
+  const token = getState().usuario.token;
   await axios.delete(`${URL}/${id}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return id;
 });
 
-export const reactivarDescuento = createAsyncThunk("descuentos/reactivarDescuento", async (id) => {
+export const reactivarDescuento = createAsyncThunk("descuentos/reactivarDescuento", async (id, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.patch(`${URL}/${id}/reactivar`, null, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
 // valida el código contra el carrito actual y devuelve si es valido, mensaje, subtotal, monto y total
-export const validarDescuento = createAsyncThunk("descuentos/validarDescuento", async (codigo) => {
+export const validarDescuento = createAsyncThunk("descuentos/validarDescuento", async (codigo, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get(`/api/checkout/descuento?codigo=${encodeURIComponent(codigo)}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });

@@ -1,23 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchOrdenes = createAsyncThunk("ordenes/fetchOrdenes", async () => {
+export const fetchOrdenes = createAsyncThunk("ordenes/fetchOrdenes", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get("/ordenes", {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const fetchMisEntradas = createAsyncThunk("ordenes/fetchMisEntradas", async () => {
+export const fetchMisEntradas = createAsyncThunk("ordenes/fetchMisEntradas", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get("/entradas/mis-entradas", {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const confirmarCompra = createAsyncThunk("ordenes/confirmarCompra", async (body) => {
+export const confirmarCompra = createAsyncThunk("ordenes/confirmarCompra", async (body, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.post("/api/checkout", body, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });

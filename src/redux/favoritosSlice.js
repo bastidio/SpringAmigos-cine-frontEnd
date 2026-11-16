@@ -3,16 +3,18 @@ import axios from "axios";
 
 const URL = "/favoritos";
 
-export const fetchFavoritos = createAsyncThunk("favoritos/fetchFavoritos", async () => {
+export const fetchFavoritos = createAsyncThunk("favoritos/fetchFavoritos", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get(URL, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
 
-export const agregarFavorito = createAsyncThunk("favoritos/agregarFavorito", async (pelicula) => {
+export const agregarFavorito = createAsyncThunk("favoritos/agregarFavorito", async (pelicula, { getState }) => {
+  const token = getState().usuario.token;
   await axios.post(`${URL}/${pelicula.id}`, null, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return {
     peliculaId: pelicula.id,
@@ -22,9 +24,10 @@ export const agregarFavorito = createAsyncThunk("favoritos/agregarFavorito", asy
   };
 });
 
-export const quitarFavorito = createAsyncThunk("favoritos/quitarFavorito", async (peliculaId) => {
+export const quitarFavorito = createAsyncThunk("favoritos/quitarFavorito", async (peliculaId, { getState }) => {
+  const token = getState().usuario.token;
   await axios.delete(`${URL}/${peliculaId}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return peliculaId;
 });

@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 const COLORES = {
   peligro: {
     icono: 'bg-[var(--error)]/15 text-[var(--error)]',
@@ -43,9 +35,6 @@ const VentanaEmergente = ({
       className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
       onClick={ocupado ? undefined : cerrar}
     >
-      {/* stopPropagation: un click adentro de la caja no llega al fondo.
-          tabIndex -1 + autoFocus: el foco entra a la caja al abrirse (lo hace
-          React), asi funciona Escape. */}
       <div
         role="alertdialog"
         aria-modal="true"

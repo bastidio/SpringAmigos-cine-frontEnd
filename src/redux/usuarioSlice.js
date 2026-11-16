@@ -6,20 +6,19 @@ const URL_PERFIL = "/users/me";
 
 export const login = createAsyncThunk("usuario/login", async ({ email, password }) => {
   const { data } = await axios.post(`${URL_AUTH}/authenticate`, { email, password });
-  localStorage.setItem("token", data.access_token);
   return { accessToken: data.access_token, rol: data.rol };
 });
 
 export const register = createAsyncThunk("usuario/register", async (datos) => {
   const { data } = await axios.post(`${URL_AUTH}/register`, datos);
-  localStorage.setItem("token", data.access_token);
   return { accessToken: data.access_token, rol: data.rol };
 });
 
 // como el perfil del usuario ya trae el rol, tambien sirve para saber si es ADMIN
-export const fetchPerfil = createAsyncThunk("usuario/fetchPerfil", async () => {
+export const fetchPerfil = createAsyncThunk("usuario/fetchPerfil", async (sinDatos, { getState }) => {
+  const token = getState().usuario.token;
   const { data } = await axios.get(URL_PERFIL, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 });
@@ -27,7 +26,7 @@ export const fetchPerfil = createAsyncThunk("usuario/fetchPerfil", async () => {
 const usuarioSlice = createSlice({
   name: "usuario",
   initialState: {
-    token: localStorage.getItem("token") || "",
+    token: "",
     rol: null,
     perfil: null,
     loading: false,
