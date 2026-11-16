@@ -45,14 +45,12 @@ const PeliculaList = () => {
 
   const navigate = useNavigate();
 
-  // Montaje: pide películas y funciones. Desmontaje: cancela los pedidos en curso.
   useEffect(() => {
-    const pedidoPeliculas = dispatch(fetchPeliculas());
-    const pedidoFunciones = dispatch(fetchFunciones());
-    return () => {
-      pedidoPeliculas.abort();
-      pedidoFunciones.abort();
+    const cargarCartelera = async () => {
+      const res = await dispatch(fetchPeliculas());
+      if (!res.error) dispatch(fetchFunciones());
     };
+    cargarCartelera();
   }, [dispatch]);
 
   const verDetalle = (id) => {

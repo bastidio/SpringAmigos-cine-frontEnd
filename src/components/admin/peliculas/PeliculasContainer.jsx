@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTodasPeliculas, createPelicula, updatePelicula, deletePelicula } from '../../../redux/carteleraSlice';
 import PeliculasTable from './PeliculasTable';
 import PeliculasForm from './PeliculasForm';
 import BotonAccion from '../ui/BotonAccion';
@@ -6,7 +8,8 @@ import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const PeliculasContainer = () => {
-  const [peliculas, setPeliculas] = useState([]);
+  const dispatch = useDispatch();
+  const { peliculas } = useSelector((state) => state.cartelera);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [peliculaEditando, setPeliculaEditando] = useState(null);
   const [busqueda, setBusqueda] = useState('');
@@ -15,25 +18,9 @@ const PeliculasContainer = () => {
   const [errorEliminar, setErrorEliminar] = useState(null);
   const [errorGuardar, setErrorGuardar] = useState(null);
 
-  const fetchPeliculas = async () => {
-    const token = localStorage.getItem('token');
-    const res = await fetch('/peliculas', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    if (!res.ok) {
-      throw new Error(`No se pudieron cargar las películas (${res.status})`);
-    }
-    const data = await res.json();
-    return data;
-  };
-
   useEffect(() => {
-    fetchPeliculas()
-      .then(setPeliculas)
-      .catch((error) => console.error('Error cargando películas:', error));
-  }, []);
+    dispatch(fetchTodasPeliculas());
+  }, [dispatch]);
 
   const abrirModal = (pelicula = null) => {
     setPeliculaEditando(pelicula);
@@ -47,44 +34,15 @@ const PeliculasContainer = () => {
     setModalAbierto(false);
   };
 
+  // La lista se actualiza en el fulfilled del thunk: no se vuelve a pedir.
   const manejarGuardar = async (formData) => {
-    const editando = peliculaEditando !== null;
-    const metodo = editando ? 'PUT' : 'POST';
-    const url = peliculaEditando ? `/peliculas/${peliculaEditando.id}` : '/peliculas';
-    const token = localStorage.getItem('token');
-
     setErrorGuardar(null);
-    try {
-      const res = await fetch(url, {
-        method: metodo,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!res.ok) {
-        const datos = await res.json().catch(() => null);
-        const motivos = datos?.validationErrors ? Object.values(datos.validationErrors) : [];
-        const mensaje = motivos.length > 0
-          ? motivos.join(', ')
-          : datos?.message || `No se pudo guardar la película (${res.status})`;
-        setErrorGuardar(mensaje);
-        return;
-      }
-
-      const guardada = await res.json();
-      setPeliculas((lista) =>
-        editando
-          ? lista.map((p) => (p.id === guardada.id ? guardada : p))
-          : [...lista, guardada]
-      );
-      cerrarModal();
-    } catch (error) {
-      console.error('Error guardando película:', error);
-      setErrorGuardar('No se pudo conectar con el servidor.');
+    const res = await dispatch(peliculaEditando !== null ? updatePelicula({ ...formData, id: peliculaEditando.id }) : createPelicula(formData));
+    if (res.error) {
+      setErrorGuardar(`No se pudo guardar la película: ${res.error.message}`);
+      return;
     }
+    cerrarModal();
   };
 
   const manejarEliminar = (id) => {
@@ -97,29 +55,10 @@ const PeliculasContainer = () => {
 
   const confirmarEliminar = async () => {
     setBorrando(true);
-    try {
-      const token = localStorage.getItem('token');
-
-      const res = await fetch(`/peliculas/${peliculaABorrar}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      if (!res.ok) {
-        const datos = await res.json().catch(() => null);
-        throw new Error(datos?.message || `No se pudo borrar la película (${res.status})`);
-      }
-
-      const idBorrado = peliculaABorrar;
-      setPeliculas((lista) => lista.filter((p) => p.id !== idBorrado));
-    } catch (error) {
-      setErrorEliminar(error.message);
-    } finally {
-      setBorrando(false);
-      setPeliculaABorrar(null);
-    }
+    const res = await dispatch(deletePelicula(peliculaABorrar));
+    setBorrando(false);
+    setPeliculaABorrar(null);
+    if (res.error) setErrorEliminar(`No se pudo borrar la película: ${res.error.message}`);
   };
 
   const peliculasFiltradas = peliculas.filter(p =>

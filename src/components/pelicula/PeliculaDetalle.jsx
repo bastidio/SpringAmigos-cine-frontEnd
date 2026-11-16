@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPelicula, fetchFunciones } from '../../redux/carteleraSlice';
 import PeliculaFicha from './PeliculaFicha';
 import FuncionCard from './FuncionCard';
 import './Detalle.css';
@@ -12,62 +14,25 @@ const PeliculaDetalle = () => {
   const { id } = useParams();
   const irAFunciones = useLocation().hash === '#funciones';
 
-  const [pelicula, setPelicula] = useState(null);
-  const [funciones, setFunciones] = useState(null);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { peliculaSeleccionada: pelicula, funciones, loading, error } = useSelector((state) => state.cartelera);
+  const [errorFunciones, setErrorFunciones] = useState(null);
 
-  
-  
   useEffect(() => {
-    const controller = new AbortController();
+    const cargarDetalle = async () => {
+      const res = await dispatch(fetchPelicula(id));
+      if (res.error) return;
+      const resFunciones = await dispatch(fetchFunciones());
+      setErrorFunciones(resFunciones.error ? 'No se pudieron cargar las funciones. Revisá que el backend esté levantado.' : null);
+    };
+    cargarDetalle();
+  }, [dispatch, id]);
 
-    fetch(`/peliculas/${id}`, { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error ' + response.status);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setPelicula(data);
-        setError(null);
-      })
-      .catch((error) => {
-        if (error.name === 'AbortError') return;
-        console.error('Error al mostrar la película', error);
-        setError('No se pudo cargar la película. Puede que no exista o que el backend esté caído.');
-      });
-
-    fetch('/funciones', { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error ' + response.status);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setFunciones(data);
-      })
-      .catch((error) => {
-        if (error.name === 'AbortError') return;
-        console.error('Error al mostrar las funciones', error);
-        setError('No se pudieron cargar las funciones. Revisá que el backend esté levantado.');
-      });
-
-    return () => controller.abort();
-  }, [id]);
-
-  // Si se entra con #funciones (boton "Ver funciones" del banner) no se va arriba:
-  // el scroll a la seccion lo hace irAFunciones cuando el titulo ya existe.
   useEffect(() => {
     if (irAFunciones) return;
     window.scrollTo(0, 0);
   }, [id, irAFunciones]);
 
-  // Callback ref: React lo llama con el elemento cuando el titulo se monta en pantalla
-  // (recien despues de que cargaron las funciones, antes ese titulo no existe) y con null
-  // cuando se desmonta. useCallback mantiene la misma funcion entre renders, asi no se
-  // vuelve a llamar (ni a hacer scroll) en cada render.
   const irAFuncionesRef = useCallback(
     (titulo) => {
       if (titulo === null || !irAFunciones) return;
@@ -79,15 +44,18 @@ const PeliculaDetalle = () => {
 
   
   if (error !== null) {
-    return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
+    return (
+      <p className="pagina_mensaje pagina_mensaje--error">
+        No se pudo cargar la película. Puede que no exista o que el backend esté caído.
+      </p>
+    );
   }
 
-  if (pelicula === null) {
-    return <p className="pagina_mensaje">Cargando película...</p>;
+  if (errorFunciones !== null) {
+    return <p className="pagina_mensaje pagina_mensaje--error">{errorFunciones}</p>;
   }
 
-  // Las funciones todavia no llegaron: no se sabe si esta en cartelera.
-  if (funciones === null) {
+  if (loading || pelicula === null || String(pelicula.id) !== id) {
     return <p className="pagina_mensaje">Cargando película...</p>;
   }
 

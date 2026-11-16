@@ -4,16 +4,8 @@ import MapaButacas from './MapaButacas';
 import PanelSeleccion from './PanelSeleccion';
 import { useDispatch, useSelector } from 'react-redux';
 import { agregarButacas } from '../../redux/carritoSlice';
+import { fetchButacas } from '../../redux/carteleraSlice';
 import './Butacas.css';
-
-const pedir = (url) => {
-  return fetch(url).then((response) => {
-    if (!response.ok) {
-      throw new Error('Error ' + response.status);
-    }
-    return response.json();
-  });
-};
 
 const SeleccionButacas = () => {
   const { id } = useParams();
@@ -22,45 +14,24 @@ const SeleccionButacas = () => {
   const { loading: agregando } = useSelector((state) => state.carrito);
   const dispatch = useDispatch();
 
-  const [funcion, setFuncion] = useState(null);
-  const [butacas, setButacas] = useState([]);
+  const { funcionSeleccionada: funcion, butacas, loading, error } = useSelector((state) => state.cartelera);
   const [seleccionadas, setSeleccionadas] = useState([]);
-  const [error, setError] = useState(null);
   const [errorCarrito, setErrorCarrito] = useState(null);
 
   useEffect(() => {
-    Promise.all([pedir(`/funciones/${id}`), pedir('/asientos'), pedir(`/entradas/funcion/${id}`)])
-      .then(([funcionData, asientos, ocupacion]) => {
-        const butacasDeLaSala = asientos
-          .filter((asiento) => asiento.sala.id === funcionData.sala.id)
-          .sort((a, b) => a.fila - b.fila || a.numero - b.numero)
-          .map((asiento) => {
-            
-            const fila = String.fromCharCode(64 + asiento.fila);
-            return {
-              id: asiento.id,
-              fila,
-              nombre: fila + asiento.numero,
-              estado: ocupacion.asientosOcupados.includes(asiento.id) ? 'OCUPADA' : 'LIBRE',
-            };
-          });
-
-        setFuncion(funcionData);
-        setButacas(butacasDeLaSala);
-        setSeleccionadas([]);
-        setError(null);
-      })
-      .catch((error) => {
-        console.error('Error al mostrar las butacas', error);
-        setError('No se pudieron cargar las butacas. Puede que la función no exista o que el backend esté caído.');
-      });
-  }, [id]);
+    dispatch(fetchButacas(id));
+  }, [dispatch, id]);
 
   if (error !== null) {
-    return <p className="pagina_mensaje pagina_mensaje--error">{error}</p>;
+    return (
+      <p className="pagina_mensaje pagina_mensaje--error">
+        No se pudieron cargar las butacas. Puede que la función no exista o que el backend esté caído.
+      </p>
+    );
   }
 
-  if (funcion === null) {
+  // Cargando, o en el store quedo otra funcion (la de una pantalla anterior).
+  if (loading || funcion === null || String(funcion.id) !== id) {
     return <p className="pagina_mensaje">Cargando butacas...</p>;
   }
 

@@ -1,25 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCarrito, modificarCantidad, eliminarItem, vaciarCarrito, setVencimiento } from '../../redux/carritoSlice';
+import { fetchFuncion } from '../../redux/carteleraSlice';
 
-// Logica de edicion del carrito (cargar, cambiar cantidad, quitar, vaciar).
-// La usan el carrito desplegable y el checkout, para no duplicarla.
-
-// Avisa que se terminó el tiempo de reserva. Si la funcion todavia no empezo, el modal
-// ofrece volver a elegir butacas en ella.
-const informarVencimiento = async (funcionId, dispatch, signal) => {
+const informarVencimiento = async (funcionId, dispatch) => {
   let puedeReelegir = false;
   if (funcionId !== null) {
-    try {
-      // GET publico: fetch simple, sin token (un token vencido haria fallar el pedido).
-      const respuesta = await fetch(`/funciones/${funcionId}`, { signal });
-      if (respuesta.ok) {
-        const funcion = await respuesta.json();
-        puedeReelegir = new Date(funcion.horario) > new Date();
-      }
-    } catch (err) {
-      if (err.name === 'AbortError') return;
-    }
+    // GET publico, sin token (un token vencido haria fallar el pedido).
+    const res = await dispatch(fetchFuncion(funcionId));
+    if (!res.error) puedeReelegir = new Date(res.payload.horario) > new Date();
   }
   dispatch(setVencimiento({ funcionId, puedeReelegir }));
 };
@@ -34,15 +23,13 @@ const useEdicionCarrito = () => {
   const [guardando, setGuardando] = useState(false);
 
   const [errorAccion, setErrorAccion] = useState(null);
-  // Cuando el carrito vence el backend borra la funcion: la recordamos para el modal.
+  // Cuando el carrito vence el backend borra la funcion
   const [funcionRecordada, setFuncionRecordada] = useState(null);
   if (carrito?.funcionId && carrito.funcionId !== funcionRecordada) {
     setFuncionRecordada(carrito.funcionId);
   }
 
   // Vencimiento: por tiempo (solo si el carrito tiene butacas) o porque el backend ya lo marco
-  // (el scheduler vacio el carrito o fallo el pago). El temporizador se limpia al desmontar o
-  // cuando cambia expiraEn (por ejemplo, al agregar otra butaca).
   const hayButacas = (carrito?.items ?? []).some((item) => item.tipo === 'BUTACA');
   const expiraEn = carrito?.expiraEn;
   const vencidoEnBackend = carrito?.vencido === true;
@@ -51,17 +38,13 @@ const useEdicionCarrito = () => {
   useEffect(() => {
     if (!hayVencimiento) return;
 
-    const controller = new AbortController();
     const espera = vencidoEnBackend ? 0 : Math.max(new Date(expiraEn) - Date.now(), 0);
     const temporizador = setTimeout(
-      () => informarVencimiento(funcionRecordada, dispatch, controller.signal),
+      () => informarVencimiento(funcionRecordada, dispatch),
       espera
     );
 
-    return () => {
-      clearTimeout(temporizador);
-      controller.abort();
-    };
+    return () => clearTimeout(temporizador);
   }, [hayVencimiento, vencidoEnBackend, expiraEn, funcionRecordada, dispatch]);
 
   // Cada cambio va al back con su thunk; el carrito del store se actualiza en el fulfilled.
