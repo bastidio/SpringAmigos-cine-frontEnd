@@ -99,7 +99,6 @@ function App() {
       navigate('/login');
       return;
     }
-    if (!carritoAbierto) dispatch(fetchCarrito());
     setCarritoAbierto(!carritoAbierto);
   };
 

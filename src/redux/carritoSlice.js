@@ -45,9 +45,8 @@ export const vaciarCarrito = createAsyncThunk("carrito/vaciarCarrito", async (si
 
 export const agregarButacas = createAsyncThunk("carrito/agregarButacas", async ({ funcionId, asientos }, { getState }) => {
   const token = getState().usuario.token;
-  const { data: carrito } = await axios.get(URL, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  // El carrito ya esta en el store, no hace falta pedirlo de nuevo al back.
+  const carrito = getState().carrito.carrito;
 
   const yaEnCarrito = (carrito?.items ?? [])
     .filter((item) => item.tipo === "BUTACA")
