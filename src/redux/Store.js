@@ -11,7 +11,7 @@ import categoriasReducer from './categoriasSlice';
 import ordenesReducer from './ordenesSlice';
 import descuentosReducer from './descuentosSlice';
 
-const usuarioPersistConfig = { key: 'usuario', storage, whitelist: ['token', 'rol'] };
+const usuarioPersistConfig = { key: 'usuario', storage, whitelist: ['token'] };
 
 export const store = configureStore({
   reducer: {
