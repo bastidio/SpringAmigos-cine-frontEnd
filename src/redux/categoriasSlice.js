@@ -15,7 +15,6 @@ const categoriasSlice = createSlice({
   name: "categorias",
   initialState: {
     items: [],
-    // "inicial" | "cargando" | "listo": el componente solo pide si esta en "inicial".
     itemsEstado: "inicial",
     error: null,
   },

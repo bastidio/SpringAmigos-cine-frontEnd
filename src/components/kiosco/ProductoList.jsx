@@ -67,7 +67,7 @@ const ProductoList = () => {
   
   
   
-  // Solo se piden si todavia no estan en el store.
+  // Solo se piden si todavia no estan.
   useEffect(() => {
     if (itemsEstado === 'inicial' && error === null) dispatch(fetchProductos());
   }, [dispatch, itemsEstado, error]);

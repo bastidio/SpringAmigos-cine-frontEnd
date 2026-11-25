@@ -67,10 +67,9 @@ const reemplazar = (lista, producto) => {
 const productosSlice = createSlice({
   name: "productos",
   initialState: {
-    items: [], // kiosco publico (fetchProductos)
-    itemsAdmin: [], // admin, incluye inactivos (fetchProductosAdmin)
-    // "inicial" | "cargando" | "listo": el componente solo pide si esta en "inicial".
-    itemsEstado: "inicial",
+    items: [], 
+    itemsAdmin: [], //ojos q todo lo ve del admin jeje
+    itemsEstado: "inicial",//patron state
     itemsAdminEstado: "inicial",
     error: null,
   },
@@ -101,7 +100,6 @@ const productosSlice = createSlice({
         state.itemsAdminEstado = "inicial";
         state.error = action.error.message;
       })
-      // El producto nuevo va a la lista del admin; el kiosco publico se vuelve a pedir.
       .addCase(createProducto.fulfilled, (state, action) => {
         state.itemsAdmin = [...state.itemsAdmin, action.payload];
         state.itemsEstado = "inicial";
@@ -114,12 +112,11 @@ const productosSlice = createSlice({
         reemplazar(state.itemsAdmin, action.payload);
         reemplazar(state.items, action.payload);
       })
-      // Vuelve a estar activo: en el admin se reemplaza y el kiosco publico se vuelve a pedir.
       .addCase(reactivarProducto.fulfilled, (state, action) => {
         reemplazar(state.itemsAdmin, action.payload);
         state.itemsEstado = "inicial";
       })
-      // Baja logica: el admin lo sigue mostrando como inactivo; del kiosco publico se saca.
+
       .addCase(deleteProducto.fulfilled, (state, action) => {
         const index = state.itemsAdmin.findIndex((p) => p.id === action.payload);
         if (index !== -1) state.itemsAdmin[index].activo = false;

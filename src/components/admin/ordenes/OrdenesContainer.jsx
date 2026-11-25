@@ -14,7 +14,7 @@ const AdminOrdenesView = () => {
   const [modalDetalleAbierto, setModalDetalleAbierto] = useState(false);
   const [ordenActiva, setOrdenActiva] = useState(null);
 
-  // Solo se piden si todavia no estan en el store.
+  // Solo se piden si todavia no se pidieron
   useEffect(() => {
     if (itemsEstado === 'inicial' && error === null) dispatch(fetchOrdenes());
   }, [dispatch, itemsEstado, error]);

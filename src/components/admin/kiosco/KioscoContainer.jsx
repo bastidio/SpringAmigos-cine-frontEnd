@@ -20,7 +20,7 @@ const AdminKioscoView = () => {
   const [procesando, setProcesando] = useState(false);
   const [errorAccion, setErrorAccion] = useState(null);
 
-  // Cada lista se pide solo si todavia no esta en el store.
+  // Cada lista se pide solo si todavia no esta.
   useEffect(() => {
     if (itemsAdminEstado === 'inicial' && error === null) dispatch(fetchProductosAdmin());
   }, [dispatch, itemsAdminEstado, error]);
@@ -29,13 +29,11 @@ const AdminKioscoView = () => {
     if (categoriasEstado === 'inicial' && errorCategorias === null) dispatch(fetchCategorias());
   }, [dispatch, categoriasEstado, errorCategorias]);
 
-  // La lista se actualiza en el fulfilled de cada thunk: no se vuelve a pedir.
   const manejarActualizacionStock = async (productoId, nuevoStock) => {
     const res = await dispatch(actualizarStock({ id: productoId, stock: nuevoStock }));
     if (res.error) setErrorAccion('No se pudo actualizar el stock.');
   };
 
-  // accion: el thunk a despachar (baja logica o reactivacion).
   const cambiarActivo = async (accion, mensajeError) => {
     setProcesando(true);
     const res = await dispatch(accion);

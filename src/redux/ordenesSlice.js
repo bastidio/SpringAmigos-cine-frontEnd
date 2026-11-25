@@ -32,13 +32,13 @@ const ordenesSlice = createSlice({
     items: [],
     misEntradas: [],
     ultimaOrden: null,
-    // "inicial" | "cargando" | "listo": el componente solo pide si esta en "inicial".
+    // menejo de estado como el patron de disegno.
     itemsEstado: "inicial",
     misEntradasEstado: "inicial",
     error: null,
   },
   reducers: {
-    // Boton "Reintentar" del historial: el componente ve "inicial" y vuelve a pedir.
+    //vuelve a iniciar
     invalidarMisEntradas: (state) => {
       state.misEntradasEstado = "inicial";
       state.error = null;
@@ -70,13 +70,12 @@ const ordenesSlice = createSlice({
         state.misEntradasEstado = "inicial";
         state.error = action.error.message;
       })
-      // Compra nueva: las entradas y las ordenes se vuelven a pedir para que aparezca.
       .addCase(confirmarCompra.fulfilled, (state, action) => {
         state.ultimaOrden = action.payload;
         state.misEntradasEstado = "inicial";
         state.itemsEstado = "inicial";
       })
-      // Al cerrar sesion se vacia lo que depende del usuario.
+      // todo desaparece cuando se cambio/ cierra sesion amorrrrrr
       .addCase(cerrarSesion, (state) => {
         state.items = [];
         state.misEntradas = [];
