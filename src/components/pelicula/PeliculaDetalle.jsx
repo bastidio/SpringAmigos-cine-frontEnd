@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPelicula, fetchFunciones } from '../../redux/carteleraSlice';
@@ -15,25 +15,29 @@ const PeliculaDetalle = () => {
   const irAFunciones = useLocation().hash === '#funciones';
 
   const dispatch = useDispatch();
-  const { peliculaSeleccionada: pelicula, funciones, loading, error } = useSelector((state) => state.cartelera);
-  const [errorFunciones, setErrorFunciones] = useState(null);
+  const {
+    peliculaSeleccionada: pelicula, funciones, funcionesEstado, loading, error, errorFunciones,
+  } = useSelector((state) => state.cartelera);
+  const peliculaCargada = pelicula !== null && String(pelicula.id) === id;
 
+  // La pelicula se pide solo si la guardada no es la de este id.
   useEffect(() => {
-    const cargarDetalle = async () => {
-      const res = await dispatch(fetchPelicula(id));
-      if (res.error) return;
-      const resFunciones = await dispatch(fetchFunciones());
-      setErrorFunciones(resFunciones.error ? 'No se pudieron cargar las funciones. Revisá que el backend esté levantado.' : null);
-    };
-    cargarDetalle();
-  }, [dispatch, id]);
+    if (!peliculaCargada) dispatch(fetchPelicula(id));
+  }, [dispatch, id, peliculaCargada]);
+
+  // Las funciones se piden solo si todavia no estan.
+  useEffect(() => {
+    if (funcionesEstado === 'inicial' && errorFunciones === null) dispatch(fetchFunciones());
+  }, [dispatch, funcionesEstado, errorFunciones]);
+
+  const cargandoFunciones = funcionesEstado === 'cargando' && funciones.length === 0;
 
   useEffect(() => {
     if (irAFunciones) return;
     window.scrollTo(0, 0);
   }, [id, irAFunciones]);
 
-  const listo = !loading && error === null && pelicula !== null && String(pelicula.id) === id;
+  const listo = !loading && !cargandoFunciones && error === null && peliculaCargada;
   useEffect(() => {
     if (!irAFunciones || !listo) return;
     const titulo = document.getElementById('funciones');
@@ -57,10 +61,14 @@ const PeliculaDetalle = () => {
   }
 
   if (errorFunciones !== null) {
-    return <p className="pagina_mensaje pagina_mensaje--error">{errorFunciones}</p>;
+    return (
+      <p className="pagina_mensaje pagina_mensaje--error">
+        hay un error en las funciones, aguarde mientras nosotros lo solocionamios, vuelva a intentarlo mas tarde.
+      </p>
+    );
   }
 
-  if (loading || pelicula === null || String(pelicula.id) !== id) {
+  if (loading || cargandoFunciones || !peliculaCargada) {
     return <p className="pagina_mensaje">Cargando película...</p>;
   }
 

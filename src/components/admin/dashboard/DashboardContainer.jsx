@@ -10,17 +10,25 @@ import UltimasOrdenesWidget from './UltimasOrdenesWidget';
 
 const DashboardContainer = () => {
   const dispatch = useDispatch();
-  const { items: ordenes, loading: cargandoOrdenes } = useSelector((state) => state.ordenes);
-  const { items: productos, loading: cargandoProductos } = useSelector((state) => state.productos);
-  const { funciones, loading: cargandoFunciones } = useSelector((state) => state.cartelera);
-  const cargando = cargandoOrdenes || cargandoProductos || cargandoFunciones;
+  const { items: ordenes, itemsEstado: ordenesEstado, error: errorOrdenes } = useSelector((state) => state.ordenes);
+  const { items: productos, itemsEstado: productosEstado, error: errorProductos } = useSelector((state) => state.productos);
+  const { funciones, funcionesEstado, errorFunciones } = useSelector((state) => state.cartelera);
+  const cargando =
+    (ordenesEstado === 'cargando' && ordenes.length === 0) ||
+    (productosEstado === 'cargando' && productos.length === 0) ||
+    (funcionesEstado === 'cargando' && funciones.length === 0);
 
-  // Montaje: los tres pedidos en paralelo.
   useEffect(() => {
-    dispatch(fetchOrdenes());
-    dispatch(fetchProductos());
-    dispatch(fetchFunciones());
-  }, [dispatch]);
+    if (ordenesEstado === 'inicial' && errorOrdenes === null) dispatch(fetchOrdenes());
+  }, [dispatch, ordenesEstado, errorOrdenes]);
+
+  useEffect(() => {
+    if (productosEstado === 'inicial' && errorProductos === null) dispatch(fetchProductos());
+  }, [dispatch, productosEstado, errorProductos]);
+
+  useEffect(() => {
+    if (funcionesEstado === 'inicial' && errorFunciones === null) dispatch(fetchFunciones());
+  }, [dispatch, funcionesEstado, errorFunciones]);
 
   const fecha = new Date();
   const hoy = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
