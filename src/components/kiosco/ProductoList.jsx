@@ -18,7 +18,7 @@ const ProductoList = () => {
   const { token } = useSelector((state) => state.usuario);
   const { carrito } = useSelector((state) => state.carrito);
   const dispatch = useDispatch();
-  const { items: productos, loading: cargando, error } = useSelector((state) => state.productos);
+  const { items: productos, itemsEstado, error } = useSelector((state) => state.productos);
   const [categoria, setCategoria] = useState('Todo');
   const navigate = useNavigate();
 
@@ -67,12 +67,13 @@ const ProductoList = () => {
   
   
   
+  // Solo se piden si todavia no estan en el store.
   useEffect(() => {
-    dispatch(fetchProductos());
-  }, [dispatch]);
+    if (itemsEstado === 'inicial' && error === null) dispatch(fetchProductos());
+  }, [dispatch, itemsEstado, error]);
 
 
-  if (cargando) {
+  if (itemsEstado === 'cargando' && productos.length === 0) {
     return <p className="pagina_mensaje">Cargando kiosco...</p>;
   }
 

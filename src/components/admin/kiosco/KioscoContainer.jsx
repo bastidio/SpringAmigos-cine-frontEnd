@@ -10,8 +10,8 @@ import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const AdminKioscoView = () => {
   const dispatch = useDispatch();
-  const { items: productos } = useSelector((state) => state.productos);
-  const { items: categorias } = useSelector((state) => state.categorias);
+  const { itemsAdmin: productos, itemsAdminEstado, error } = useSelector((state) => state.productos);
+  const { items: categorias, itemsEstado: categoriasEstado, error: errorCategorias } = useSelector((state) => state.categorias);
   const [categoriaActivaId, setCategoriaActivaId] = useState('Todos');
   const [modalAbierto, setModalAbierto] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
@@ -20,10 +20,14 @@ const AdminKioscoView = () => {
   const [procesando, setProcesando] = useState(false);
   const [errorAccion, setErrorAccion] = useState(null);
 
+  // Cada lista se pide solo si todavia no esta en el store.
   useEffect(() => {
-    dispatch(fetchProductosAdmin());
-    dispatch(fetchCategorias());
-  }, [dispatch]);
+    if (itemsAdminEstado === 'inicial' && error === null) dispatch(fetchProductosAdmin());
+  }, [dispatch, itemsAdminEstado, error]);
+
+  useEffect(() => {
+    if (categoriasEstado === 'inicial' && errorCategorias === null) dispatch(fetchCategorias());
+  }, [dispatch, categoriasEstado, errorCategorias]);
 
   // La lista se actualiza en el fulfilled de cada thunk: no se vuelve a pedir.
   const manejarActualizacionStock = async (productoId, nuevoStock) => {

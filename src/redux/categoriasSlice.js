@@ -15,22 +15,23 @@ const categoriasSlice = createSlice({
   name: "categorias",
   initialState: {
     items: [],
-    loading: false,
+    // "inicial" | "cargando" | "listo": el componente solo pide si esta en "inicial".
+    itemsEstado: "inicial",
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchCategorias.pending, (state) => {
-        state.loading = true;
+        state.itemsEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchCategorias.fulfilled, (state, action) => {
-        state.loading = false;
+        state.itemsEstado = "listo";
         state.items = action.payload;
       })
       .addCase(fetchCategorias.rejected, (state, action) => {
-        state.loading = false;
+        state.itemsEstado = "inicial";
         state.error = action.error.message;
       });
   },
