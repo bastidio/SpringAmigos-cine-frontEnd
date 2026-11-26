@@ -54,7 +54,7 @@ const CheckoutDetalle = () => {
 
   const totalCarrito = visible?.total;
   useEffect(() => {
-    if (codigoAplicado === null || guardando) return;
+    if (orden !== null || codigoAplicado === null || guardando) return;
 
     const revalidarDescuento = async () => {
       const res = await dispatch(validarDescuento(codigoAplicado));
@@ -70,7 +70,7 @@ const CheckoutDetalle = () => {
     };
 
     revalidarDescuento();
-  }, [dispatch, codigoAplicado, totalCarrito, guardando, revalidacion]);
+  }, [dispatch, orden, codigoAplicado, totalCarrito, guardando, revalidacion]);
 
   const aplicarDescuento = (codigo) => {
     setErrorDescuento(null);
