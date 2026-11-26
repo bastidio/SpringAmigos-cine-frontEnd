@@ -1,30 +1,20 @@
 import { useState } from 'react';
 import BotonAccion from '../ui/BotonAccion';
 
-const datosIniciales = (productoAEditar) => {
-  if (!productoAEditar) {
-    return {
-      nombre: '',
-      descripcion: '',
-      categoria_id: '',
-      precio: '',
-      stock: '',
-      descuento: 0,
-      imagenes: [''],
-      activo: true
-    };
-  }
-  return {
-    ...productoAEditar,
-    categoria_id: productoAEditar.categoria?.id || '',
-    imagenes: productoAEditar.imagenes?.length > 0
-      ? productoAEditar.imagenes.map((img) => img.url)
-      : ['']
-  };
-};
-
 const KioscoForm = ({ productoAEditar, categorias, onGuardar, onCancelar }) => {
-  const [formData, setFormData] = useState(datosIniciales(productoAEditar));
+  let datosIniciales = { nombre: '', descripcion: '', categoria_id: '', precio: '', stock: '', descuento: 0, imagenes: [''], activo: true };
+  if (productoAEditar) {
+    let categoriaId = '';
+    if (productoAEditar.categoria) {
+      categoriaId = productoAEditar.categoria.id;
+    }
+    let imagenes = [''];
+    if (productoAEditar.imagenes && productoAEditar.imagenes.length > 0) {
+      imagenes = productoAEditar.imagenes.map((img) => img.url);
+    }
+    datosIniciales = { ...productoAEditar, categoria_id: categoriaId, imagenes: imagenes };
+  }
+  const [formData, setFormData] = useState(datosIniciales);
 
   // La primera URL es la imagen principal. Siempre queda al menos un campo.
   const cambiarImagen = (indice, valor) => {

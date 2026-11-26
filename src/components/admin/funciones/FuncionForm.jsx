@@ -1,33 +1,19 @@
 import { useState } from 'react';
 import BotonAccion from '../ui/BotonAccion';
 
-const datosIniciales = (funcionAEditar) => {
-  if (!funcionAEditar) {
-    return { pelicula_id: '', sala_id: '', fecha: '', hora: '', idioma: '', formato: '', precio_base: '' };
-  }
-
-  let fechaBd = '';
-  let horaBd = '';
-
-  if (funcionAEditar.horario) {
-    const horarioNormalizado = funcionAEditar.horario.replace(' ', 'T');
-    const partes = horarioNormalizado.split('T');
-    fechaBd = partes[0] || '';
-    horaBd = partes[1] ? partes[1].substring(0, 5) : '';
-  }
-
-  return {
-    ...funcionAEditar,
-    pelicula_id: String(funcionAEditar.pelicula_id ?? funcionAEditar.pelicula?.id ?? ''),
-    sala_id: String(funcionAEditar.sala_id ?? funcionAEditar.sala?.id ?? ''),
-    fecha: fechaBd,
-    hora: horaBd,
-  };
-};
-
 const FuncionesForm = ({ funcionAEditar, peliculas, salas, onGuardar, onCancelar }) => {
 
-  const [formData, setFormData] = useState(datosIniciales(funcionAEditar));
+  let datosIniciales = { pelicula_id: '', sala_id: '', fecha: '', hora: '', idioma: '', formato: '', precio_base: '' };
+  if (funcionAEditar) {
+    datosIniciales = {
+      ...funcionAEditar,
+      pelicula_id: String(funcionAEditar.pelicula.id),
+      sala_id: String(funcionAEditar.sala.id),
+      fecha: funcionAEditar.horario.slice(0, 10),
+      hora: funcionAEditar.horario.slice(11, 16),
+    };
+  }
+  const [formData, setFormData] = useState(datosIniciales);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
