@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { cerrarSesion } from "./usuarioSlice";
 
 const URL = "/descuentos";
 
@@ -58,7 +59,8 @@ const descuentosSlice = createSlice({
   initialState: {
     items: [],
     validacion: null,
-    loading: false,
+    // "inicial" | "cargando" | "listo": el componente solo pide si esta en "inicial".
+    itemsEstado: "inicial",
     error: null,
   },
   reducers: {
@@ -70,15 +72,15 @@ const descuentosSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchDescuentos.pending, (state) => {
-        state.loading = true;
+        state.itemsEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchDescuentos.fulfilled, (state, action) => {
-        state.loading = false;
+        state.itemsEstado = "listo";
         state.items = action.payload;
       })
       .addCase(fetchDescuentos.rejected, (state, action) => {
-        state.loading = false;
+        state.itemsEstado = "inicial";
         state.error = action.error.message;
       })
       .addCase(createDescuento.fulfilled, (state, action) => {
@@ -102,6 +104,12 @@ const descuentosSlice = createSlice({
       })
       .addCase(validarDescuento.rejected, (state) => {
         state.validacion = null;
+      })
+      // Al cerrar sesion se vacia la lista del admin.
+      .addCase(cerrarSesion, (state) => {
+        state.items = [];
+        state.itemsEstado = "inicial";
+        state.error = null;
       });
   },
 });

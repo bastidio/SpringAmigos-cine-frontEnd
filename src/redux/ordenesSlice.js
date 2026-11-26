@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { cerrarSesion } from "./usuarioSlice";
 
 export const fetchOrdenes = createAsyncThunk("ordenes/fetchOrdenes", async (sinDatos, { getState }) => {
   const token = getState().usuario.token;
@@ -31,40 +32,60 @@ const ordenesSlice = createSlice({
     items: [],
     misEntradas: [],
     ultimaOrden: null,
-    loading: true,
+    // menejo de estado como el patron de disegno.
+    itemsEstado: "inicial",
+    misEntradasEstado: "inicial",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    //vuelve a iniciar
+    invalidarMisEntradas: (state) => {
+      state.misEntradasEstado = "inicial";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchOrdenes.pending, (state) => {
-        state.loading = true;
+        state.itemsEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchOrdenes.fulfilled, (state, action) => {
-        state.loading = false;
+        state.itemsEstado = "listo";
         state.items = action.payload;
       })
       .addCase(fetchOrdenes.rejected, (state, action) => {
-        state.loading = false;
+        state.itemsEstado = "inicial";
         state.error = action.error.message;
       })
       .addCase(fetchMisEntradas.pending, (state) => {
-        state.loading = true;
+        state.misEntradasEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchMisEntradas.fulfilled, (state, action) => {
-        state.loading = false;
+        state.misEntradasEstado = "listo";
         state.misEntradas = action.payload;
       })
       .addCase(fetchMisEntradas.rejected, (state, action) => {
-        state.loading = false;
+        state.misEntradasEstado = "inicial";
         state.error = action.error.message;
       })
       .addCase(confirmarCompra.fulfilled, (state, action) => {
         state.ultimaOrden = action.payload;
+        state.misEntradasEstado = "inicial";
+        state.itemsEstado = "inicial";
+      })
+      // todo desaparece cuando se cambio/ cierra sesion amorrrrrr
+      .addCase(cerrarSesion, (state) => {
+        state.items = [];
+        state.misEntradas = [];
+        state.itemsEstado = "inicial";
+        state.misEntradasEstado = "inicial";
+        state.error = null;
       });
   },
 });
+
+export const { invalidarMisEntradas } = ordenesSlice.actions;
 
 export default ordenesSlice.reducer;

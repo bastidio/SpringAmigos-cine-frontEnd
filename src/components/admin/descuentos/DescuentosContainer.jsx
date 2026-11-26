@@ -9,7 +9,7 @@ import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const DescuentosContainer = () => {
   const dispatch = useDispatch();
-  const { items: descuentos } = useSelector((state) => state.descuentos);
+  const { items: descuentos, itemsEstado, error } = useSelector((state) => state.descuentos);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [descuentoEditando, setDescuentoEditando] = useState(null);
   const [errorGuardar, setErrorGuardar] = useState(null);
@@ -17,13 +17,15 @@ const DescuentosContainer = () => {
   const [procesando, setProcesando] = useState(false);
   const [errorAccion, setErrorAccion] = useState(null);
 
+  // Solo se piden si todavia no estan en el store.
   useEffect(() => {
+    if (itemsEstado !== 'inicial' || error !== null) return;
     const cargar = async () => {
       const res = await dispatch(fetchDescuentos());
       if (res.error) setErrorAccion('No se pudieron cargar los códigos de descuento.');
     };
     cargar();
-  }, [dispatch]);
+  }, [dispatch, itemsEstado, error]);
 
   const abrirModal = (descuento = null) => {
     setDescuentoEditando(descuento);

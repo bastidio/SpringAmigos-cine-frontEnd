@@ -8,15 +8,16 @@ import AdminModal from '../ui/AdminModal';
 
 const AdminOrdenesView = () => {
   const dispatch = useDispatch();
-  const { items: ordenes } = useSelector((state) => state.ordenes);
+  const { items: ordenes, itemsEstado, error } = useSelector((state) => state.ordenes);
   const [busqueda, setBusqueda] = useState('');
   
   const [modalDetalleAbierto, setModalDetalleAbierto] = useState(false);
   const [ordenActiva, setOrdenActiva] = useState(null);
 
+  // Solo se piden si todavia no se pidieron
   useEffect(() => {
-    dispatch(fetchOrdenes());
-  }, [dispatch]);
+    if (itemsEstado === 'inicial' && error === null) dispatch(fetchOrdenes());
+  }, [dispatch, itemsEstado, error]);
 
   const ordenesFiltradas = ordenes.filter(o => {
     const busquedaLower = busqueda.toLowerCase();

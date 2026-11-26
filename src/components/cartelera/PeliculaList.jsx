@@ -39,19 +39,20 @@ const proximasFunciones = (funciones, peliculaId, ahora) =>
 
 const PeliculaList = () => {
   const dispatch = useDispatch();
-  const { peliculas, funciones, loading, error } = useSelector((state) => state.cartelera);
+  const {
+    peliculas, peliculasEstado, funciones, funcionesEstado, error, errorFunciones,
+  } = useSelector((state) => state.cartelera);
   const [clasificacion, setClasificacion] = useState('Todos');
   const [idioma, setIdioma] = useState('Todos');
 
   const navigate = useNavigate();
+  useEffect(() => {
+    if (peliculasEstado === 'inicial' && error === null) dispatch(fetchPeliculas());
+  }, [dispatch, peliculasEstado, error]);
 
   useEffect(() => {
-    const cargarCartelera = async () => {
-      const res = await dispatch(fetchPeliculas());
-      if (!res.error) dispatch(fetchFunciones());
-    };
-    cargarCartelera();
-  }, [dispatch]);
+    if (funcionesEstado === 'inicial' && errorFunciones === null) dispatch(fetchFunciones());
+  }, [dispatch, funcionesEstado, errorFunciones]);
 
   const verDetalle = (id) => {
     navigate(`/pelicula/${id}`);
@@ -61,7 +62,10 @@ const PeliculaList = () => {
     navigate(`/funcion/${funcionId}/butacas`);
   };
 
-  if (loading) {
+  if (
+    (peliculasEstado === 'cargando' && peliculas.length === 0) ||
+    (funcionesEstado === 'cargando' && funciones.length === 0)
+  ) {
     return <p className="pagina_mensaje">Cargando cartelera...</p>;
   }
 

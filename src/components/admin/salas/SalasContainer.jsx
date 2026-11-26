@@ -12,32 +12,35 @@ import MapaSala from './MapaSala';
 
 const AdminSalasView = () => {
   const dispatch = useDispatch();
-  const { items: salas, asientos, loading, error } = useSelector((state) => state.salas);
-  const { funciones } = useSelector((state) => state.cartelera);
-  const [salaSeleccionada, setSalaSeleccionada] = useState(null);
+  const { items: salas, asientos, salasEstado, asientosEstado, error } = useSelector((state) => state.salas);
+  const { funciones, funcionesEstado, errorFunciones } = useSelector((state) => state.cartelera);
+  const [salaElegida, setSalaElegida] = useState(null);
+  const salaSeleccionada = salaElegida ?? salas[0] ?? null;
   const [modalAbierto, setModalAbierto] = useState(false);
   const [salaAEditar, setSalaAEditar] = useState(null);
   const [errorGuardar, setErrorGuardar] = useState(null);
-  // fetchFunciones no guarda el error en el store, y sin saber si la sala tiene funciones
-  // no se la puede dejar editar: por eso este estado queda local.
-  const [estadoFunciones, setEstadoFunciones] = useState('cargando');
   const [guardando, setGuardando] = useState(false);
   const [progreso, setProgreso] = useState(null);
 
   let estadoAsientos = 'listo';
-  if (loading) estadoAsientos = 'cargando';
-  else if (error !== null) estadoAsientos = 'error';
+  if (error !== null) estadoAsientos = 'error';
+  else if (asientosEstado !== 'listo') estadoAsientos = 'cargando';
+
+  let estadoFunciones = 'listo';
+  if (errorFunciones !== null) estadoFunciones = 'error';
+  else if (funcionesEstado !== 'listo') estadoFunciones = 'cargando';
 
   useEffect(() => {
-    const cargarDatos = async () => {
-      const res = await dispatch(fetchSalas());
-      if (!res.error) setSalaSeleccionada(res.payload[0] ?? null);
-      dispatch(fetchAsientos());
-      const resFunciones = await dispatch(fetchFunciones());
-      setEstadoFunciones(resFunciones.error ? 'error' : 'listo');
-    };
-    cargarDatos();
-  }, [dispatch]);
+    if (salasEstado === 'inicial' && error === null) dispatch(fetchSalas());
+  }, [dispatch, salasEstado, error]);
+
+  useEffect(() => {
+    if (asientosEstado === 'inicial' && error === null) dispatch(fetchAsientos());
+  }, [dispatch, asientosEstado, error]);
+
+  useEffect(() => {
+    if (funcionesEstado === 'inicial' && errorFunciones === null) dispatch(fetchFunciones());
+  }, [dispatch, funcionesEstado, errorFunciones]);
 
   const abrirModal = (sala = null) => {
     setSalaAEditar(sala);
@@ -71,7 +74,7 @@ const AdminSalasView = () => {
       return;
     }
     const salaId = res.payload.id;
-    setSalaSeleccionada(res.payload);
+    setSalaElegida(res.payload);
 
     for (const deLaFila of agruparPorFila(nuevas)) {
       const resultados = await Promise.all(deLaFila.map((butaca) => dispatch(createAsiento({ salaId, fila: butaca.fila, numero: butaca.numero }))));
@@ -140,7 +143,7 @@ const AdminSalasView = () => {
         <SalasList
           salas={salas}
           salaActiva={salaSeleccionada}
-          onSeleccionar={setSalaSeleccionada}
+          onSeleccionar={setSalaElegida}
           asientos={asientos}
           estadoAsientos={estadoAsientos}
         />

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { cerrarSesion } from "./usuarioSlice";
 
 const URL_PELICULAS = "/peliculas";
 const URL_FUNCIONES = "/funciones";
@@ -108,43 +109,54 @@ export const fetchButacas = createAsyncThunk("cartelera/fetchButacas", async (fu
   return { funcion, butacas };
 });
 
+// Reemplaza el elemento en la lista si ya estaba (se usa en los fulfilled de update).
+const reemplazar = (lista, elemento) => {
+  const index = lista.findIndex((item) => item.id === elemento.id);
+  if (index !== -1) lista[index] = elemento;
+};
+
 const carteleraSlice = createSlice({
   name: "cartelera",
   initialState: {
-    peliculas: [],
+    peliculas: [], 
+    todasPeliculas: [], 
     peliculaSeleccionada: null,
     funciones: [],
     funcionSeleccionada: null,
     funcionCarrito: null,
     butacas: [],
+    peliculasEstado: "inicial",
+    todasPeliculasEstado: "inicial",
+    funcionesEstado: "inicial",
     loading: true,
     error: null,
+    errorFunciones: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchPeliculas.pending, (state) => {
-        state.loading = true;
+        state.peliculasEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchPeliculas.fulfilled, (state, action) => {
-        state.loading = false;
+        state.peliculasEstado = "listo";
         state.peliculas = action.payload;
       })
       .addCase(fetchPeliculas.rejected, (state, action) => {
-        state.loading = false;
+        state.peliculasEstado = "inicial";
         state.error = action.error.message;
       })
       .addCase(fetchTodasPeliculas.pending, (state) => {
-        state.loading = true;
+        state.todasPeliculasEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchTodasPeliculas.fulfilled, (state, action) => {
-        state.loading = false;
-        state.peliculas = action.payload;
+        state.todasPeliculasEstado = "listo";
+        state.todasPeliculas = action.payload;
       })
       .addCase(fetchTodasPeliculas.rejected, (state, action) => {
-        state.loading = false;
+        state.todasPeliculasEstado = "inicial";
         state.error = action.error.message;
       })
       .addCase(fetchPelicula.pending, (state) => {
@@ -160,25 +172,28 @@ const carteleraSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(createPelicula.fulfilled, (state, action) => {
-        state.peliculas = [...state.peliculas, action.payload];
+        state.todasPeliculas = [...state.todasPeliculas, action.payload];
+        state.peliculasEstado = "inicial";
       })
       .addCase(updatePelicula.fulfilled, (state, action) => {
-        const index = state.peliculas.findIndex((p) => p.id === action.payload.id);
-        if (index !== -1) state.peliculas[index] = action.payload;
+        reemplazar(state.todasPeliculas, action.payload);
+        reemplazar(state.peliculas, action.payload);
       })
       .addCase(deletePelicula.fulfilled, (state, action) => {
+        state.todasPeliculas = state.todasPeliculas.filter((p) => p.id !== action.payload);
         state.peliculas = state.peliculas.filter((p) => p.id !== action.payload);
       })
       .addCase(fetchFunciones.pending, (state) => {
-        state.loading = true;
+        state.funcionesEstado = "cargando";
+        state.errorFunciones = null;
       })
       .addCase(fetchFunciones.fulfilled, (state, action) => {
-        state.loading = false;
+        state.funcionesEstado = "listo";
         state.funciones = action.payload;
       })
-      .addCase(fetchFunciones.rejected, (state) => {
-        state.loading = false;
-        state.funciones = [];
+      .addCase(fetchFunciones.rejected, (state, action) => {
+        state.funcionesEstado = "inicial";
+        state.errorFunciones = action.error.message;
       })
       .addCase(fetchFuncion.fulfilled, (state, action) => {
         state.funcionCarrito = action.payload;
@@ -187,8 +202,7 @@ const carteleraSlice = createSlice({
         state.funciones = [...state.funciones, action.payload];
       })
       .addCase(updateFuncion.fulfilled, (state, action) => {
-        const index = state.funciones.findIndex((f) => f.id === action.payload.id);
-        if (index !== -1) state.funciones[index] = action.payload;
+        reemplazar(state.funciones, action.payload);
       })
       .addCase(deleteFuncion.fulfilled, (state, action) => {
         state.funciones = state.funciones.filter((f) => f.id !== action.payload);
@@ -205,6 +219,11 @@ const carteleraSlice = createSlice({
       .addCase(fetchButacas.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(cerrarSesion, (state) => {
+        state.todasPeliculas = [];
+        state.todasPeliculasEstado = "inicial";
+        state.error = null;
       });
   },
 });

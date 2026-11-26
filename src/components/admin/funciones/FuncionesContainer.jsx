@@ -10,8 +10,10 @@ import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const FuncionesContainer = () => {
   const dispatch = useDispatch();
-  const { funciones, peliculas } = useSelector((state) => state.cartelera);
-  const { items: salas } = useSelector((state) => state.salas);
+  const {
+    funciones, funcionesEstado, errorFunciones, todasPeliculas: peliculas, todasPeliculasEstado, error,
+  } = useSelector((state) => state.cartelera);
+  const { items: salas, salasEstado, error: errorSalas } = useSelector((state) => state.salas);
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [funcionEditando, setFuncionEditando] = useState(null);
@@ -39,10 +41,16 @@ const FuncionesContainer = () => {
   const [diaSeleccionado, setDiaSeleccionado] = useState('todas');
 
   useEffect(() => {
-    dispatch(fetchFunciones());
-    dispatch(fetchTodasPeliculas());
-    dispatch(fetchSalas());
-  }, [dispatch]);
+    if (funcionesEstado === 'inicial' && errorFunciones === null) dispatch(fetchFunciones());
+  }, [dispatch, funcionesEstado, errorFunciones]);
+
+  useEffect(() => {
+    if (todasPeliculasEstado === 'inicial' && error === null) dispatch(fetchTodasPeliculas());
+  }, [dispatch, todasPeliculasEstado, error]);
+
+  useEffect(() => {
+    if (salasEstado === 'inicial' && errorSalas === null) dispatch(fetchSalas());
+  }, [dispatch, salasEstado, errorSalas]);
 
   const abrirModal = (funcion = null) => {
     setFuncionEditando(funcion);

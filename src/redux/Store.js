@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/es/storage';
 import usuarioReducer from './usuarioSlice';
 import carteleraReducer from './carteleraSlice';
@@ -11,7 +11,7 @@ import categoriasReducer from './categoriasSlice';
 import ordenesReducer from './ordenesSlice';
 import descuentosReducer from './descuentosSlice';
 
-const usuarioPersistConfig = { key: 'usuario', storage, whitelist: ['token', 'rol'] };
+const usuarioPersistConfig = { key: 'usuario', storage, whitelist: ['token'] };
 
 export const store = configureStore({
   reducer: {
@@ -25,6 +25,13 @@ export const store = configureStore({
     ordenes: ordenesReducer,
     descuentos: descuentosReducer,
   },
+  // parece re chesterizado pero prometo q esta en el doc de toolkit
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 export const persistor = persistStore(store);

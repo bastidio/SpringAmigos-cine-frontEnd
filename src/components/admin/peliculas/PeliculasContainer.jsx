@@ -9,7 +9,7 @@ import VentanaEmergente from '../../ui/VentanaEmergente';
 
 const PeliculasContainer = () => {
   const dispatch = useDispatch();
-  const { peliculas } = useSelector((state) => state.cartelera);
+  const { todasPeliculas: peliculas, todasPeliculasEstado, error } = useSelector((state) => state.cartelera);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [peliculaEditando, setPeliculaEditando] = useState(null);
   const [busqueda, setBusqueda] = useState('');
@@ -19,8 +19,8 @@ const PeliculasContainer = () => {
   const [errorGuardar, setErrorGuardar] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchTodasPeliculas());
-  }, [dispatch]);
+    if (todasPeliculasEstado === 'inicial' && error === null) dispatch(fetchTodasPeliculas());
+  }, [dispatch, todasPeliculasEstado, error]);
 
   const abrirModal = (pelicula = null) => {
     setPeliculaEditando(pelicula);
@@ -34,7 +34,6 @@ const PeliculasContainer = () => {
     setModalAbierto(false);
   };
 
-  // La lista se actualiza en el fulfilled del thunk: no se vuelve a pedir.
   const manejarGuardar = async (formData) => {
     setErrorGuardar(null);
     const res = await dispatch(peliculaEditando !== null ? updatePelicula({ ...formData, id: peliculaEditando.id }) : createPelicula(formData));

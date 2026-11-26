@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMisEntradas } from '../../redux/ordenesSlice';
+import { fetchMisEntradas, invalidarMisEntradas } from '../../redux/ordenesSlice';
 import EntradaCard from './EntradaCard';
 import './Entradas.css';
 
@@ -21,17 +21,18 @@ const formatoFecha = (horario) => {
 
 const HistorialEntradas = () => {
   const dispatch = useDispatch();
-  const { misEntradas: entradas, loading: cargando, error } = useSelector((state) => state.ordenes);
+  const { misEntradas: entradas, misEntradasEstado, error } = useSelector((state) => state.ordenes);
 
+  // Reintentar: vuelve el estado a "inicial" y el useEffect las pide de nuevo.
   const cargarEntradas = () => {
-    dispatch(fetchMisEntradas());
+    dispatch(invalidarMisEntradas());
   };
 
   useEffect(() => {
-    dispatch(fetchMisEntradas());
-  }, [dispatch]);
+    if (misEntradasEstado === 'inicial' && error === null) dispatch(fetchMisEntradas());
+  }, [dispatch, misEntradasEstado, error]);
 
-  if (cargando) {
+  if (misEntradasEstado === 'cargando' && entradas.length === 0) {
     return <p className="pagina_mensaje">Cargando historial de entradas...</p>;
   }
 

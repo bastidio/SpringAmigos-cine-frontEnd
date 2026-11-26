@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { cerrarSesion } from "./usuarioSlice";
 
 const URL = "/productos";
 
@@ -57,58 +58,74 @@ export const deleteProducto = createAsyncThunk("productos/deleteProducto", async
   return id;
 });
 
+// Reemplaza el producto en la lista si ya estaba.
+const reemplazar = (lista, producto) => {
+  const index = lista.findIndex((p) => p.id === producto.id);
+  if (index !== -1) lista[index] = producto;
+};
+
 const productosSlice = createSlice({
   name: "productos",
   initialState: {
-    items: [],
-    loading: true,
+    items: [], 
+    itemsAdmin: [], //ojos q todo lo ve del admin jeje
+    itemsEstado: "inicial",//patron state
+    itemsAdminEstado: "inicial",
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchProductos.pending, (state) => {
-        state.loading = true;
+        state.itemsEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchProductos.fulfilled, (state, action) => {
-        state.loading = false;
+        state.itemsEstado = "listo";
         state.items = action.payload;
       })
       .addCase(fetchProductos.rejected, (state, action) => {
-        state.loading = false;
+        state.itemsEstado = "inicial";
         state.error = action.error.message;
       })
       .addCase(fetchProductosAdmin.pending, (state) => {
-        state.loading = true;
+        state.itemsAdminEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchProductosAdmin.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload;
+        state.itemsAdminEstado = "listo";
+        state.itemsAdmin = action.payload;
       })
       .addCase(fetchProductosAdmin.rejected, (state, action) => {
-        state.loading = false;
+        state.itemsAdminEstado = "inicial";
         state.error = action.error.message;
       })
       .addCase(createProducto.fulfilled, (state, action) => {
-        state.items = [...state.items, action.payload];
+        state.itemsAdmin = [...state.itemsAdmin, action.payload];
+        state.itemsEstado = "inicial";
       })
       .addCase(updateProducto.fulfilled, (state, action) => {
-        const index = state.items.findIndex((p) => p.id === action.payload.id);
-        if (index !== -1) state.items[index] = action.payload;
+        reemplazar(state.itemsAdmin, action.payload);
+        reemplazar(state.items, action.payload);
       })
       .addCase(actualizarStock.fulfilled, (state, action) => {
-        const index = state.items.findIndex((p) => p.id === action.payload.id);
-        if (index !== -1) state.items[index] = action.payload;
+        reemplazar(state.itemsAdmin, action.payload);
+        reemplazar(state.items, action.payload);
       })
       .addCase(reactivarProducto.fulfilled, (state, action) => {
-        const index = state.items.findIndex((p) => p.id === action.payload.id);
-        if (index !== -1) state.items[index] = action.payload;
+        reemplazar(state.itemsAdmin, action.payload);
+        state.itemsEstado = "inicial";
       })
+
       .addCase(deleteProducto.fulfilled, (state, action) => {
-        const index = state.items.findIndex((p) => p.id === action.payload);
-        if (index !== -1) state.items[index].activo = false;
+        const index = state.itemsAdmin.findIndex((p) => p.id === action.payload);
+        if (index !== -1) state.itemsAdmin[index].activo = false;
+        state.items = state.items.filter((p) => p.id !== action.payload);
+      })
+      .addCase(cerrarSesion, (state) => {
+        state.itemsAdmin = [];
+        state.itemsAdminEstado = "inicial";
+        state.error = null;
       });
   },
 });

@@ -55,22 +55,23 @@ const salasSlice = createSlice({
   initialState: {
     items: [],
     asientos: [],
-    loading: false,
+    salasEstado: "inicial",
+    asientosEstado: "inicial",
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchSalas.pending, (state) => {
-        state.loading = true;
+        state.salasEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchSalas.fulfilled, (state, action) => {
-        state.loading = false;
+        state.salasEstado = "listo";
         state.items = action.payload;
       })
       .addCase(fetchSalas.rejected, (state, action) => {
-        state.loading = false;
+        state.salasEstado = "inicial";
         state.error = action.error.message;
       })
       .addCase(createSala.fulfilled, (state, action) => {
@@ -81,15 +82,15 @@ const salasSlice = createSlice({
         if (index !== -1) state.items[index] = action.payload;
       })
       .addCase(fetchAsientos.pending, (state) => {
-        state.loading = true;
+        state.asientosEstado = "cargando";
         state.error = null;
       })
       .addCase(fetchAsientos.fulfilled, (state, action) => {
-        state.loading = false;
+        state.asientosEstado = "listo";
         state.asientos = action.payload;
       })
       .addCase(fetchAsientos.rejected, (state, action) => {
-        state.loading = false;
+        state.asientosEstado = "inicial";
         state.error = action.error.message;
       })
       .addCase(createAsiento.fulfilled, (state, action) => {

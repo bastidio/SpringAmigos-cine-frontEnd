@@ -64,20 +64,23 @@ function App() {
     navigate('/');
   };
 
+  // El perfil se pide una sola vez por sesion: solo cuando cambia el token
+  // (al entrar, al recargar la pagina o al iniciar sesion). No depende de la ruta.
   useEffect(() => {
     if (token === '') return;
 
     const cargarPerfil = async () => {
       const res = await dispatch(fetchPerfil());
       if (res.error) {
+        // Token vencido o invalido: se cierra la sesion. Las rutas protegidas
+        // ya redirigen solas a /login cuando el token queda vacio.
         dispatch(cerrarSesionStore());
         dispatch(limpiarCarrito());
         dispatch(limpiarFavoritos());
-        navigate('/login');
       }
     };
     cargarPerfil();
-  }, [dispatch, token, navigate]);
+  }, [dispatch, token]);
 
   useEffect(() => {
     if (token === '') return;
@@ -96,7 +99,6 @@ function App() {
       navigate('/login');
       return;
     }
-    if (!carritoAbierto) dispatch(fetchCarrito());
     setCarritoAbierto(!carritoAbierto);
   };
 
