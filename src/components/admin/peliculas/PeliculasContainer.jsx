@@ -38,7 +38,7 @@ const PeliculasContainer = () => {
     setErrorGuardar(null);
     const res = await dispatch(peliculaEditando !== null ? updatePelicula({ ...formData, id: peliculaEditando.id }) : createPelicula(formData));
     if (res.error) {
-      setErrorGuardar(`No se pudo guardar la película: ${res.error.message}`);
+      setErrorGuardar(res.payload);
       return;
     }
     cerrarModal();
@@ -57,7 +57,7 @@ const PeliculasContainer = () => {
     const res = await dispatch(deletePelicula(peliculaABorrar));
     setBorrando(false);
     setPeliculaABorrar(null);
-    if (res.error) setErrorEliminar(`No se pudo borrar la película: ${res.error.message}`);
+    if (res.error) setErrorEliminar(res.payload);
   };
 
   const peliculasFiltradas = peliculas.filter(p =>

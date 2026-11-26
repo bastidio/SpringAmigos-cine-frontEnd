@@ -39,7 +39,7 @@ function Register({ onIrALogin }) {
     if (!res.error) {
       navigate(res.payload.rol === 'ADMIN' ? '/admin/dashboard' : '/');
     } else {
-      setError('No se pudo crear la cuenta (el email puede ya estar registrado)');
+      setError(res.payload);
     }
   }
 

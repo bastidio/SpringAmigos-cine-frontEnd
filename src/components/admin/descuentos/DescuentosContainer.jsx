@@ -43,25 +43,23 @@ const DescuentosContainer = () => {
     setErrorGuardar(null);
     const res = await dispatch(descuentoEditando !== null ? updateDescuento({ ...formData, id: descuentoEditando.id }) : createDescuento(formData));
     if (res.error) {
-      setErrorGuardar('No se pudo guardar el código. Revisá que los datos sean válidos y que el código no esté repetido.');
+      setErrorGuardar(res.payload);
       return;
     }
     cerrarModal();
   };
 
-  const cambiarActivo = async (accion, mensajeError) => {
+  const cambiarActivo = async (accion) => {
     setProcesando(true);
     const res = await dispatch(accion);
     setProcesando(false);
     setDescuentoAEliminar(null);
-    if (res.error) setErrorAccion(mensajeError);
+    if (res.error) setErrorAccion(res.payload);
   };
 
-  const confirmarEliminar = () =>
-    cambiarActivo(deleteDescuento(descuentoAEliminar.id), 'No se pudo eliminar el código.');
+  const confirmarEliminar = () => cambiarActivo(deleteDescuento(descuentoAEliminar.id));
 
-  const manejarReactivar = (descuento) =>
-    cambiarActivo(reactivarDescuento(descuento.id), 'No se pudo reactivar el código.');
+  const manejarReactivar = (descuento) => cambiarActivo(reactivarDescuento(descuento.id));
 
   return (
     <div>

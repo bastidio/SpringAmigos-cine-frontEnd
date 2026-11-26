@@ -53,7 +53,7 @@ const useEdicionCarrito = () => {
     setErrorAccion(null);
     const res = await dispatch(accion);
     setGuardando(false);
-    if (res.error) setErrorAccion(res.error.message);
+    if (res.error) setErrorAccion(res.payload);
   };
 
   const cambiarCantidad = (item, cantidad) => {

@@ -11,25 +11,39 @@ export const fetchFavoritos = createAsyncThunk("favoritos/fetchFavoritos", async
   return data;
 });
 
-export const agregarFavorito = createAsyncThunk("favoritos/agregarFavorito", async (pelicula, { getState }) => {
-  const token = getState().usuario.token;
-  await axios.post(`${URL}/${pelicula.id}`, null, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return {
-    peliculaId: pelicula.id,
-    titulo: pelicula.titulo,
-    poster_url: pelicula.poster_url,
-    clasificacion: pelicula.clasificacion,
-  };
+export const agregarFavorito = createAsyncThunk("favoritos/agregarFavorito", async (pelicula, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    await axios.post(`${URL}/${pelicula.id}`, null, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return {
+      peliculaId: pelicula.id,
+      titulo: pelicula.titulo,
+      poster_url: pelicula.poster_url,
+      clasificacion: pelicula.clasificacion,
+    };
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
 });
 
-export const quitarFavorito = createAsyncThunk("favoritos/quitarFavorito", async (peliculaId, { getState }) => {
-  const token = getState().usuario.token;
-  await axios.delete(`${URL}/${peliculaId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return peliculaId;
+export const quitarFavorito = createAsyncThunk("favoritos/quitarFavorito", async (peliculaId, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    await axios.delete(`${URL}/${peliculaId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return peliculaId;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
 });
 
 const favoritosSlice = createSlice({
@@ -70,7 +84,7 @@ const favoritosSlice = createSlice({
       })
       .addCase(agregarFavorito.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(quitarFavorito.pending, (state) => {
         state.loading = true;
@@ -82,7 +96,7 @@ const favoritosSlice = createSlice({
       })
       .addCase(quitarFavorito.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       });
   },
 });

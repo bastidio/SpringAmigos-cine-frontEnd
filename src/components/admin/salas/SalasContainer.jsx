@@ -70,7 +70,7 @@ const AdminSalasView = () => {
     if (res.error) {
       setGuardando(false);
       setProgreso(null);
-      setErrorGuardar('El servidor rechazó guardar la sala. Puede que tu sesión haya vencido o que la sala tenga funciones asignadas.');
+      setErrorGuardar(res.payload);
       return;
     }
     const salaId = res.payload.id;
@@ -80,8 +80,9 @@ const AdminSalasView = () => {
       const resultados = await Promise.all(deLaFila.map((butaca) => dispatch(createAsiento({ salaId, fila: butaca.fila, numero: butaca.numero }))));
       hechas += resultados.filter((r) => !r.error).length;
       setProgreso({ hechas, total });
-      if (resultados.some((r) => r.error)) {
-        errorButacas = 'El servidor rechazó una butaca.';
+      const fallida = resultados.find((r) => r.error);
+      if (fallida) {
+        errorButacas = fallida.payload;
         break;
       }
     }
@@ -91,8 +92,9 @@ const AdminSalasView = () => {
         const resultados = await Promise.all(deLaFila.map((butaca) => dispatch(deleteAsiento(butaca.id))));
         hechas += resultados.filter((r) => !r.error).length;
         setProgreso({ hechas, total });
-        if (resultados.some((r) => r.error)) {
-          errorButacas = 'El servidor rechazó quitar una butaca.';
+        const fallida = resultados.find((r) => r.error);
+        if (fallida) {
+          errorButacas = fallida.payload;
           break;
         }
       }

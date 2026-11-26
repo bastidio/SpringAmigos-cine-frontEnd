@@ -61,7 +61,7 @@ const SeleccionButacas = () => {
     if (!res.error) {
       navigate(destino);
     } else {
-      setErrorCarrito(res.error.message);
+      setErrorCarrito(res.payload);
     }
   };
 

@@ -44,7 +44,7 @@ const ProductoList = () => {
     const res = await dispatch(accion);
     setOcupadoId(null);
     if (res.error) {
-      setErrorCarrito(`No se pudo agregar ${producto.nombre}: no hay stock suficiente o el carrito venció.`);
+      setErrorCarrito(res.payload);
     }
   };
 

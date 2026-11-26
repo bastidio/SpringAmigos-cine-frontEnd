@@ -66,7 +66,7 @@ const FuncionesContainer = () => {
   const manejarGuardar = async (formData) => {
     const res = await dispatch( funcionEditando !== null ? updateFuncion({ ...formData, id: funcionEditando.id }) : createFuncion(formData));
     if (res.error) {
-      console.error('Error al guardar:', res.error.message);
+      console.error('Error al guardar:', res.payload);
       return;
     }
     cerrarModal();
@@ -89,7 +89,7 @@ const FuncionesContainer = () => {
     const res = await dispatch(deleteFuncion(funcionAEliminar));
     setEliminando(false);
     if (res.error) {
-      setErrorOperacion(`No se pudo eliminar la función: ${res.error.message}`);
+      setErrorOperacion(res.payload);
       return;
     }
     setFuncionAEliminar(null);

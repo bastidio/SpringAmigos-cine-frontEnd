@@ -12,21 +12,35 @@ export const fetchSalas = createAsyncThunk("salas/fetchSalas", async (sinDatos, 
   return data;
 });
 
-export const createSala = createAsyncThunk("salas/createSala", async (sala, { getState }) => {
-  const token = getState().usuario.token;
-  const { data } = await axios.post(URL_SALAS, sala, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
+export const createSala = createAsyncThunk("salas/createSala", async (sala, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    const { data } = await axios.post(URL_SALAS, sala, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
 });
 
-export const updateSala = createAsyncThunk("salas/updateSala", async (sala, { getState }) => {
-  const token = getState().usuario.token;
-  const { id, ...datos } = sala;
-  const { data } = await axios.put(`${URL_SALAS}/${id}`, datos, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
+export const updateSala = createAsyncThunk("salas/updateSala", async (sala, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    const { id, ...datos } = sala;
+    const { data } = await axios.put(`${URL_SALAS}/${id}`, datos, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
 });
 
 export const fetchAsientos = createAsyncThunk("salas/fetchAsientos", async () => {
@@ -34,20 +48,34 @@ export const fetchAsientos = createAsyncThunk("salas/fetchAsientos", async () =>
   return data;
 });
 
-export const createAsiento = createAsyncThunk("salas/createAsiento", async (asiento, { getState }) => {
-  const token = getState().usuario.token;
-  const { data } = await axios.post(URL_ASIENTOS, asiento, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
+export const createAsiento = createAsyncThunk("salas/createAsiento", async (asiento, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    const { data } = await axios.post(URL_ASIENTOS, asiento, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
 });
 
-export const deleteAsiento = createAsyncThunk("salas/deleteAsiento", async (id, { getState }) => {
-  const token = getState().usuario.token;
-  await axios.delete(`${URL_ASIENTOS}/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return id;
+export const deleteAsiento = createAsyncThunk("salas/deleteAsiento", async (id, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    await axios.delete(`${URL_ASIENTOS}/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return id;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
 });
 
 const salasSlice = createSlice({

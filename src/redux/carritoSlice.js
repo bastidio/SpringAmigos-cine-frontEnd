@@ -12,60 +12,95 @@ export const fetchCarrito = createAsyncThunk("carrito/fetchCarrito", async (sinD
   return data;
 });
 
-export const agregarItem = createAsyncThunk("carrito/agregarItem", async (body, { getState }) => {
-  const token = getState().usuario.token;
-  const { data } = await axios.post(`${URL}/items`, body, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
-});
-
-export const modificarCantidad = createAsyncThunk("carrito/modificarCantidad", async ({ itemId, cantidad }, { getState }) => {
-  const token = getState().usuario.token;
-  const { data } = await axios.put(`${URL}/items/${itemId}`, { cantidad }, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
-});
-
-export const eliminarItem = createAsyncThunk("carrito/eliminarItem", async (itemId, { getState }) => {
-  const token = getState().usuario.token;
-  const { data } = await axios.delete(`${URL}/items/${itemId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
-});
-
-export const vaciarCarrito = createAsyncThunk("carrito/vaciarCarrito", async (sinDatos, { getState }) => {
-  const token = getState().usuario.token;
-  await axios.delete(URL, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-});
-
-export const agregarButacas = createAsyncThunk("carrito/agregarButacas", async ({ funcionId, asientos }, { getState }) => {
-  const token = getState().usuario.token;
-  // El carrito ya esta en el store, no hace falta pedirlo de nuevo al back.
-  const carrito = getState().carrito.carrito;
-
-  const yaEnCarrito = (carrito?.items ?? [])
-    .filter((item) => item.tipo === "BUTACA")
-    .map((item) => item.referenciaId);
-
-  if (yaEnCarrito.length > 0 && carrito.funcionId !== funcionId) {
-    throw new Error("Tu carrito ya tiene butacas de otra función. Quitalas desde el carrito para elegir estas.");
-  }
-
-  let ultimoCarrito = carrito;
-  for (const asientoId of asientos) {
-    if (!yaEnCarrito.includes(asientoId)) {
-      const { data } = await axios.post(`${URL}/items`, { asientoId, funcionId, cantidad: 1 }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      ultimoCarrito = data;
+export const agregarItem = createAsyncThunk("carrito/agregarItem", async (body, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    const { data } = await axios.post(`${URL}/items`, body, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
     }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
   }
-  return ultimoCarrito;
+});
+
+export const modificarCantidad = createAsyncThunk("carrito/modificarCantidad", async ({ itemId, cantidad }, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    const { data } = await axios.put(`${URL}/items/${itemId}`, { cantidad }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
+});
+
+export const eliminarItem = createAsyncThunk("carrito/eliminarItem", async (itemId, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    const { data } = await axios.delete(`${URL}/items/${itemId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
+});
+
+export const vaciarCarrito = createAsyncThunk("carrito/vaciarCarrito", async (sinDatos, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    await axios.delete(URL, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
+});
+
+export const agregarButacas = createAsyncThunk("carrito/agregarButacas", async ({ funcionId, asientos }, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    // El carrito ya esta en el store, no hace falta pedirlo de nuevo al back.
+    const carrito = getState().carrito.carrito;
+
+    const yaEnCarrito = (carrito?.items ?? [])
+      .filter((item) => item.tipo === "BUTACA")
+      .map((item) => item.referenciaId);
+
+    if (yaEnCarrito.length > 0 && carrito.funcionId !== funcionId) {
+      return rejectWithValue("Tu carrito ya tiene butacas de otra función. Quitalas desde el carrito para elegir estas.");
+    }
+
+    let ultimoCarrito = carrito;
+    for (const asientoId of asientos) {
+      if (!yaEnCarrito.includes(asientoId)) {
+        const { data } = await axios.post(`${URL}/items`, { asientoId, funcionId, cantidad: 1 }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        ultimoCarrito = data;
+      }
+    }
+    return ultimoCarrito;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
 });
 
 const initialState = { carrito: null, loading: false, error: null, vencimiento: null };
@@ -109,7 +144,7 @@ const carritoSlice = createSlice({
       })
       .addCase(agregarItem.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(modificarCantidad.pending, (state) => {
         state.loading = true;
@@ -121,7 +156,7 @@ const carritoSlice = createSlice({
       })
       .addCase(modificarCantidad.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(eliminarItem.pending, (state) => {
         state.loading = true;
@@ -133,7 +168,7 @@ const carritoSlice = createSlice({
       })
       .addCase(eliminarItem.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(vaciarCarrito.pending, (state) => {
         state.loading = true;
@@ -146,7 +181,7 @@ const carritoSlice = createSlice({
       })
       .addCase(vaciarCarrito.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(agregarButacas.pending, (state) => {
         state.loading = true;
@@ -158,7 +193,7 @@ const carritoSlice = createSlice({
       })
       .addCase(agregarButacas.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       });
   },
 });

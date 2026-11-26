@@ -103,7 +103,7 @@ const CheckoutDetalle = () => {
     }
     dispatch(fetchCarrito());
     if (codigoAplicado !== null) setRevalidacion((veces) => veces + 1);
-    setError('No se pudo completar la compra. Revisá el carrito e intentá nuevamente.');
+    setError(res.payload);
   };
 
   if (cargando) {

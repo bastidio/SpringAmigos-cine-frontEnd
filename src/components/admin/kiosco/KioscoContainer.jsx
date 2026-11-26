@@ -31,22 +31,20 @@ const AdminKioscoView = () => {
 
   const manejarActualizacionStock = async (productoId, nuevoStock) => {
     const res = await dispatch(actualizarStock({ id: productoId, stock: nuevoStock }));
-    if (res.error) setErrorAccion('No se pudo actualizar el stock.');
+    if (res.error) setErrorAccion(res.payload);
   };
 
-  const cambiarActivo = async (accion, mensajeError) => {
+  const cambiarActivo = async (accion) => {
     setProcesando(true);
     const res = await dispatch(accion);
     setProcesando(false);
     setProductoAEliminar(null);
-    if (res.error) setErrorAccion(mensajeError);
+    if (res.error) setErrorAccion(res.payload);
   };
 
-  const confirmarEliminar = () =>
-    cambiarActivo(deleteProducto(productoAEliminar.id), 'No se pudo eliminar el producto.');
+  const confirmarEliminar = () => cambiarActivo(deleteProducto(productoAEliminar.id));
 
-  const manejarReactivar = (producto) =>
-    cambiarActivo(reactivarProducto(producto.id), 'No se pudo reactivar el producto.');
+  const manejarReactivar = (producto) => cambiarActivo(reactivarProducto(producto.id));
 
   const manejarGuardar = async (formData) => {
     const payload = {
@@ -62,7 +60,7 @@ const AdminKioscoView = () => {
     setErrorGuardar(null);
     const res = await dispatch(productoEditando ? updateProducto({ ...payload, id: productoEditando.id }) : createProducto(payload));
     if (res.error) {
-      setErrorGuardar('No se pudo guardar el producto. Revisá que los datos estén completos y sean válidos.');
+      setErrorGuardar(res.payload);
       return;
     }
     cerrarModal();
