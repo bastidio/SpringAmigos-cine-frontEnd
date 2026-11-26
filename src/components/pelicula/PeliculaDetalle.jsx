@@ -63,7 +63,7 @@ const PeliculaDetalle = () => {
   if (errorFunciones !== null) {
     return (
       <p className="pagina_mensaje pagina_mensaje--error">
-        hay un error en las funciones, aguarde mientras nosotros lo solocionamios, vuelva a intentarlo mas tarde.
+        No se pudieron cargar las funciones. Intentá de nuevo más tarde.
       </p>
     );
   }

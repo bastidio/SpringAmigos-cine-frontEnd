@@ -25,7 +25,7 @@ export const store = configureStore({
     ordenes: ordenesReducer,
     descuentos: descuentosReducer,
   },
-  // parece re chesterizado pero prometo q esta en el doc de toolkit
+  // Redux Toolkit verifica que las acciones se puedan convertir a JSON. redux-persist manda acciones con funciones adentro, el store indica que ignore esas
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
