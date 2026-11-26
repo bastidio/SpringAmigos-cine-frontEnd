@@ -21,13 +21,14 @@ const moneda = (valor) =>
     maximumFractionDigits: 2,
   });
 
-// El tiempo que se muestra la animacion de confirmacion
+// El tiempo que se muestra la animación de confirmación
 const DURACION_EXITO_MS = 1800;
 
 const CheckoutDetalle = () => {
   const [confirmando, setConfirmando] = useState(false);
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
+  const [cantidadEntradas, setCantidadEntradas] = useState(0);
   const [exitoTerminado, setExitoTerminado] = useState(false);
   const [codigoAplicado, setCodigoAplicado] = useState(null);
   const [errorDescuento, setErrorDescuento] = useState(null);
@@ -36,7 +37,7 @@ const CheckoutDetalle = () => {
 
   const dispatch = useDispatch();
   const { validacion } = useSelector((state) => state.descuentos);
-  // Solo cuenta si hay un codigo aplicado en esta pantalla y el back lo dio por valido.
+  // Solo cuenta si hay un código aplicado en esta pantalla y el back lo dio por válido.
   const descuento = codigoAplicado !== null && validacion !== null && validacion.valido ? validacion : null;
 
   const {
@@ -97,6 +98,8 @@ const CheckoutDetalle = () => {
     const res = await dispatch(confirmarCompra(codigoAplicado !== null ? { codigoDescuento: codigoAplicado } : undefined));
     setConfirmando(false);
     if (!res.error) {
+      // La orden del back no trae las entradas: se cuentan las butacas del carrito antes de vaciarlo.
+      setCantidadEntradas(items.filter((item) => item.tipo === 'BUTACA').length);
       setOrden(res.payload);
       dispatch(vaciarCarritoLocal());
       return;
@@ -123,6 +126,7 @@ const CheckoutDetalle = () => {
       <div className="checkout">
         <OrdenConfirmada
           orden={orden}
+          cantidadEntradas={cantidadEntradas}
           formatearMoneda={moneda}
           irAMisEntradas={() => navigate('/mis-entradas')}
         />

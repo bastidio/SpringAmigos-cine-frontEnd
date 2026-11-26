@@ -20,6 +20,7 @@ const FuncionesContainer = () => {
   const [funcionAEliminar, setFuncionAEliminar] = useState(null);
   const [eliminando, setEliminando] = useState(false);
   const [errorOperacion, setErrorOperacion] = useState(null);
+  const [errorGuardar, setErrorGuardar] = useState(null);
 
   const fechaHoy = new Date();
   const fechaManana = new Date();
@@ -54,19 +55,22 @@ const FuncionesContainer = () => {
 
   const abrirModal = (funcion = null) => {
     setFuncionEditando(funcion);
+    setErrorGuardar(null);
     setModalAbierto(true);
   };
 
   const cerrarModal = () => {
     setFuncionEditando(null);
+    setErrorGuardar(null);
     setModalAbierto(false);
   };
 
   // La lista se actualiza en el fulfilled del thunk: no se vuelve a pedir.
   const manejarGuardar = async (formData) => {
+    setErrorGuardar(null);
     const res = await dispatch( funcionEditando !== null ? updateFuncion({ ...formData, id: funcionEditando.id }) : createFuncion(formData));
     if (res.error) {
-      console.error('Error al guardar:', res.payload);
+      setErrorGuardar(res.payload);
       return;
     }
     cerrarModal();
@@ -151,6 +155,9 @@ const FuncionesContainer = () => {
       />
 
       <AdminModal isOpen={modalAbierto} onClose={cerrarModal} titulo={funcionEditando ? 'Editar Función' : 'Nueva Función'}>
+        {errorGuardar && (
+          <p role="alert" className="pagina_mensaje pagina_mensaje--error">{errorGuardar}</p>
+        )}
         <FuncionesForm
           funcionAEditar={funcionEditando}
           peliculas={peliculas}

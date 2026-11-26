@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 
-const OrdenConfirmada = ({ orden, formatearMoneda, irAMisEntradas }) => {
-  const cantidadEntradas = orden.entradas?.length ?? 0;
-
+const OrdenConfirmada = ({ orden, cantidadEntradas, formatearMoneda, irAMisEntradas }) => {
   return (
     <div className="checkout-confirmada">
       <span className="etiqueta etiqueta--dorada">Compra confirmada</span>
