@@ -2,16 +2,7 @@ import CarritoBoton from './CarritoBoton';
 import CarritoLayout from './CarritoLayout';
 import CarritoDetalle from './CarritoDetalle';
 
-
-
-
-
-
-
 const CarritoMenu = ({ abierto, cantidad, onAlternar, onCerrar, irA }) => {
-  
-  
-  
   
   const cerrarSiSaleElFoco = (evento) => {
     const destino = evento.relatedTarget;
@@ -19,7 +10,6 @@ const CarritoMenu = ({ abierto, cantidad, onAlternar, onCerrar, irA }) => {
       onCerrar();
     }
   };
-
   
   const cerrarConEscape = (evento) => {
     if (abierto && evento.key === 'Escape') {
@@ -28,7 +18,6 @@ const CarritoMenu = ({ abierto, cantidad, onAlternar, onCerrar, irA }) => {
   };
 
   return (
-    
     
     <div
       className="relative"
@@ -41,11 +30,6 @@ const CarritoMenu = ({ abierto, cantidad, onAlternar, onCerrar, irA }) => {
         <CarritoBoton abierto={abierto} cantidad={cantidad} onClick={onAlternar} />
       </div>
 
-      {/* Fondo transparente: un click en cualquier lugar de la pantalla cierra el
-          carrito. Es top-0 + h-screen (no inset-0)
-          porque el nav usa backdrop-filter y "fixed" se mide desde el nav, que esta
-          pegado arriba de la pantalla. De ancho, left-0/right-0 y no w-screen:
-          100vw incluye la barra de scroll vertical y agregaba un scroll horizontal. */}
       {abierto && (
         <button
           type="button"

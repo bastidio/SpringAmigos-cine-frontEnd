@@ -4,9 +4,7 @@ import { vaciarCarrito } from '../../redux/carritoSlice';
 const claseBoton =
   'cursor-pointer rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--morado-texto)]';
 
-// Se terminó el tiempo de reserva: modal obligatorio (no se cierra con Escape ni haciendo clic
-// afuera). Lo dispara useEdicionCarrito con setVencimiento (store) y se muestra una sola vez, en App,
-// fuera del nav (el backdrop-filter del nav rompe el "fixed" de los hijos).
+// Se terminó el tiempo de reserva: modal obligatorio (no se cierra con Escape ni haciendo clic. Lo dispara useEdicionCarrito con setVencimiento (store) y se muestra una sola vez, en App, fuera del nav 
 const ModalReservaVencida = ({ vencimiento, irA, onCerrar }) => {
   const { loading: ocupado } = useSelector((state) => state.carrito);
   const dispatch = useDispatch();
@@ -15,15 +13,13 @@ const ModalReservaVencida = ({ vencimiento, irA, onCerrar }) => {
 
   const hayFuncion = vencimiento.puedeReelegir && vencimiento.funcionId !== null;
 
-  // Vacia el carrito en el backend (limpia la marca de "vencido") y despues navega.
-  // Si no se pudo vaciar, el backend lo limpia solo al pasar el vencimiento.
+  // Vacía el carrito en el backend y después navega. Si no se pudo vaciar, el backend lo limpia solo al pasar el vencimiento.
   const elegir = async (ruta) => {
     await dispatch(vaciarCarrito());
     onCerrar();
     irA(ruta);
   };
 
-  // Trampa de foco: con dos botones, Tab y Shift+Tab alternan entre ellos; con uno, se queda.
   const rotarFoco = (evento) => {
     if (evento.key !== 'Tab') return;
     evento.preventDefault();

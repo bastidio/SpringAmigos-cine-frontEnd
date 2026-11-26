@@ -20,12 +20,12 @@ const PeliculaDetalle = () => {
   } = useSelector((state) => state.cartelera);
   const peliculaCargada = pelicula !== null && String(pelicula.id) === id;
 
-  // La pelicula se pide solo si la guardada no es la de este id.
+  // La película se pide solo si la guardada no es la de este id.
   useEffect(() => {
     if (!peliculaCargada) dispatch(fetchPelicula(id));
   }, [dispatch, id, peliculaCargada]);
 
-  // Las funciones se piden solo si todavia no estan.
+  // Las funciones se piden solo si todavía no están.
   useEffect(() => {
     if (funcionesEstado === 'inicial' && errorFunciones === null) dispatch(fetchFunciones());
   }, [dispatch, funcionesEstado, errorFunciones]);
@@ -72,7 +72,7 @@ const PeliculaDetalle = () => {
     return <p className="pagina_mensaje">Cargando película...</p>;
   }
 
-  // "En cartelera" = tiene alguna funcion con horario mayor a ahora.
+  // "En cartelera" = tiene alguna función con horario mayor a ahora.
   const ahora = new Date();
   const enCartelera = funciones.some(
     (funcion) => funcion.pelicula.id === pelicula.id && new Date(funcion.horario) > ahora,

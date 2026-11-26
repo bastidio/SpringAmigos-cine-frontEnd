@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-// Campo "Codigo de descuento". Solo captura el texto: validar y calcular lo hace el padre contra el backend.
+// Campo "Código de descuento". Solo captura el texto: validar y calcular lo hace el padre contra el backend.
 const CampoDescuento = ({ codigoAplicado, cargando, error, onAplicar, onQuitar }) => {
   const [texto, setTexto] = useState('');
   const aplicado = codigoAplicado !== null;

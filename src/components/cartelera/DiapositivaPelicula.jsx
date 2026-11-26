@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-// Componente tonto: recibe cada dato de la película por props y solo lo muestra.
+// Componente que recibe cada dato de la película por props y solo lo muestra.
 const DiapositivaPelicula = ({
   id,
   titulo,
@@ -43,8 +43,7 @@ const DiapositivaPelicula = ({
         </Link>
       )}
 
-      {/* Dos velos sobre la imagen: uno oscurece la izquierda para que el texto
-          se lea, el otro funde el borde de abajo con el fondo de la pagina. */}
+
       <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-[var(--fondo)]/95 via-[var(--fondo)]/60 to-[var(--fondo)]/20" />
       <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[var(--fondo)] to-transparent to-40%" />
 

@@ -44,7 +44,7 @@ const ordenesSlice = createSlice({
     error: null,
   },
   reducers: {
-    //vuelve a iniciar
+    // Vuelve a "inicial" para que se pidan de nuevo
     invalidarMisEntradas: (state) => {
       state.misEntradasEstado = "inicial";
       state.error = null;

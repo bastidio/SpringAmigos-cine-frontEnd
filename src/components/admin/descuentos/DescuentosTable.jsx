@@ -1,13 +1,13 @@
 import BotonAccion from '../ui/BotonAccion';
 
-// "2026-12-31" -> "31/12/2026" sin pasar por Date (evita correr un dia por la zona horaria).
+// "2026-12-31" -> "31/12/2026" sin pasar por Date (evita correr un día por la zona horaria).
 const formatearFecha = (fecha) => {
   if (!fecha) return 'Sin vencimiento';
   const [anio, mes, dia] = fecha.split('-');
   return `${dia}/${mes}/${anio}`;
 };
 
-// Mismo criterio que el backend: vale hasta el fin del dia de vencimiento.
+// Mismo criterio que el backend: vale hasta el fin del día de vencimiento.
 const estaVencido = (fecha) => {
   if (!fecha) return false;
   const hoy = new Date();

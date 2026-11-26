@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import FavoritoBoton from '../cartelera/FavoritoBoton';
 
-// Fila compacta por pelicula favorita: poster chico, titulo (al detalle) y corazon para quitar.
+// Fila compacta por película favorita: poster chico, título (al detalle) y corazón para sacar de favs.
 const MisFavoritos = () => {
   const { items: favoritos } = useSelector((state) => state.favoritos);
   const navigate = useNavigate();

@@ -29,7 +29,7 @@ export const register = createAsyncThunk("usuario/register", async (datos, { rej
   }
 });
 
-// como el perfil del usuario ya trae el rol, tambien sirve para saber si es ADMIN
+// como el perfil del usuario ya trae el rol, también sirve para saber si es ADMIN
 export const fetchPerfil = createAsyncThunk("usuario/fetchPerfil", async (sinDatos, { getState }) => {
   const token = getState().usuario.token;
   const { data } = await axios.get(URL_PERFIL, {
@@ -91,7 +91,7 @@ const usuarioSlice = createSlice({
       })
       .addCase(fetchPerfil.fulfilled, (state, action) => {
         state.loading = false;
-        // Si cerro sesion mientras habia un pedido sin terminar, no se guarda
+        // Si cerró sesión mientras había un pedido sin terminar, no se guarda
         if (state.token === "") return;
         state.perfil = action.payload;
         state.rol = action.payload.rol;
@@ -100,7 +100,7 @@ const usuarioSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      // Despues de comprar cambian las entradas activas: el menu vuelve a pedir el perfil al abrirse.
+      // Después de comprar cambian las entradas activas: el menú vuelve a pedir el perfil al abrirse.
       .addCase(confirmarCompra.fulfilled, (state) => {
         state.perfil = null;
       });

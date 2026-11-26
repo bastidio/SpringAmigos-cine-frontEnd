@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 const claseBorde = 'group absolute inset-y-0 z-20 flex items-center max-md:hidden';
 
 const claseFlecha =
@@ -29,8 +22,7 @@ const Flecha = ({ direccion }) => (
 const CarruselControles = ({ cantidad, indice, onAnterior, onSiguiente, onIrA }) => {
   return (
     <>
-      {/* Borde izquierdo: w-20 para no tapar el texto de la pelicula, que
-          empieza despues de ese margen. */}
+
       <div className={`${claseBorde} left-0 w-20 justify-center`}>
         <button type="button" onClick={onAnterior} aria-label="Película anterior" className={claseFlecha}>
           <Flecha direccion="izquierda" />

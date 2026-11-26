@@ -64,15 +64,14 @@ function App() {
     navigate('/');
   };
 
-  // Solo se persiste el token: despues de recargar la pagina el rol queda en null y se pide el perfil para recuperarlo. Despues del login o el registro el rol ya vino en la respuesta, asi que no se pide.
+  // Solo se persiste el token: después de recargar la página el rol queda en null y se pide el perfil para recuperarlo. Después del login o el registro el rol ya vino en la respuesta, así que no se pide.
   useEffect(() => {
     if (token === '' || rol !== null) return;
 
     const cargarPerfil = async () => {
       const res = await dispatch(fetchPerfil());
       if (res.error) {
-        // Token vencido o invalido: se cierra la sesion. Las rutas protegidas
-        // ya redirigen solas a /login cuando el token queda vacio.
+        // Token vencido o inválido: se cierra la sesión. Las rutas protegidas ya redirigen solas a /login cuando el token queda vacío.
         dispatch(cerrarSesionStore());
         dispatch(limpiarCarrito());
         dispatch(limpiarFavoritos());
@@ -186,8 +185,7 @@ function App() {
           <Route path="ordenes" element={<AdminOrdenesView />} />
         </Route>
 
-        {/* Mi Perfil ya no es una pagina: es el desplegable del nav. Si alguien
-            entra a /perfil (un link viejo), va al inicio. */}
+        {/* Mi Perfil ya no es una página: es el desplegable del nav. Si alguien entra a /perfil, va al inicio. */}
         <Route path="/perfil" element={<Navigate to="/" replace />} />
       </Routes>
 

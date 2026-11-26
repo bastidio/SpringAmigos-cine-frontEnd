@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import BotonAccion from '../ui/BotonAccion';
 
-// El modal desmonta el formulario al cerrarse, asi que alcanza con el estado inicial.
+// El modal desmonta el formulario al cerrarse, así que alcanza con el estado inicial.
 const DescuentosForm = ({ descuentoAEditar, onGuardar, onCancelar }) => {
   const [formData, setFormData] = useState({
     codigo: descuentoAEditar?.codigo ?? '',
@@ -18,7 +18,7 @@ const DescuentosForm = ({ descuentoAEditar, onGuardar, onCancelar }) => {
     onGuardar({
       codigo: formData.codigo,
       porcentaje: Number(formData.porcentaje),
-      // Vacio = sin vencimiento.
+      // Vacío = sin vencimiento.
       fechaVencimiento: formData.fechaVencimiento || null,
     });
   };
@@ -33,7 +33,7 @@ const DescuentosForm = ({ descuentoAEditar, onGuardar, onCancelar }) => {
           placeholder="Ej: VERANO20"
           value={formData.codigo}
           onChange={handleChange}
-          // El codigo no se edita una vez creado.
+          // El código no se edita una vez creado.
           disabled={descuentoAEditar !== null}
           required
         />

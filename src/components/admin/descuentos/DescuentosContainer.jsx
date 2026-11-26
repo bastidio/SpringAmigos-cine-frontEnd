@@ -17,7 +17,7 @@ const DescuentosContainer = () => {
   const [procesando, setProcesando] = useState(false);
   const [errorAccion, setErrorAccion] = useState(null);
 
-  // Solo se piden si todavia no estan en el store.
+  // Solo se piden si todavía no están en el store.
   useEffect(() => {
     if (itemsEstado !== 'inicial' || error !== null) return;
     const cargar = async () => {

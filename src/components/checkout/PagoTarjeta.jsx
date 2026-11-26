@@ -25,9 +25,7 @@ const Campo = ({ id, etiqueta, error, ancho = false, children }) => (
   </div>
 );
 
-// Pago con tarjeta SIMULADO. Los datos viven solo en el estado de este componente:
-// no se envian al backend, no se guardan en ningun lado y no se muestran en consola.
-// Al pagar, solo se avisa con onPagar() (sin datos); el padre llama al checkout.
+// Pago con tarjeta SIMULADO. Los datos viven solo en el estado de este componente: no se mandan al backend, no se guardan en ningún lado y no se muestran en consola.
 const PagoTarjeta = ({ total, formatearMoneda, pagando, bloqueado, onPagar }) => {
   const [numero, setNumero] = useState('');
   const [titular, setTitular] = useState('');
@@ -45,7 +43,7 @@ const PagoTarjeta = ({ total, formatearMoneda, pagando, bloqueado, onPagar }) =>
   };
   const valido = Object.values(errores).every((error) => error === '');
 
-  // El error de un campo se muestra recien cuando el usuario ya pasó por él.
+  // El error de un campo se muestra recién cuando el usuario ya pasó por él.
   const tocar = (campo) => setTocados({ ...tocados, [campo]: true });
   const errorVisible = (campo) => (tocados[campo] ? errores[campo] : '');
   const claseInput = (campo) =>

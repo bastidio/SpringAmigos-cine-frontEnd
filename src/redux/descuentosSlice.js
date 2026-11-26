@@ -73,7 +73,7 @@ export const reactivarDescuento = createAsyncThunk("descuentos/reactivarDescuent
   }
 });
 
-// valida el código contra el carrito actual y devuelve si es valido, mensaje, subtotal, monto y total
+// valida el código contra el carrito actual y devuelve si es válido, mensaje, subtotal, monto y total
 export const validarDescuento = createAsyncThunk("descuentos/validarDescuento", async (codigo, { getState }) => {
   const token = getState().usuario.token;
   const { data } = await axios.get(`/api/checkout/descuento?codigo=${encodeURIComponent(codigo)}`, {
@@ -87,12 +87,12 @@ const descuentosSlice = createSlice({
   initialState: {
     items: [],
     validacion: null,
-    // "inicial" | "cargando" | "listo": el componente solo pide si esta en "inicial".
+    // "inicial" | "cargando" | "listo": el componente solo hace GET si está en "inicial".
     itemsEstado: "inicial",
     error: null,
   },
   reducers: {
-    // Si pones otro código o sacas uno
+    // Al aplicar otro código o sacarlo se borra la validación anterior
     limpiarValidacion: (state) => {
       state.validacion = null;
     },
@@ -133,7 +133,7 @@ const descuentosSlice = createSlice({
       .addCase(validarDescuento.rejected, (state) => {
         state.validacion = null;
       })
-      // Al cerrar sesion se vacia la lista del admin.
+      // Al cerrar sesión se vacía la lista del admin.
       .addCase(cerrarSesion, (state) => {
         state.items = [];
         state.itemsEstado = "inicial";

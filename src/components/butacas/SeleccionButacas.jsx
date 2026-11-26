@@ -30,7 +30,7 @@ const SeleccionButacas = () => {
     );
   }
 
-  // Cargando, o en el store quedo otra funcion (la de una pantalla anterior).
+  // Cargando, o en el store quedó otra función (la de una pantalla anterior).
   if (loading || funcion === null || String(funcion.id) !== id) {
     return <p className="pagina_mensaje">Cargando butacas...</p>;
   }
@@ -47,7 +47,7 @@ const SeleccionButacas = () => {
 
   
   
-  // La logica (no mezclar funciones, no repetir butacas) esta en el thunk agregarButacas.
+  // La lógica (no mezclar funciones, no repetir butacas) está en el thunk agregarButacas.
   const agregarAlCarritoEIr = async (destino) => {
     if (token === '') {
       navigate('/login');

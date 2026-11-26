@@ -2,7 +2,7 @@
 
 export const soloDigitos = (valor) => valor.replace(/\D/g, '');
 
-// Marca segun los primeros digitos: 4 = Visa, 51-55 = Mastercard, 34/37 = Amex.
+// Marca según los primeros dígitos: 4 = Visa, 51-55 = Mastercard, 34/37 = Amex.
 export const marcaDe = (digitos) => {
   if (/^4/.test(digitos)) return 'Visa';
   if (/^5[1-5]/.test(digitos)) return 'Mastercard';
@@ -10,7 +10,7 @@ export const marcaDe = (digitos) => {
   return null;
 };
 
-// Agrupa el numero: de a 4 (Amex: 4-6-5).
+// Agrupa el número: de a 4 (Amex: 4-6-5).
 export const formatearNumero = (valor) => {
   const digitos = soloDigitos(valor);
   if (marcaDe(digitos) === 'Amex') {
@@ -20,7 +20,7 @@ export const formatearNumero = (valor) => {
   return (digitos.slice(0, 16).match(/.{1,4}/g) ?? []).join(' ');
 };
 
-// MM/AA: agrega la barra sola despues del mes.
+// MM/AA: agrega la barra sola después del mes.
 export const formatearVencimiento = (valor) => {
   const digitos = soloDigitos(valor).slice(0, 4);
   return digitos.length > 2 ? `${digitos.slice(0, 2)}/${digitos.slice(2)}` : digitos;
@@ -40,7 +40,7 @@ const cumpleLuhn = (digitos) => {
   return suma % 10 === 0;
 };
 
-// Cada funcion devuelve '' si el campo es valido, o el mensaje de error.
+// Cada función devuelve '' si el campo es válido, o el mensaje de error.
 export const errorNumero = (valor) => {
   const digitos = soloDigitos(valor);
   if (digitos === '') return 'Ingresá el número de la tarjeta.';
@@ -58,7 +58,7 @@ export const errorVencimiento = (valor, ahora = new Date()) => {
   const mes = Number(valor.slice(0, 2));
   const anio = 2000 + Number(valor.slice(3));
   if (mes < 1 || mes > 12) return 'El mes debe estar entre 01 y 12.';
-  // La tarjeta vale hasta el ultimo dia del mes: vence al llegar el primer dia del siguiente.
+  // La tarjeta vale hasta el último día del mes: vence al llegar el primer día del siguiente.
   if (new Date(anio, mes, 1) <= ahora) return 'La tarjeta está vencida.';
   return '';
 };

@@ -104,7 +104,7 @@ const productosSlice = createSlice({
   name: "productos",
   initialState: {
     items: [], 
-    itemsAdmin: [], //ojos q todo lo ve del admin jeje
+    itemsAdmin: [], // Lista del admin (incluye inactivos)
     itemsEstado: "inicial",
     itemsAdminEstado: "inicial",
     error: null,

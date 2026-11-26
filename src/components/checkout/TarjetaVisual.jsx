@@ -1,5 +1,5 @@
 // Tarjeta que se completa en vivo. Solo muestra lo que recibe por props.
-// Al enfocar el codigo de seguridad (girada) se da vuelta y muestra el dorso.
+// Al enfocar el código de seguridad se da vuelta y muestra el dorso.
 const TarjetaVisual = ({ numero, titular, vencimiento, codigo, marca, girada }) => {
   const plantilla = marca === 'Amex' ? '•••• •••••• •••••' : '•••• •••• •••• ••••';
 

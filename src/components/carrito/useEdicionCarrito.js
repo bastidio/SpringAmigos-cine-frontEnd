@@ -6,7 +6,7 @@ import { fetchFuncion } from '../../redux/carteleraSlice';
 const informarVencimiento = async (funcionId, dispatch) => {
   let puedeReelegir = false;
   if (funcionId !== null) {
-    // GET publico, sin token (un token vencido haria fallar el pedido).
+    // GET público, sin token (un token vencido haría que el pedido falle).
     const res = await dispatch(fetchFuncion(funcionId));
     if (!res.error) puedeReelegir = new Date(res.payload.horario) > new Date();
   }
@@ -23,13 +23,13 @@ const useEdicionCarrito = () => {
   const [guardando, setGuardando] = useState(false);
 
   const [errorAccion, setErrorAccion] = useState(null);
-  // Cuando el carrito vence el backend borra la funcion
+  // Cuando el carrito vence el backend borra la función
   const [funcionRecordada, setFuncionRecordada] = useState(null);
   if (carrito?.funcionId && carrito.funcionId !== funcionRecordada) {
     setFuncionRecordada(carrito.funcionId);
   }
 
-  // Vencimiento: por tiempo (solo si el carrito tiene butacas) o porque el backend ya lo marco
+  // Vencimiento: por tiempo (solo si el carrito tiene butacas) o porque el backend ya lo marcó
   const hayButacas = (carrito?.items ?? []).some((item) => item.tipo === 'BUTACA');
   const expiraEn = carrito?.expiraEn;
   const vencidoEnBackend = carrito?.vencido === true;

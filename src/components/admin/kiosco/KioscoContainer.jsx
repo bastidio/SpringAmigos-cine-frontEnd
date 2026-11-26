@@ -20,7 +20,7 @@ const AdminKioscoView = () => {
   const [procesando, setProcesando] = useState(false);
   const [errorAccion, setErrorAccion] = useState(null);
 
-  // Cada lista se pide solo si todavia no esta.
+  // Cada lista se pide solo si todavía no está.
   useEffect(() => {
     if (itemsAdminEstado === 'inicial' && error === null) dispatch(fetchProductosAdmin());
   }, [dispatch, itemsAdminEstado, error]);

@@ -1,4 +1,4 @@
-// Animacion de confirmacion: un circulo y un tilde que se dibujan en dorado.
+// Animación de confirmación
 const PagoExitoso = () => {
   return (
     <div className="checkout-exito" role="status">

@@ -16,7 +16,7 @@ const PerfilMenu = ({ onLogout, onIrAEntradas }) => {
   const dispatch = useDispatch();
   const { perfil, loading } = useSelector((state) => state.usuario);
 
-  // El perfil se pide recien al abrir el menu, y si todavia no esta en el store (despues del login, o despues de una compra porque cambian las entradas activas).
+  // El perfil se pide recién al abrir el menú, y si todavía no está en el store (después del login, o después de una compra porque cambian las entradas activas).
   // en la espera se muestra el spinner.
   const alternar = () => {
     if (!abierto && perfil === null && !loading) dispatch(fetchPerfil());

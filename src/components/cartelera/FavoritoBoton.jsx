@@ -2,8 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { agregarFavorito, quitarFavorito } from '../../redux/favoritosSlice';
 
-// Corazon para marcar/quitar una pelicula favorita. La lista sale del store (favoritos).
-// pelicula: { id, titulo, poster_url, clasificacion }
+// Corazón para agregar o sacar una película favorita. La lista sale del store (favoritos).
 const FavoritoBoton = ({ pelicula, className = '' }) => {
   const { token } = useSelector((state) => state.usuario);
   const { items } = useSelector((state) => state.favoritos);

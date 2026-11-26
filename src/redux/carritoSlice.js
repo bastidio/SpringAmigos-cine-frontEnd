@@ -74,7 +74,7 @@ export const vaciarCarrito = createAsyncThunk("carrito/vaciarCarrito", async (si
 export const agregarButacas = createAsyncThunk("carrito/agregarButacas", async ({ funcionId, asientos }, { getState, rejectWithValue }) => {
   try {
     const token = getState().usuario.token;
-    // El carrito ya esta en el store, no hace falta pedirlo de nuevo al back.
+    // El carrito ya está en el store, no hace falta pedirlo de nuevo al back.
     const carrito = getState().carrito.carrito;
 
     const yaEnCarrito = (carrito?.items ?? [])
@@ -114,7 +114,7 @@ const carritoSlice = createSlice({
       state.carrito = { ...state.carrito, items: [], total: 0, funcionId: null, expiraEn: null, vencido: false };
       state.error = null;
     },
-    // cartel de "se termino el tiempo de reserva"
+    // cartel de "se terminó el tiempo de reserva"
     setVencimiento: (state, action) => {
       state.vencimiento = action.payload;
     },
