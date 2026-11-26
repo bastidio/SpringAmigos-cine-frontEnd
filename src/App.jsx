@@ -64,10 +64,9 @@ function App() {
     navigate('/');
   };
 
-  // El perfil se pide una sola vez por sesion: solo cuando cambia el token
-  // (al entrar, al recargar la pagina o al iniciar sesion). No depende de la ruta.
+  // Solo se persiste el token: despues de recargar la pagina el rol queda en null y se pide el perfil para recuperarlo. Despues del login o el registro el rol ya vino en la respuesta, asi que no se pide.
   useEffect(() => {
-    if (token === '') return;
+    if (token === '' || rol !== null) return;
 
     const cargarPerfil = async () => {
       const res = await dispatch(fetchPerfil());
@@ -80,7 +79,7 @@ function App() {
       }
     };
     cargarPerfil();
-  }, [dispatch, token]);
+  }, [dispatch, token, rol]);
 
   useEffect(() => {
     if (token === '') return;

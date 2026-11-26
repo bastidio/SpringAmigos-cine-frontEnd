@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPerfil } from '../../redux/usuarioSlice';
 import PerfilAvatarBoton from './PerfilAvatarBoton';
 import PerfilDetalle from './PerfilDetalle';
 
@@ -12,10 +13,13 @@ import PerfilDetalle from './PerfilDetalle';
 
 const PerfilMenu = ({ onLogout, onIrAEntradas }) => {
   const [abierto, setAbierto] = useState(false);
-  // El perfil lo pide App una sola vez (fetchPerfil); acá solo se lee del store.
-  const { perfil } = useSelector((state) => state.usuario);
+  const dispatch = useDispatch();
+  const { perfil, loading } = useSelector((state) => state.usuario);
 
+  // El perfil se pide recien al abrir el menu, y si todavia no esta en el store (despues del login, o despues de una compra porque cambian las entradas activas).
+  // en la espera se muestra el spinner.
   const alternar = () => {
+    if (!abierto && perfil === null && !loading) dispatch(fetchPerfil());
     setAbierto(!abierto);
   };
 

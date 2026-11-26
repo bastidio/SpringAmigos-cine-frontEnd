@@ -11,7 +11,7 @@ import MensajeError from './MensajeError';
 
 
 const PerfilDetalle = ({ onLogout, onIrAEntradas }) => {
-  // El perfil ya lo pidió App (fetchPerfil); mientras no llega se muestra el spinner.
+  // El perfil lo pide PerfilMenu al abrirse (fetchPerfil); mientras no llega se muestra el spinner.
   const { perfil: usuario, error } = useSelector((state) => state.usuario);
 
   if (usuario === null && error === null) {
