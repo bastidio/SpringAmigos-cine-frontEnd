@@ -18,12 +18,19 @@ export const fetchMisEntradas = createAsyncThunk("ordenes/fetchMisEntradas", asy
   return data;
 });
 
-export const confirmarCompra = createAsyncThunk("ordenes/confirmarCompra", async (body, { getState }) => {
-  const token = getState().usuario.token;
-  const { data } = await axios.post("/api/checkout", body, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
+export const confirmarCompra = createAsyncThunk("ordenes/confirmarCompra", async (body, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().usuario.token;
+    const { data } = await axios.post("/api/checkout", body, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    }
+    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+  }
 });
 
 const ordenesSlice = createSlice({
@@ -32,7 +39,6 @@ const ordenesSlice = createSlice({
     items: [],
     misEntradas: [],
     ultimaOrden: null,
-    // menejo de estado como el patron de disegno.
     itemsEstado: "inicial",
     misEntradasEstado: "inicial",
     error: null,
@@ -75,7 +81,7 @@ const ordenesSlice = createSlice({
         state.misEntradasEstado = "inicial";
         state.itemsEstado = "inicial";
       })
-      // todo desaparece cuando se cambio/ cierra sesion amorrrrrr
+      // Al cerrar sesión se vacían las órdenes
       .addCase(cerrarSesion, (state) => {
         state.items = [];
         state.misEntradas = [];
