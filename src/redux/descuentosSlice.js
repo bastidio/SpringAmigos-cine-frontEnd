@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { mensajeDeError } from "./mensajeDeError";
 import { cerrarSesion } from "./usuarioSlice";
 
 const URL = "/descuentos";
@@ -20,10 +21,7 @@ export const createDescuento = createAsyncThunk("descuentos/createDescuento", as
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -36,10 +34,7 @@ export const updateDescuento = createAsyncThunk("descuentos/updateDescuento", as
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -51,10 +46,7 @@ export const deleteDescuento = createAsyncThunk("descuentos/deleteDescuento", as
     });
     return id;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -66,10 +58,7 @@ export const reactivarDescuento = createAsyncThunk("descuentos/reactivarDescuent
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -107,9 +96,9 @@ const descuentosSlice = createSlice({
         state.itemsEstado = "listo";
         state.items = action.payload;
       })
-      .addCase(fetchDescuentos.rejected, (state, action) => {
+      .addCase(fetchDescuentos.rejected, (state) => {
         state.itemsEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar los descuentos.";
       })
       .addCase(createDescuento.fulfilled, (state, action) => {
         state.items = [...state.items, action.payload];

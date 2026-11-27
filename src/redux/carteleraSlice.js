@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { mensajeDeError } from "./mensajeDeError";
 import { cerrarSesion } from "./usuarioSlice";
 
 const URL_PELICULAS = "/peliculas";
@@ -31,10 +32,7 @@ export const createPelicula = createAsyncThunk("cartelera/createPelicula", async
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -47,10 +45,7 @@ export const updatePelicula = createAsyncThunk("cartelera/updatePelicula", async
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -62,10 +57,7 @@ export const deletePelicula = createAsyncThunk("cartelera/deletePelicula", async
     });
     return id;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -88,10 +80,7 @@ export const createFuncion = createAsyncThunk("cartelera/createFuncion", async (
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -104,10 +93,7 @@ export const updateFuncion = createAsyncThunk("cartelera/updateFuncion", async (
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -119,10 +105,7 @@ export const deleteFuncion = createAsyncThunk("cartelera/deleteFuncion", async (
     });
     return id;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -185,9 +168,9 @@ const carteleraSlice = createSlice({
         state.peliculasEstado = "listo";
         state.peliculas = action.payload;
       })
-      .addCase(fetchPeliculas.rejected, (state, action) => {
+      .addCase(fetchPeliculas.rejected, (state) => {
         state.peliculasEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar las películas.";
       })
       .addCase(fetchTodasPeliculas.pending, (state) => {
         state.todasPeliculasEstado = "cargando";
@@ -197,9 +180,9 @@ const carteleraSlice = createSlice({
         state.todasPeliculasEstado = "listo";
         state.todasPeliculas = action.payload;
       })
-      .addCase(fetchTodasPeliculas.rejected, (state, action) => {
+      .addCase(fetchTodasPeliculas.rejected, (state) => {
         state.todasPeliculasEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar las películas.";
       })
       .addCase(fetchPelicula.pending, (state) => {
         state.loading = true;
@@ -209,9 +192,9 @@ const carteleraSlice = createSlice({
         state.loading = false;
         state.peliculaSeleccionada = action.payload;
       })
-      .addCase(fetchPelicula.rejected, (state, action) => {
+      .addCase(fetchPelicula.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = "No se pudo cargar la película.";
       })
       .addCase(createPelicula.fulfilled, (state, action) => {
         state.todasPeliculas = [...state.todasPeliculas, action.payload];
@@ -233,9 +216,9 @@ const carteleraSlice = createSlice({
         state.funcionesEstado = "listo";
         state.funciones = action.payload;
       })
-      .addCase(fetchFunciones.rejected, (state, action) => {
+      .addCase(fetchFunciones.rejected, (state) => {
         state.funcionesEstado = "inicial";
-        state.errorFunciones = action.error.message;
+        state.errorFunciones = "No se pudieron cargar las funciones.";
       })
       .addCase(fetchFuncion.fulfilled, (state, action) => {
         state.funcionCarrito = action.payload;
@@ -258,9 +241,9 @@ const carteleraSlice = createSlice({
         state.funcionSeleccionada = action.payload.funcion;
         state.butacas = action.payload.butacas;
       })
-      .addCase(fetchButacas.rejected, (state, action) => {
+      .addCase(fetchButacas.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar las butacas.";
       })
       .addCase(cerrarSesion, (state) => {
         state.todasPeliculas = [];

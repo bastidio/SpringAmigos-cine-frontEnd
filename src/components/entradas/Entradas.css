@@ -32,6 +32,14 @@
   margin-top: 16px;
 }
 
+/* Las solapas usan las clases .tab y .tab--activa del kiosco */
+.entradas__solapas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
 .entradas__contador {
   font-size: 13px;
   color: var(--texto-suave);

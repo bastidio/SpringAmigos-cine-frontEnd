@@ -72,7 +72,7 @@ const PeliculaList = () => {
   if (error) {
     return (
       <p className="pagina_mensaje pagina_mensaje--error">
-        No se pudo cargar la cartelera: {error}
+        No se pudo cargar la cartelera. Intentá de nuevo más tarde.
       </p>
     );
   }

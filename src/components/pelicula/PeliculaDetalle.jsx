@@ -55,7 +55,7 @@ const PeliculaDetalle = () => {
   if (error !== null) {
     return (
       <p className="pagina_mensaje pagina_mensaje--error">
-        No se pudo cargar la película. Puede que no exista o que el backend esté caído.
+        No se pudo cargar la película. Puede que ya no exista. Intentá de nuevo más tarde.
       </p>
     );
   }

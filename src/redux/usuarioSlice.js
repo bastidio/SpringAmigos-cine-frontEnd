@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { mensajeDeError } from "./mensajeDeError";
 import { confirmarCompra } from "./ordenesSlice";
 
 const URL_AUTH = "/api/v1/auth";
@@ -10,10 +11,7 @@ export const login = createAsyncThunk("usuario/login", async ({ email, password 
     const { data } = await axios.post(`${URL_AUTH}/authenticate`, { email, password });
     return { accessToken: data.access_token, rol: data.rol };
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -22,10 +20,7 @@ export const register = createAsyncThunk("usuario/register", async (datos, { rej
     const { data } = await axios.post(`${URL_AUTH}/register`, datos);
     return { accessToken: data.access_token, rol: data.rol };
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -96,9 +91,9 @@ const usuarioSlice = createSlice({
         state.perfil = action.payload;
         state.rol = action.payload.rol;
       })
-      .addCase(fetchPerfil.rejected, (state, action) => {
+      .addCase(fetchPerfil.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = "No se pudo cargar tu perfil.";
       })
       // Después de comprar cambian las entradas activas: el menú vuelve a pedir el perfil al abrirse.
       .addCase(confirmarCompra.fulfilled, (state) => {

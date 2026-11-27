@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { mensajeDeError } from "./mensajeDeError";
 
 const URL = "/api/carritos";
 
@@ -20,10 +21,7 @@ export const agregarItem = createAsyncThunk("carrito/agregarItem", async (body, 
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -35,10 +33,7 @@ export const modificarCantidad = createAsyncThunk("carrito/modificarCantidad", a
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -50,10 +45,7 @@ export const eliminarItem = createAsyncThunk("carrito/eliminarItem", async (item
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -64,10 +56,7 @@ export const vaciarCarrito = createAsyncThunk("carrito/vaciarCarrito", async (si
       headers: { Authorization: `Bearer ${token}` },
     });
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -96,10 +85,7 @@ export const agregarButacas = createAsyncThunk("carrito/agregarButacas", async (
     }
     return ultimoCarrito;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -130,9 +116,9 @@ const carritoSlice = createSlice({
         state.loading = false;
         state.carrito = action.payload;
       })
-      .addCase(fetchCarrito.rejected, (state, action) => {
+      .addCase(fetchCarrito.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = "No se pudo cargar el carrito.";
       })
       .addCase(agregarItem.pending, (state) => {
         state.loading = true;

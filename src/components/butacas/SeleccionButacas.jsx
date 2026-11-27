@@ -25,7 +25,7 @@ const SeleccionButacas = () => {
   if (error !== null) {
     return (
       <p className="pagina_mensaje pagina_mensaje--error">
-        No se pudieron cargar las butacas. Puede que la función no exista o que el backend esté caído.
+        No se pudieron cargar las butacas. Puede que la función ya no exista. Intentá de nuevo más tarde.
       </p>
     );
   }

@@ -8,7 +8,7 @@ const MapaSala = ({ asientos, capacidad, estado }) => {
   if (estado === 'error') {
     return (
       <p role="alert" className="mapa-sala_mensaje mapa-sala_mensaje--error">
-        No se pudieron cargar las butacas. Revisá que el backend esté levantado.
+        No se pudieron cargar las butacas. Intentá de nuevo más tarde.
       </p>
     );
   }

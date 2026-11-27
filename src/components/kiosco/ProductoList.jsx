@@ -80,7 +80,7 @@ const ProductoList = () => {
   if (error !== null) {
     return (
       <p className="pagina_mensaje pagina_mensaje--error">
-        No se pudo cargar el kiosco. Revisá que el backend esté levantado.
+        No se pudo cargar el kiosco. Intentá de nuevo más tarde.
       </p>
     );
   }

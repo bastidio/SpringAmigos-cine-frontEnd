@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { mensajeDeError } from "./mensajeDeError";
 import { cerrarSesion } from "./usuarioSlice";
 
 export const fetchOrdenes = createAsyncThunk("ordenes/fetchOrdenes", async (sinDatos, { getState }) => {
@@ -26,10 +27,7 @@ export const confirmarCompra = createAsyncThunk("ordenes/confirmarCompra", async
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -60,9 +58,9 @@ const ordenesSlice = createSlice({
         state.itemsEstado = "listo";
         state.items = action.payload;
       })
-      .addCase(fetchOrdenes.rejected, (state, action) => {
+      .addCase(fetchOrdenes.rejected, (state) => {
         state.itemsEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar las órdenes.";
       })
       .addCase(fetchMisEntradas.pending, (state) => {
         state.misEntradasEstado = "cargando";
@@ -72,9 +70,9 @@ const ordenesSlice = createSlice({
         state.misEntradasEstado = "listo";
         state.misEntradas = action.payload;
       })
-      .addCase(fetchMisEntradas.rejected, (state, action) => {
+      .addCase(fetchMisEntradas.rejected, (state) => {
         state.misEntradasEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar tus entradas.";
       })
       .addCase(confirmarCompra.fulfilled, (state, action) => {
         state.ultimaOrden = action.payload;

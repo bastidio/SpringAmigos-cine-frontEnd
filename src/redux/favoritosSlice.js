@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { mensajeDeError } from "./mensajeDeError";
 
 const URL = "/favoritos";
 
@@ -24,10 +25,7 @@ export const agregarFavorito = createAsyncThunk("favoritos/agregarFavorito", asy
       clasificacion: pelicula.clasificacion,
     };
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -39,10 +37,7 @@ export const quitarFavorito = createAsyncThunk("favoritos/quitarFavorito", async
     });
     return peliculaId;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -70,9 +65,9 @@ const favoritosSlice = createSlice({
         state.loading = false;
         state.items = action.payload;
       })
-      .addCase(fetchFavoritos.rejected, (state, action) => {
+      .addCase(fetchFavoritos.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar tus favoritos.";
       })
       .addCase(agregarFavorito.pending, (state) => {
         state.loading = true;

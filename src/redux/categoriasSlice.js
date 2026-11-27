@@ -29,9 +29,9 @@ const categoriasSlice = createSlice({
         state.itemsEstado = "listo";
         state.items = action.payload;
       })
-      .addCase(fetchCategorias.rejected, (state, action) => {
+      .addCase(fetchCategorias.rejected, (state) => {
         state.itemsEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar las categorías.";
       });
   },
 });

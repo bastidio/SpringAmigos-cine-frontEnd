@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { mensajeDeError } from "./mensajeDeError";
 import { cerrarSesion } from "./usuarioSlice";
 import { confirmarCompra } from "./ordenesSlice";
 
@@ -26,10 +27,7 @@ export const createProducto = createAsyncThunk("productos/createProducto", async
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -42,10 +40,7 @@ export const updateProducto = createAsyncThunk("productos/updateProducto", async
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -57,10 +52,7 @@ export const actualizarStock = createAsyncThunk("productos/actualizarStock", asy
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -72,10 +64,7 @@ export const reactivarProducto = createAsyncThunk("productos/reactivarProducto",
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -87,10 +76,7 @@ export const deleteProducto = createAsyncThunk("productos/deleteProducto", async
     });
     return id;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -120,9 +106,9 @@ const productosSlice = createSlice({
         state.itemsEstado = "listo";
         state.items = action.payload;
       })
-      .addCase(fetchProductos.rejected, (state, action) => {
+      .addCase(fetchProductos.rejected, (state) => {
         state.itemsEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar los productos.";
       })
       .addCase(fetchProductosAdmin.pending, (state) => {
         state.itemsAdminEstado = "cargando";
@@ -132,9 +118,9 @@ const productosSlice = createSlice({
         state.itemsAdminEstado = "listo";
         state.itemsAdmin = action.payload;
       })
-      .addCase(fetchProductosAdmin.rejected, (state, action) => {
+      .addCase(fetchProductosAdmin.rejected, (state) => {
         state.itemsAdminEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar los productos.";
       })
       .addCase(createProducto.fulfilled, (state, action) => {
         state.itemsAdmin = [...state.itemsAdmin, action.payload];

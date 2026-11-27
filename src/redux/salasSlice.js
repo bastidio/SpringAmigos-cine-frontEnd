@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { mensajeDeError } from "./mensajeDeError";
 
 const URL_SALAS = "/salas";
 const URL_ASIENTOS = "/asientos";
@@ -20,10 +21,7 @@ export const createSala = createAsyncThunk("salas/createSala", async (sala, { ge
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -36,10 +34,7 @@ export const updateSala = createAsyncThunk("salas/updateSala", async (sala, { ge
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -56,10 +51,7 @@ export const createAsiento = createAsyncThunk("salas/createAsiento", async (asie
     });
     return data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -71,10 +63,7 @@ export const deleteAsiento = createAsyncThunk("salas/deleteAsiento", async (id, 
     });
     return id;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return rejectWithValue(error.response.data.message);
-    }
-    return rejectWithValue("Ocurrió un error. Intentá de nuevo.");
+    return rejectWithValue(mensajeDeError(error));
   }
 });
 
@@ -98,9 +87,9 @@ const salasSlice = createSlice({
         state.salasEstado = "listo";
         state.items = action.payload;
       })
-      .addCase(fetchSalas.rejected, (state, action) => {
+      .addCase(fetchSalas.rejected, (state) => {
         state.salasEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar las salas.";
       })
       .addCase(createSala.fulfilled, (state, action) => {
         state.items = [...state.items, action.payload];
@@ -117,9 +106,9 @@ const salasSlice = createSlice({
         state.asientosEstado = "listo";
         state.asientos = action.payload;
       })
-      .addCase(fetchAsientos.rejected, (state, action) => {
+      .addCase(fetchAsientos.rejected, (state) => {
         state.asientosEstado = "inicial";
-        state.error = action.error.message;
+        state.error = "No se pudieron cargar los asientos.";
       })
       .addCase(createAsiento.fulfilled, (state, action) => {
         state.asientos = [...state.asientos, action.payload];
