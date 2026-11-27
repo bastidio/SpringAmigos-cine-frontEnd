@@ -34,11 +34,6 @@ const PeliculaDetalle = () => {
 
   const cargandoFunciones = funcionesEstado === 'cargando' && funciones.length === 0;
 
-  useEffect(() => {
-    if (irAFunciones) return;
-    window.scrollTo(0, 0);
-  }, [id, irAFunciones]);
-
   const listo = !loading && !cargandoFunciones && error === null && peliculaCargada;
   useEffect(() => {
     if (!irAFunciones || !listo) return;

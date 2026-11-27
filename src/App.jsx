@@ -48,6 +48,12 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation(); 
 
+  // Cada página nueva arranca arriba. Con hash la página hace su propio scroll.
+  useEffect(() => {
+    if (location.hash !== '') return;
+    window.scrollTo(0, 0);
+  }, [location.pathname, location.hash]);
+
   const cantidadVisible = (carrito?.items ?? []).reduce(
     (total, item) => total + (item.cantidad ?? 1),
     0

@@ -24,6 +24,9 @@ const OrdenConfirmada = ({ orden, cantidadEntradas, formatearMoneda, irAMisEntra
           {cantidadEntradas === 1 ? 'entrada' : 'entradas'}.
         </p>
       )}
+      <p className="checkout-confirmada__nota">
+        Te enviamos la confirmación y tus entradas por mail.
+      </p>
 
       <div className="checkout-confirmada__acciones">
         <button
