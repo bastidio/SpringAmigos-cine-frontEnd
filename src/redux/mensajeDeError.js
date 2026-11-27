@@ -15,6 +15,13 @@ export const mensajeDeError = (error) => {
     if (typeof data === "string" && data.trim() !== "") {
       return data;
     }
+    // Errores de validación del back (campo -> motivo): el message general es técnico, se muestran los motivos.
+    if (data && data.validationErrors && typeof data.validationErrors === "object") {
+      const motivos = Object.values(data.validationErrors);
+      if (motivos.length > 0) {
+        return motivos.join(" ");
+      }
+    }
     if (data && typeof data.message === "string" && data.message.trim() !== "") {
       return data.message;
     }

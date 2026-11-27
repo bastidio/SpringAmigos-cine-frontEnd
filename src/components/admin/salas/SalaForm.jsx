@@ -5,15 +5,17 @@ import { butacasFaltantes, butacasSobrantes } from './calculoButacas';
 const MAX_FILAS = 26;
 const MAX_POR_FILA = 40;
 
-const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCancelar }) => {
+// butacasBloqueadas: la sala tiene funciones, solo se pueden cambiar el nombre y el tipo.
+const SalaForm = ({ sala, asientosDeSala, butacasBloqueadas, guardando, progreso, onGuardar, onCancelar }) => {
   const [formData, setFormData] = useState(() => {
     if (sala === null) {
-      return { nombre: '', filas: '8', porFila: '10' };
+      return { nombre: '', tipo: 'COMUN', filas: '8', porFila: '10' };
     }
 
     if (asientosDeSala.length > 0) {
       return {
         nombre: sala.nombre,
+        tipo: sala.tipo === 'VIP' ? 'VIP' : 'COMUN',
         filas: String(Math.max(...asientosDeSala.map((asiento) => asiento.fila))),
         porFila: String(Math.max(...asientosDeSala.map((asiento) => asiento.numero))),
       };
@@ -21,6 +23,7 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
 
     return {
       nombre: sala.nombre,
+      tipo: sala.tipo === 'VIP' ? 'VIP' : 'COMUN',
       filas: String(Math.min(MAX_FILAS, Math.max(1, Math.ceil(sala.capacidad / 10)))),
       porFila: '10',
     };
@@ -43,7 +46,7 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
   const handleSubmit = (e) => {
     e.preventDefault();
     if (valido) {
-      onGuardar({ nombre: formData.nombre.trim(), capacidad, filas, porFila });
+      onGuardar({ nombre: formData.nombre.trim(), tipo: formData.tipo, capacidad, filas, porFila });
     }
   };
 
@@ -62,6 +65,21 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
         />
       </div>
 
+      <div className="kiosco-form-group">
+        <label className="kiosco-form-label" htmlFor="sala-tipo">Tipo de sala</label>
+        <select
+          id="sala-tipo"
+          className="admin-input"
+          name="tipo"
+          value={formData.tipo}
+          onChange={handleChange}
+          disabled={guardando}
+        >
+          <option value="COMUN">Común</option>
+          <option value="VIP">VIP</option>
+        </select>
+      </div>
+
       <div className="admin-form-row">
         <div className="kiosco-form-group">
           <label className="kiosco-form-label">Filas (máx. {MAX_FILAS})</label>
@@ -73,7 +91,7 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
             max={MAX_FILAS}
             value={formData.filas}
             onChange={handleChange}
-            disabled={guardando}
+            disabled={guardando || butacasBloqueadas}
             required
           />
         </div>
@@ -88,12 +106,21 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
             max={MAX_POR_FILA}
             value={formData.porFila}
             onChange={handleChange}
-            disabled={guardando}
+            disabled={guardando || butacasBloqueadas}
             required
           />
         </div>
       </div>
 
+      {butacasBloqueadas && (
+        <div className="sala-form_resumen">
+          <span className="sala-form_aviso">
+            La sala tiene funciones asignadas: las butacas no se pueden modificar.
+          </span>
+        </div>
+      )}
+
+      {!butacasBloqueadas && (
       <div className="sala-form_resumen" aria-live="polite">
         {!valido && <span>Completá el nombre y una cantidad válida de filas y de butacas por fila.</span>}
         {valido && (
@@ -117,6 +144,7 @@ const SalaForm = ({ sala, asientosDeSala, guardando, progreso, onGuardar, onCanc
           </span>
         )}
       </div>
+      )}
 
       {guardando && progreso !== null && progreso.total > 0 && (
         <p className="sala-form_progreso" role="status">

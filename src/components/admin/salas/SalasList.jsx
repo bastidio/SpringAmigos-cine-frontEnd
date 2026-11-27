@@ -1,4 +1,5 @@
 import { butacasTotales } from './calculoButacas';
+import { esSalaVip } from '../../cartelera/esSalaVip';
 
 const textoDeFilas = (sala, asientos, estadoAsientos) => {
   if (estadoAsientos !== 'listo') return null;
@@ -27,6 +28,7 @@ const SalasList = ({ salas, salaActiva, onSeleccionar, asientos, estadoAsientos 
             onClick={() => onSeleccionar(sala)}
           >
             <h3 className="tarjeta-sala-titulo">{sala.nombre}</h3>
+            <p className="tarjeta-sala-detalle">{esSalaVip(sala) ? 'Sala VIP' : 'Sala común'}</p>
             {totales !== null && <p className="tarjeta-sala-detalle">{totales} butacas totales</p>}
             {filas !== null && <p className="tarjeta-sala-filas">{filas}</p>}
           </button>

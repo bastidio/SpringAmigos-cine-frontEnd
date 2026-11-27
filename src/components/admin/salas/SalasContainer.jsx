@@ -52,13 +52,21 @@ const AdminSalasView = () => {
     setModalAbierto(false);
   };
 
-  const guardarSala = async ({ nombre, capacidad, filas, porFila }) => {
+  const guardarSala = async ({ nombre, tipo, capacidad, filas, porFila }) => {
     const editando = salaAEditar !== null;
     const actuales = editando
       ? asientos.filter((asiento) => asiento.sala?.id === salaAEditar.id)
       : [];
-    const nuevas = butacasFaltantes(actuales, filas, porFila);
-    const sobrantes = butacasSobrantes(actuales, filas, porFila);
+    // Con funciones asignadas no se tocan las butacas ni la capacidad: solo nombre y tipo.
+    let nuevas = [];
+    let sobrantes = [];
+    let capacidadAGuardar = capacidad;
+    if (editando && funcionesDeLaSala > 0) {
+      capacidadAGuardar = salaAEditar.capacidad;
+    } else {
+      nuevas = butacasFaltantes(actuales, filas, porFila);
+      sobrantes = butacasSobrantes(actuales, filas, porFila);
+    }
     const total = nuevas.length + sobrantes.length;
     let hechas = 0;
     let errorButacas = null;
@@ -66,7 +74,7 @@ const AdminSalasView = () => {
     setGuardando(true);
     setProgreso({ hechas, total });
 
-    const res = await dispatch(editando ? updateSala({ id: salaAEditar.id, nombre, capacidad }) : createSala({ nombre, capacidad }));
+    const res = await dispatch(editando ? updateSala({ id: salaAEditar.id, nombre, capacidad: capacidadAGuardar, tipo }) : createSala({ nombre, capacidad, tipo }));
     if (res.error) {
       setGuardando(false);
       setProgreso(null);
@@ -120,8 +128,7 @@ const AdminSalasView = () => {
   const funcionesDeLaSala = salaSeleccionada
     ? funciones.filter((funcion) => funcion.sala?.id === salaSeleccionada.id).length
     : 0;
-  const puedeEditar =
-    estadoFunciones === 'listo' && estadoAsientos === 'listo' && funcionesDeLaSala === 0;
+  const puedeEditar = estadoFunciones === 'listo' && estadoAsientos === 'listo';
 
   let avisoEdicion = null;
   if (estadoFunciones === 'error') {
@@ -129,7 +136,7 @@ const AdminSalasView = () => {
   } else if (funcionesDeLaSala > 0) {
     avisoEdicion =
       `Esta sala tiene ${funcionesDeLaSala} ${funcionesDeLaSala === 1 ? 'función asignada' : 'funciones asignadas'}: ` +
-      'su configuración no se puede modificar. Para editarla, primero eliminá sus funciones.';
+      'solo se pueden cambiar el nombre y el tipo. Para modificar las butacas, primero eliminá sus funciones.';
   }
 
   return (
@@ -197,6 +204,7 @@ const AdminSalasView = () => {
         <SalaForm
           sala={salaAEditar}
           asientosDeSala={salaAEditar ? asientosDeLaSala : []}
+          butacasBloqueadas={salaAEditar !== null && funcionesDeLaSala > 0}
           guardando={guardando}
           progreso={progreso}
           onGuardar={guardarSala}

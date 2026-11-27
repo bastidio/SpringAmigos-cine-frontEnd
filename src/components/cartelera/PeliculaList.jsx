@@ -5,6 +5,7 @@ import { fetchPeliculas, fetchFunciones } from '../../redux/carteleraSlice';
 import CarruselDestacadas from './CarruselDestacadas';
 import PeliculaCard from './PeliculaCard';
 import Filtro from './Filtro';
+import { esSalaVip } from './esSalaVip';
 import './Cartelera.css';
 
 const DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
@@ -33,7 +34,7 @@ const proximasFunciones = (funciones, peliculaId, ahora) =>
         idioma: /sub/i.test(f.idioma) ? 'Sub' : 'Dob',
         disponible: f.entradasVendidas < f.sala.capacidad,
         sala: f.sala.nombre,
-        premium: /premium|vip/i.test(f.sala.nombre),
+        premium: esSalaVip(f.sala),
       };
     });
 
