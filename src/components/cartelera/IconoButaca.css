@@ -1,0 +1,17 @@
+.icono-butaca {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.icono-butaca--alta {
+  color: var(--morado-texto);
+}
+
+.icono-butaca--media {
+  color: var(--dorado-texto);
+}
+
+.icono-butaca--baja {
+  color: var(--error);
+}

@@ -1,4 +1,5 @@
 import FavoritoBoton from './FavoritoBoton';
+import IconoButaca from './IconoButaca';
 
 // Componente que recibe todo listo por props (las funciones ya vienen filtradas y formateadas desde PeliculaList) y solo lo muestra.
 const PeliculaCard = ({ id, titulo, poster_url, clasificacion, funciones, estreno, verDetalle, reservar }) => {
@@ -54,8 +55,8 @@ const PeliculaCard = ({ id, titulo, poster_url, clasificacion, funciones, estren
                     key={f.id}
                     type="button"
                     className={`pelicula-card_funcion${f.premium ? ' pelicula-card_funcion--vip' : ''}`}
-                    title={f.sala}
-                    disabled={!f.disponible}
+                    title={`${f.sala} · ${f.disponibilidad.texto}`}
+                    disabled={f.disponibilidad.nivel === 'agotada'}
                     onClick={() => reservar(f.id)}
                   >
                     <span className="pelicula-card_dia">{f.dia}</span>
@@ -64,6 +65,11 @@ const PeliculaCard = ({ id, titulo, poster_url, clasificacion, funciones, estren
                       {f.idioma}
                       {f.premium && ' · VIP'}
                     </span>
+                    {f.disponibilidad.nivel === 'agotada' ? (
+                      <span className="pelicula-card_agotada">Agotada</span>
+                    ) : (
+                      <IconoButaca nivel={f.disponibilidad.nivel} tamano={12} />
+                    )}
                   </button>
                 ))}
               </div>

@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchPelicula, fetchFunciones } from '../../redux/carteleraSlice';
 import PeliculaFicha from './PeliculaFicha';
 import FuncionCard from './FuncionCard';
-import { funcionesFuturas } from '../cartelera/funcionesPelicula';
+import IconoButaca from '../cartelera/IconoButaca';
+import { funcionesFuturas, disponibilidad } from '../cartelera/funcionesPelicula';
 import './Detalle.css';
 
 
@@ -117,7 +118,14 @@ const PeliculaDetalle = () => {
 
         <hr className="detalle_separador" />
 
-        <h2 id="funciones" className="detalle_funciones-titulo">Funciones disponibles</h2>
+        <div className="detalle_funciones-encabezado">
+          <h2 id="funciones" className="detalle_funciones-titulo">Funciones disponibles</h2>
+          <p className="detalle_referencia">
+            <span className="detalle_referencia-item"><IconoButaca nivel="alta" /> Alta</span>
+            <span className="detalle_referencia-item"><IconoButaca nivel="media" /> Media</span>
+            <span className="detalle_referencia-item"><IconoButaca nivel="baja" /> Baja</span>
+          </p>
+        </div>
 
         {funcionesDeLaPelicula.length === 0 && (
           <p className="pagina_mensaje">Todavía no hay funciones para esta película.</p>
@@ -145,6 +153,7 @@ const PeliculaDetalle = () => {
                     idioma={funcion.idioma}
                     formato={funcion.formato}
                     precio_base={funcion.precio_base}
+                    disponibilidad={disponibilidad(funcion)}
                   />
                 ))}
               </div>

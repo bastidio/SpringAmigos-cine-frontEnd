@@ -11,7 +11,18 @@ const etiquetaDia = (fecha, ahora) => {
   return `${DIAS[fecha.getDay()]} ${dosDigitos(fecha.getDate())}/${dosDigitos(fecha.getMonth() + 1)}`;
 };
 
-export const funcionesFuturas = (funciones, peliculaId, ahora) =>
+// Disponibilidad de una función según las butacas libres de su sala.
+export const disponibilidad = (funcion) => {
+  const capacidad = funcion.sala.capacidad;
+  const libres = capacidad - funcion.entradasVendidas;
+  if (libres <= 0) return { nivel: 'agotada', texto: 'Agotada' };
+  const porcentaje = libres / capacidad;
+  if (porcentaje < 0.25) return { nivel: 'baja', texto: 'Disponibilidad baja' };
+  if (porcentaje < 0.5) return { nivel: 'media', texto: 'Disponibilidad media' };
+  return { nivel: 'alta', texto: 'Disponibilidad alta' };
+};
+
+export const funcionesFuturas =(funciones, peliculaId, ahora) =>
   funciones.filter((f) => f.pelicula.id === peliculaId && new Date(f.horario) > ahora);
 
 // Las 3 próximas funciones de una película, ya listas para mostrar en la tarjeta.
@@ -28,7 +39,7 @@ export const proximasFunciones = (funciones, peliculaId, ahora, soloVip = false)
         dia: etiquetaDia(fecha, ahora),
         hora: `${dosDigitos(fecha.getHours())}:${dosDigitos(fecha.getMinutes())}`,
         idioma: /sub/i.test(f.idioma) ? 'Sub' : 'Dob',
-        disponible: f.entradasVendidas < f.sala.capacidad,
+        disponibilidad: disponibilidad(f),
         sala: f.sala.nombre,
         premium: esSalaVip(f.sala),
       };

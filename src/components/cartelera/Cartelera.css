@@ -365,7 +365,15 @@
 .pelicula-card_funcion:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.pelicula-card_funcion:disabled .pelicula-card_hora {
   text-decoration: line-through;
+}
+
+.pelicula-card_agotada {
+  font-size: 0.55rem;
+  color: var(--texto-suave);
 }
 
 .pelicula-card button:focus-visible,
