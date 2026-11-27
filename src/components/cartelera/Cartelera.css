@@ -316,9 +316,14 @@
 }
 
 .pelicula-card_funciones-grilla {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  justify-content: center;
   gap: 10px;
+}
+
+.pelicula-card_funciones-grilla > .pelicula-card_funcion {
+  flex: 0 1 calc((100% - 20px) / 3);
+  min-width: 0;
 }
 
 .pelicula-card_funcion {

@@ -92,8 +92,7 @@ const PeliculaDetalle = () => {
   
   
   
-  const funcionesDeLaPelicula = funciones
-    .filter((funcion) => funcion.pelicula.id === pelicula.id)
+  const funcionesDeLaPelicula = funcionesFuturas(funciones, pelicula.id, ahora)
     .sort((a, b) => (a.horario > b.horario ? 1 : -1));
 
   
