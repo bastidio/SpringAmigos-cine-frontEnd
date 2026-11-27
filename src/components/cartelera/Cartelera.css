@@ -87,6 +87,10 @@
   padding: 40px 24px 96px;
 }
 
+.cartelera_seccion + .cartelera_seccion {
+  margin-top: 64px;
+}
+
 .cartelera_encabezado {
   display: flex;
   align-items: center;
@@ -276,6 +280,13 @@
   text-align: center;
   cursor: pointer;
   font-size: x-large;
+}
+
+.pelicula-card_estreno {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--dorado-texto);
 }
 
 /* Horarios */

@@ -1,8 +1,7 @@
 import FavoritoBoton from './FavoritoBoton';
 
-// Componente tonto: recibe todo listo por props (las funciones ya vienen
-// filtradas y formateadas desde PeliculaList) y solo lo muestra.
-const PeliculaCard = ({ id, titulo, poster_url, clasificacion, funciones, verDetalle, reservar }) => {
+// Componente que recibe todo listo por props (las funciones ya vienen filtradas y formateadas desde PeliculaList) y solo lo muestra.
+const PeliculaCard = ({ id, titulo, poster_url, clasificacion, funciones, estreno, verDetalle, reservar }) => {
   return (
     <article className="pelicula-card">
       <div
@@ -40,6 +39,8 @@ const PeliculaCard = ({ id, titulo, poster_url, clasificacion, funciones, verDet
             {titulo}
           </button>
         </h3>
+
+        {estreno && <p className="pelicula-card_estreno">{estreno}</p>}
 
         <div className="pelicula-card_funciones">
           <p className="pelicula-card_rotulo">Próximas funciones</p>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchPelicula, fetchFunciones } from '../../redux/carteleraSlice';
 import PeliculaFicha from './PeliculaFicha';
 import FuncionCard from './FuncionCard';
+import { funcionesFuturas } from '../cartelera/funcionesPelicula';
 import './Detalle.css';
 
 
@@ -74,9 +75,7 @@ const PeliculaDetalle = () => {
 
   // "En cartelera" = tiene alguna función con horario mayor a ahora.
   const ahora = new Date();
-  const enCartelera = funciones.some(
-    (funcion) => funcion.pelicula.id === pelicula.id && new Date(funcion.horario) > ahora,
-  );
+  const enCartelera = funcionesFuturas(funciones, pelicula.id, ahora).length > 0;
 
   if (!enCartelera) {
     return (

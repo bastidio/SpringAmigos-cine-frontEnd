@@ -3,40 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPeliculas, fetchFunciones } from '../../redux/carteleraSlice';
 import CarruselDestacadas from './CarruselDestacadas';
-import PeliculaCard from './PeliculaCard';
+import GrillaPeliculas from './GrillaPeliculas';
+import SeccionPeliculas from './SeccionPeliculas';
 import Filtro from './Filtro';
-import { esSalaVip } from './esSalaVip';
+import { textoEstreno, tieneFuncionVip } from './funcionesPelicula';
 import './Cartelera.css';
-
-const DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-const dosDigitos = (n) => String(n).padStart(2, '0');
-
-const etiquetaDia = (fecha, ahora) => {
-  const inicioDia = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  const dias = Math.round((inicioDia(fecha) - inicioDia(ahora)) / 86400000);
-  if (dias === 0) return 'Hoy';
-  if (dias === 1) return 'Mañana';
-  return `${DIAS[fecha.getDay()]} ${dosDigitos(fecha.getDate())}/${dosDigitos(fecha.getMonth() + 1)}`;
-};
-
-// Las 3 próximas funciones de una película, ya listas para mostrar en la tarjeta.
-const proximasFunciones = (funciones, peliculaId, ahora) =>
-  funciones
-    .filter((f) => f.pelicula.id === peliculaId && new Date(f.horario) > ahora)
-    .sort((a, b) => new Date(a.horario) - new Date(b.horario))
-    .slice(0, 3)
-    .map((f) => {
-      const fecha = new Date(f.horario);
-      return {
-        id: f.id,
-        dia: etiquetaDia(fecha, ahora),
-        hora: `${dosDigitos(fecha.getHours())}:${dosDigitos(fecha.getMinutes())}`,
-        idioma: /sub/i.test(f.idioma) ? 'Sub' : 'Dob',
-        disponible: f.entradasVendidas < f.sala.capacidad,
-        sala: f.sala.nombre,
-        premium: esSalaVip(f.sala),
-      };
-    });
 
 const PeliculaList = () => {
   const dispatch = useDispatch();
@@ -99,47 +70,55 @@ const PeliculaList = () => {
   });
 
   const ahora = new Date();
+  const peliculasVip = peliculas.filter((p) => tieneFuncionVip(funciones, p.id, ahora));
+  const estreno = (id) => textoEstreno(funciones, id, ahora);
+  const proximosEstrenos = peliculas.filter((p) => estreno(p.id));
+  const datosGrilla = { funciones, ahora, verDetalle, reservar };
 
   return (
     <>
       <CarruselDestacadas peliculas={peliculas.slice(0, 5)} />
 
       <div className="cartelera_contenido">
-        <div className="cartelera_encabezado">
-          <div>
-            <h2 className="cartelera_titulo">En cartelera</h2>
-            <p className="cartelera_cantidad">{visibles.length} películas disponibles</p>
-          </div>
+        <SeccionPeliculas
+          titulo="Películas VIP"
+          subtitulo="Viví la película con la máxima comodidad"
+          peliculas={peliculasVip}
+          soloVip
+          {...datosGrilla}
+        />
 
-          <div className="cartelera_filtros">
-            <Filtro
-              etiqueta="Clasificación"
-              valor={clasificacion}
-              opciones={clasificaciones}
-              cambiar={setClasificacion}
-            />
-            <Filtro etiqueta="Idioma" valor={idioma} opciones={idiomas} cambiar={setIdioma} />
-          </div>
-        </div>
+        <section className="cartelera_seccion">
+          <div className="cartelera_encabezado">
+            <div>
+              <h2 className="cartelera_titulo">En cartelera</h2>
+              <p className="cartelera_cantidad">{visibles.length} películas disponibles</p>
+            </div>
 
-        {visibles.length === 0 ? (
-          <p className="cartelera_sin-resultados">No hay películas con esos filtros.</p>
-        ) : (
-          <div className="cartelera_grid">
-            {visibles.map((pelicula) => (
-              <PeliculaCard
-                key={pelicula.id}
-                id={pelicula.id}
-                titulo={pelicula.titulo}
-                poster_url={pelicula.poster_url}
-                clasificacion={pelicula.clasificacion}
-                funciones={proximasFunciones(funciones, pelicula.id, ahora)}
-                verDetalle={verDetalle}
-                reservar={reservar}
+            <div className="cartelera_filtros">
+              <Filtro
+                etiqueta="Clasificación"
+                valor={clasificacion}
+                opciones={clasificaciones}
+                cambiar={setClasificacion}
               />
-            ))}
+              <Filtro etiqueta="Idioma" valor={idioma} opciones={idiomas} cambiar={setIdioma} />
+            </div>
           </div>
-        )}
+
+          {visibles.length === 0 ? (
+            <p className="cartelera_sin-resultados">No hay películas con esos filtros.</p>
+          ) : (
+            <GrillaPeliculas peliculas={visibles} {...datosGrilla} />
+          )}
+        </section>
+
+        <SeccionPeliculas
+          titulo="Próximos estrenos"
+          peliculas={proximosEstrenos}
+          estreno={estreno}
+          {...datosGrilla}
+        />
       </div>
     </>
   );
