@@ -1,7 +1,4 @@
-
-
-
-
+import CampoContrasena from './CampoContrasena';
 
 function RegisterForm({ datos, error, enviando, onCambiar, onEnviar, onIrALogin }) {
   return (
@@ -42,8 +39,7 @@ function RegisterForm({ datos, error, enviando, onCambiar, onEnviar, onIrALogin 
 
       <label className="auth-form_campo">
         <span>Contraseña</span>
-        <input
-          type="password"
+        <CampoContrasena
           name="password"
           value={datos.password}
           onChange={onCambiar}

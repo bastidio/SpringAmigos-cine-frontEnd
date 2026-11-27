@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../redux/usuarioSlice';
-
-
+import CampoContrasena from './CampoContrasena';
 
 function Login({ onIrARegistro }) {
   const [email, setEmail] = useState('');
@@ -41,8 +40,7 @@ function Login({ onIrARegistro }) {
 
       <label className="auth-form_campo">
         <span>Contraseña</span>
-        <input
-          type="password"
+        <CampoContrasena
           value={password}
           onChange={(evento) => setPassword(evento.target.value)}
           required

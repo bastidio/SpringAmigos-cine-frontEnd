@@ -80,6 +80,44 @@
   border-color: #d8ae55;
 }
 
+.auth-form_contrasena {
+  position: relative;
+  display: flex;
+}
+
+.auth-form_contrasena input {
+  flex: 1;
+  min-width: 0;
+  padding-right: 42px;
+}
+
+.auth-form_ojo {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: #b8aec2;
+  cursor: pointer;
+}
+
+.auth-form_ojo:hover {
+  color: #f1ece6;
+}
+
+.auth-form_ojo:focus-visible {
+  outline: 2px solid #d8ae55;
+  outline-offset: 0;
+}
+
 .auth-form_error {
   color: #e06565;
   font-size: 13px;
