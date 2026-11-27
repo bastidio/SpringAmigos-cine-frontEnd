@@ -14,7 +14,7 @@ import PerfilDetalle from './PerfilDetalle';
 const PerfilMenu = ({ onLogout, onIrAEntradas }) => {
   const [abierto, setAbierto] = useState(false);
   const dispatch = useDispatch();
-  const { perfil, loading } = useSelector((state) => state.usuario);
+  const { perfil, avatar, loading } = useSelector((state) => state.usuario);
 
   // El perfil se pide recién al abrir el menú, y si todavía no está en el store (después del login, o después de una compra porque cambian las entradas activas).
   // en la espera se muestra el spinner.
@@ -54,7 +54,7 @@ const PerfilMenu = ({ onLogout, onIrAEntradas }) => {
       onBlur={cerrarSiSaleElFoco}
       onKeyDown={cerrarConEscape}
     >
-      <PerfilAvatarBoton abierto={abierto} usuario={perfil} onClick={alternar} />
+      <PerfilAvatarBoton abierto={abierto} usuario={perfil !== null ? perfil : avatar} onClick={alternar} />
 
       {abierto && <PerfilDetalle onLogout={onLogout} onIrAEntradas={irAEntradas} />}
     </div>

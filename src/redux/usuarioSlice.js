@@ -9,7 +9,11 @@ const URL_PERFIL = "/users/me";
 export const login = createAsyncThunk("usuario/login", async ({ email, password }, { rejectWithValue }) => {
   try {
     const { data } = await axios.post(`${URL_AUTH}/authenticate`, { email, password });
-    return { accessToken: data.access_token, rol: data.rol };
+    return {
+      accessToken: data.access_token,
+      rol: data.rol,
+      avatar: { nombre: data.nombre, fotoPerfil: data.fotoPerfil },
+    };
   } catch (error) {
     return rejectWithValue(mensajeDeError(error));
   }
@@ -18,7 +22,11 @@ export const login = createAsyncThunk("usuario/login", async ({ email, password 
 export const register = createAsyncThunk("usuario/register", async (datos, { rejectWithValue }) => {
   try {
     const { data } = await axios.post(`${URL_AUTH}/register`, datos);
-    return { accessToken: data.access_token, rol: data.rol };
+    return {
+      accessToken: data.access_token,
+      rol: data.rol,
+      avatar: { nombre: data.nombre, fotoPerfil: data.fotoPerfil },
+    };
   } catch (error) {
     return rejectWithValue(mensajeDeError(error));
   }
@@ -39,6 +47,7 @@ const usuarioSlice = createSlice({
     token: "",
     rol: null,
     perfil: null,
+    avatar: null,
     loading: false,
     error: null,
   },
@@ -47,6 +56,7 @@ const usuarioSlice = createSlice({
       state.token = "";
       state.rol = null;
       state.perfil = null;
+      state.avatar = null;
       state.error = null;
     },
   },
@@ -60,6 +70,7 @@ const usuarioSlice = createSlice({
         state.loading = false;
         state.token = action.payload.accessToken;
         state.rol = action.payload.rol;
+        state.avatar = action.payload.avatar;
         state.perfil = null;
       })
       .addCase(login.rejected, (state, action) => {
@@ -74,6 +85,7 @@ const usuarioSlice = createSlice({
         state.loading = false;
         state.token = action.payload.accessToken;
         state.rol = action.payload.rol;
+        state.avatar = action.payload.avatar;
         state.perfil = null;
       })
       .addCase(register.rejected, (state, action) => {
