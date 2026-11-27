@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import storage from 'redux-persist/es/storage';
+import storageSession from 'redux-persist/es/storage/session';
 import usuarioReducer from './usuarioSlice';
 import carteleraReducer from './carteleraSlice';
 import carritoReducer from './carritoSlice';
@@ -11,7 +11,7 @@ import categoriasReducer from './categoriasSlice';
 import ordenesReducer from './ordenesSlice';
 import descuentosReducer from './descuentosSlice';
 
-const usuarioPersistConfig = { key: 'usuario', storage, whitelist: ['token'] };
+const usuarioPersistConfig = { key: 'usuario', storage: storageSession, whitelist: ['token'] };
 
 export const store = configureStore({
   reducer: {
