@@ -1,0 +1,149 @@
+.banner-vip {
+  display: grid;
+  /* ~60% texto, ~40% imagen */
+  grid-template-columns: 3fr 2fr;
+  /* Va entre secciones: separa la de arriba y la de abajo (sin margen arriba si no hay películas VIP) */
+  margin: 64px 0;
+  border-radius: var(--radio-card);
+  overflow: hidden;
+  /* Fondo de las cards con un brillo violeta muy suave arriba a la izquierda */
+  background:
+    radial-gradient(circle at 0 0, color-mix(in srgb, var(--morado-texto) 10%, transparent), transparent 55%),
+    var(--superficie);
+  border: 1px solid color-mix(in srgb, var(--dorado) 30%, transparent);
+}
+
+.banner-vip_texto {
+  padding: 48px;
+}
+
+.banner-vip_etiqueta {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--dorado-texto);
+}
+
+.banner-vip_titulo {
+  font-family: var(--titulos);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--texto);
+  margin: 12px 0 16px;
+}
+
+.banner-vip_bajada {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--texto-suave);
+}
+
+.banner-vip_items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 32px;
+  padding: 0;
+  list-style: none;
+}
+
+.banner-vip_item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.banner-vip_icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--elevado);
+  color: var(--dorado-texto);
+}
+
+.banner-vip_item-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.banner-vip_item-texto {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--texto-suave);
+  margin-top: 2px;
+}
+
+.banner-vip_imagen {
+  position: relative;
+  min-height: 320px;
+}
+
+.banner-vip_imagen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Pegado al borde derecho de la imagen, con el texto alineado a la derecha */
+.banner-vip_recuadro {
+  position: absolute;
+  right: 0;
+  bottom: 24px;
+  max-width: 85%;
+  padding: 16px 20px;
+  text-align: right;
+  border-radius: 12px 0 0 12px;
+  background-color: rgba(11, 8, 16, 0.78);
+  border: 1px solid color-mix(in srgb, var(--dorado) 35%, transparent);
+  border-right: none;
+  backdrop-filter: blur(6px);
+}
+
+.banner-vip_recuadro-titulo {
+  font-family: var(--titulos);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--dorado-texto);
+}
+
+.banner-vip_recuadro-texto {
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--texto);
+  margin-top: 4px;
+}
+
+@media (max-width: 767px) {
+  .banner-vip {
+    grid-template-columns: 1fr;
+  }
+
+  .banner-vip_texto {
+    padding: 32px 24px;
+  }
+
+  .banner-vip_titulo {
+    font-size: 26px;
+  }
+
+  .banner-vip_items {
+    grid-template-columns: 1fr;
+  }
+
+  .banner-vip_imagen {
+    min-height: 260px;
+  }
+}
+
+.banner-vip:first-child {
+  margin-top: 0;
+}

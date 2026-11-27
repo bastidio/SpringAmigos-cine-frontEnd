@@ -5,6 +5,7 @@ import { fetchPeliculas, fetchFunciones } from '../../redux/carteleraSlice';
 import CarruselDestacadas from './CarruselDestacadas';
 import GrillaPeliculas from './GrillaPeliculas';
 import SeccionPeliculas from './SeccionPeliculas';
+import BannerVip from './BannerVip';
 import Filtro from './Filtro';
 import { textoEstreno, tieneFuncionVip } from './funcionesPelicula';
 import './Cartelera.css';
@@ -88,6 +89,15 @@ const PeliculaList = () => {
           {...datosGrilla}
         />
 
+        <BannerVip />
+
+        <SeccionPeliculas
+          titulo="Próximos estrenos"
+          peliculas={proximosEstrenos}
+          estreno={estreno}
+          {...datosGrilla}
+        />
+
         <section className="cartelera_seccion">
           <div className="cartelera_encabezado">
             <div>
@@ -112,13 +122,6 @@ const PeliculaList = () => {
             <GrillaPeliculas peliculas={visibles} {...datosGrilla} />
           )}
         </section>
-
-        <SeccionPeliculas
-          titulo="Próximos estrenos"
-          peliculas={proximosEstrenos}
-          estreno={estreno}
-          {...datosGrilla}
-        />
       </div>
     </>
   );

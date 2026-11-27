@@ -1,4 +1,6 @@
-const MapaButacas = ({ butacas, seleccionadas, alternar }) => {
+import { esPasillo } from './esPasillo';
+
+const MapaButacas = ({ butacas, seleccionadas, alternar, sala }) => {
   const filas = [...new Set(butacas.map((butaca) => butaca.fila))];
 
   const claseDe = (butaca) => {
@@ -22,7 +24,6 @@ const MapaButacas = ({ butacas, seleccionadas, alternar }) => {
       <div className="mapa_filas">
         {filas.map((fila) => {
           const butacasDeLaFila = butacas.filter((butaca) => butaca.fila === fila);
-          const mitad = Math.ceil(butacasDeLaFila.length / 2);
 
           return (
             <div key={fila} className="mapa_fila">
@@ -32,7 +33,7 @@ const MapaButacas = ({ butacas, seleccionadas, alternar }) => {
                 <button
                   key={butaca.id}
                   type="button"
-                  className={claseDe(butaca) + (i === mitad ? ' butaca--pasillo' : '')}
+                  className={claseDe(butaca) + (esPasillo(i, butacasDeLaFila.length, sala) ? ' butaca--pasillo' : '')}
                   onClick={() => alternar(butaca)}
                   disabled={butaca.estado === 'OCUPADA'}
                   aria-pressed={seleccionadas.includes(butaca.id)}

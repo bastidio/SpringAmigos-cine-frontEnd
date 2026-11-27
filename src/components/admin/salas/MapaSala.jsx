@@ -1,6 +1,8 @@
+import { esPasillo } from '../../butacas/esPasillo';
+
 const letraDeFila = (fila) => String.fromCharCode(64 + fila);
 
-const MapaSala = ({ asientos, capacidad, estado }) => {
+const MapaSala = ({ asientos, capacidad, estado, sala }) => {
   if (estado === 'cargando') {
     return <p className="mapa-sala_mensaje">Cargando mapa de butacas...</p>;
   }
@@ -45,7 +47,6 @@ const MapaSala = ({ asientos, capacidad, estado }) => {
       <div className="mapa-sala_filas">
         {filas.map((fila) => {
           const butacasDeLaFila = ordenados.filter((asiento) => asiento.fila === fila);
-          const mitad = Math.ceil(butacasDeLaFila.length / 2);
 
           return (
             <div key={fila} className="mapa-sala_fila">
@@ -54,7 +55,7 @@ const MapaSala = ({ asientos, capacidad, estado }) => {
               {butacasDeLaFila.map((asiento, i) => (
                 <span
                   key={asiento.id}
-                  className={'mapa-sala_butaca' + (i === mitad ? ' mapa-sala_butaca--pasillo' : '')}
+                  className={'mapa-sala_butaca' + (esPasillo(i, butacasDeLaFila.length, sala) ? ' mapa-sala_butaca--pasillo' : '')}
                   title={letraDeFila(fila) + asiento.numero}
                   role="img"
                   aria-label={'Butaca ' + letraDeFila(fila) + asiento.numero}

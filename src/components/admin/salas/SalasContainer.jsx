@@ -190,6 +190,7 @@ const AdminSalasView = () => {
               asientos={asientosDeLaSala}
               capacidad={salaSeleccionada.capacidad}
               estado={estadoAsientos}
+              sala={salaSeleccionada}
             />
 
           </div>

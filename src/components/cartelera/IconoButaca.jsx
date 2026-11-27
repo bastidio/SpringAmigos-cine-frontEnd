@@ -9,7 +9,7 @@ const Butaca = ({ x }) => (
   </g>
 );
 
-const IconoButaca = ({ nivel, tamano = 14 }) => {
+const IconoButaca = ({ nivel, tamano = 14, decorativo = false }) => {
   const texto = `Disponibilidad ${nivel}`;
 
   return (
@@ -19,10 +19,11 @@ const IconoButaca = ({ nivel, tamano = 14 }) => {
       height={tamano}
       viewBox="0 0 38 24"
       fill="currentColor"
-      role="img"
-      aria-label={texto}
+      role={decorativo ? undefined : 'img'}
+      aria-label={decorativo ? undefined : texto}
+      aria-hidden={decorativo ? 'true' : undefined}
     >
-      <title>{texto}</title>
+      {!decorativo && <title>{texto}</title>}
       <Butaca x={-3} />
       <Butaca x={17} />
     </svg>

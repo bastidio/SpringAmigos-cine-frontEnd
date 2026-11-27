@@ -100,7 +100,7 @@ const SeleccionButacas = () => {
             Esta sala todavía no tiene butacas cargadas.
           </p>
         ) : (
-          <MapaButacas butacas={butacas} seleccionadas={seleccionadas} alternar={alternarButaca} />
+          <MapaButacas butacas={butacas} seleccionadas={seleccionadas} alternar={alternarButaca} sala={funcion.sala} />
         )}
 
         <PanelSeleccion
