@@ -1,35 +1,41 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { mensajeDeError } from "./mensajeDeError";
+import { mensajeDeError, SIN_CONEXION } from "./mensajeDeError";
 import { confirmarCompra } from "./ordenesSlice";
 
 const URL_AUTH = "/api/v1/auth";
 const URL_PERFIL = "/users/me";
 
 export const login = createAsyncThunk("usuario/login", async ({ email, password }, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.post(`${URL_AUTH}/authenticate`, { email, password });
-    return {
-      accessToken: data.access_token,
-      rol: data.rol,
-      avatar: { nombre: data.nombre, fotoPerfil: data.fotoPerfil },
-    };
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const respuesta = await axios.post(`${URL_AUTH}/authenticate`, { email, password }, {
+    validateStatus: () => true,
+  });
+  // El back responde 401 si el email no existe o la contraseña no coincide.
+  if (respuesta.status === 401) {
+    return rejectWithValue("Email o contraseña incorrectos");
   }
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
+  }
+  return {
+    accessToken: respuesta.data.access_token,
+    rol: respuesta.data.rol,
+    avatar: { nombre: respuesta.data.nombre, fotoPerfil: respuesta.data.fotoPerfil },
+  };
 });
 
 export const register = createAsyncThunk("usuario/register", async (datos, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.post(`${URL_AUTH}/register`, datos);
-    return {
-      accessToken: data.access_token,
-      rol: data.rol,
-      avatar: { nombre: data.nombre, fotoPerfil: data.fotoPerfil },
-    };
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const respuesta = await axios.post(`${URL_AUTH}/register`, datos, {
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return {
+    accessToken: respuesta.data.access_token,
+    rol: respuesta.data.rol,
+    avatar: { nombre: respuesta.data.nombre, fotoPerfil: respuesta.data.fotoPerfil },
+  };
 });
 
 // como el perfil del usuario ya trae el rol, también sirve para saber si es ADMIN
@@ -75,7 +81,8 @@ const usuarioSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = SIN_CONEXION;
+        if (action.payload) state.error = action.payload;
       })
       .addCase(register.pending, (state) => {
         state.loading = true;
@@ -90,7 +97,8 @@ const usuarioSlice = createSlice({
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = SIN_CONEXION;
+        if (action.payload) state.error = action.payload;
       })
       .addCase(fetchPerfil.pending, (state) => {
         state.loading = true;

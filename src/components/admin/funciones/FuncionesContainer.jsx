@@ -7,6 +7,7 @@ import FuncionesForm from './FuncionForm';
 import BotonAccion from '../ui/BotonAccion';
 import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
+import { SIN_CONEXION } from '../../../redux/mensajeDeError';
 
 const FuncionesContainer = () => {
   const dispatch = useDispatch();
@@ -70,7 +71,8 @@ const FuncionesContainer = () => {
     setErrorGuardar(null);
     const res = await dispatch( funcionEditando !== null ? updateFuncion({ ...formData, id: funcionEditando.id }) : createFuncion(formData));
     if (res.error) {
-      setErrorGuardar(res.payload);
+      setErrorGuardar(SIN_CONEXION);
+      if (res.payload) setErrorGuardar(res.payload);
       return;
     }
     cerrarModal();
@@ -93,7 +95,8 @@ const FuncionesContainer = () => {
     const res = await dispatch(deleteFuncion(funcionAEliminar));
     setEliminando(false);
     if (res.error) {
-      setErrorOperacion(res.payload);
+      setErrorOperacion(SIN_CONEXION);
+      if (res.payload) setErrorOperacion(res.payload);
       return;
     }
     setFuncionAEliminar(null);

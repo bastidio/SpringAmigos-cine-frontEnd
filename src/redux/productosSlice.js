@@ -20,64 +20,64 @@ export const fetchProductosAdmin = createAsyncThunk("productos/fetchProductosAdm
 });
 
 export const createProducto = createAsyncThunk("productos/createProducto", async (producto, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { data } = await axios.post(URL, producto, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.post(URL, producto, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const updateProducto = createAsyncThunk("productos/updateProducto", async (producto, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { id, ...datos } = producto;
-    const { data } = await axios.put(`${URL}/${id}`, datos, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const { id, ...datos } = producto;
+  const respuesta = await axios.put(`${URL}/${id}`, datos, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const actualizarStock = createAsyncThunk("productos/actualizarStock", async ({ id, stock }, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { data } = await axios.patch(`${URL}/${id}/stock`, { stock }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.patch(`${URL}/${id}/stock`, { stock }, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const reactivarProducto = createAsyncThunk("productos/reactivarProducto", async (id, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { data } = await axios.patch(`${URL}/${id}/reactivar`, null, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.patch(`${URL}/${id}/reactivar`, null, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const deleteProducto = createAsyncThunk("productos/deleteProducto", async (id, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    await axios.delete(`${URL}/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return id;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.delete(`${URL}/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return id;
 });
 
 // Reemplaza el producto en la lista si ya estaba.

@@ -9,6 +9,7 @@ import { butacasFaltantes, butacasSobrantes, butacasTotales, agruparPorFila } fr
 import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
 import MapaSala from './MapaSala';
+import { SIN_CONEXION } from '../../../redux/mensajeDeError';
 
 const AdminSalasView = () => {
   const dispatch = useDispatch();
@@ -78,7 +79,8 @@ const AdminSalasView = () => {
     if (res.error) {
       setGuardando(false);
       setProgreso(null);
-      setErrorGuardar(res.payload);
+      setErrorGuardar(SIN_CONEXION);
+      if (res.payload) setErrorGuardar(res.payload);
       return;
     }
     const salaId = res.payload.id;
@@ -90,7 +92,8 @@ const AdminSalasView = () => {
       setProgreso({ hechas, total });
       const fallida = resultados.find((r) => r.error);
       if (fallida) {
-        errorButacas = fallida.payload;
+        errorButacas = SIN_CONEXION;
+        if (fallida.payload) errorButacas = fallida.payload;
         break;
       }
     }
@@ -102,7 +105,8 @@ const AdminSalasView = () => {
         setProgreso({ hechas, total });
         const fallida = resultados.find((r) => r.error);
         if (fallida) {
-          errorButacas = fallida.payload;
+          errorButacas = SIN_CONEXION;
+          if (fallida.payload) errorButacas = fallida.payload;
           break;
         }
       }

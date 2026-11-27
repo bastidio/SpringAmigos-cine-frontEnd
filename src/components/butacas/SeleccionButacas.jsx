@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { agregarButacas } from '../../redux/carritoSlice';
 import { fetchButacas } from '../../redux/carteleraSlice';
 import './Butacas.css';
+import { SIN_CONEXION } from '../../redux/mensajeDeError';
 
 const SeleccionButacas = () => {
   const { id } = useParams();
@@ -61,7 +62,8 @@ const SeleccionButacas = () => {
     if (!res.error) {
       navigate(destino);
     } else {
-      setErrorCarrito(res.payload);
+      setErrorCarrito(SIN_CONEXION);
+      if (res.payload) setErrorCarrito(res.payload);
     }
   };
 

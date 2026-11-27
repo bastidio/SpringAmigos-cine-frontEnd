@@ -6,6 +6,7 @@ import DescuentosForm from './DescuentosForm';
 import BotonAccion from '../ui/BotonAccion';
 import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
+import { SIN_CONEXION } from '../../../redux/mensajeDeError';
 
 const DescuentosContainer = () => {
   const dispatch = useDispatch();
@@ -43,7 +44,8 @@ const DescuentosContainer = () => {
     setErrorGuardar(null);
     const res = await dispatch(descuentoEditando !== null ? updateDescuento({ ...formData, id: descuentoEditando.id }) : createDescuento(formData));
     if (res.error) {
-      setErrorGuardar(res.payload);
+      setErrorGuardar(SIN_CONEXION);
+      if (res.payload) setErrorGuardar(res.payload);
       return;
     }
     cerrarModal();
@@ -54,7 +56,10 @@ const DescuentosContainer = () => {
     const res = await dispatch(accion);
     setProcesando(false);
     setDescuentoAEliminar(null);
-    if (res.error) setErrorAccion(res.payload);
+    if (res.error) {
+      setErrorAccion(SIN_CONEXION);
+      if (res.payload) setErrorAccion(res.payload);
+    }
   };
 
   const confirmarEliminar = () => cambiarActivo(deleteDescuento(descuentoAEliminar.id));

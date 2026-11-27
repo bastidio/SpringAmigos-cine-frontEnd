@@ -25,40 +25,40 @@ export const fetchPelicula = createAsyncThunk("cartelera/fetchPelicula", async (
 });
 
 export const createPelicula = createAsyncThunk("cartelera/createPelicula", async (pelicula, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { data } = await axios.post(URL_PELICULAS, pelicula, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.post(URL_PELICULAS, pelicula, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const updatePelicula = createAsyncThunk("cartelera/updatePelicula", async (pelicula, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { id, ...datos } = pelicula;
-    const { data } = await axios.put(`${URL_PELICULAS}/${id}`, datos, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const { id, ...datos } = pelicula;
+  const respuesta = await axios.put(`${URL_PELICULAS}/${id}`, datos, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const deletePelicula = createAsyncThunk("cartelera/deletePelicula", async (id, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    await axios.delete(`${URL_PELICULAS}/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return id;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.delete(`${URL_PELICULAS}/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return id;
 });
 
 
@@ -73,40 +73,40 @@ export const fetchFuncion = createAsyncThunk("cartelera/fetchFuncion", async (id
 });
 
 export const createFuncion = createAsyncThunk("cartelera/createFuncion", async (funcion, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { data } = await axios.post(URL_FUNCIONES, funcion, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.post(URL_FUNCIONES, funcion, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const updateFuncion = createAsyncThunk("cartelera/updateFuncion", async (funcion, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { id, ...datos } = funcion;
-    const { data } = await axios.put(`${URL_FUNCIONES}/${id}`, datos, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const { id, ...datos } = funcion;
+  const respuesta = await axios.put(`${URL_FUNCIONES}/${id}`, datos, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const deleteFuncion = createAsyncThunk("cartelera/deleteFuncion", async (id, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    await axios.delete(`${URL_FUNCIONES}/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return id;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.delete(`${URL_FUNCIONES}/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return id;
 });
 
 export const fetchButacas = createAsyncThunk("cartelera/fetchButacas", async (funcionId) => {

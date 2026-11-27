@@ -7,6 +7,7 @@ import KioscoForm from './KioscoForm';
 import BotonAccion from '../ui/BotonAccion';
 import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
+import { SIN_CONEXION } from '../../../redux/mensajeDeError';
 
 const AdminKioscoView = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,10 @@ const AdminKioscoView = () => {
 
   const manejarActualizacionStock = async (productoId, nuevoStock) => {
     const res = await dispatch(actualizarStock({ id: productoId, stock: nuevoStock }));
-    if (res.error) setErrorAccion(res.payload);
+    if (res.error) {
+      setErrorAccion(SIN_CONEXION);
+      if (res.payload) setErrorAccion(res.payload);
+    }
   };
 
   const cambiarActivo = async (accion) => {
@@ -39,7 +43,10 @@ const AdminKioscoView = () => {
     const res = await dispatch(accion);
     setProcesando(false);
     setProductoAEliminar(null);
-    if (res.error) setErrorAccion(res.payload);
+    if (res.error) {
+      setErrorAccion(SIN_CONEXION);
+      if (res.payload) setErrorAccion(res.payload);
+    }
   };
 
   const confirmarEliminar = () => cambiarActivo(deleteProducto(productoAEliminar.id));
@@ -60,7 +67,8 @@ const AdminKioscoView = () => {
     setErrorGuardar(null);
     const res = await dispatch(productoEditando ? updateProducto({ ...payload, id: productoEditando.id }) : createProducto(payload));
     if (res.error) {
-      setErrorGuardar(res.payload);
+      setErrorGuardar(SIN_CONEXION);
+      if (res.payload) setErrorGuardar(res.payload);
       return;
     }
     cerrarModal();

@@ -20,15 +20,15 @@ export const fetchMisEntradas = createAsyncThunk("ordenes/fetchMisEntradas", asy
 });
 
 export const confirmarCompra = createAsyncThunk("ordenes/confirmarCompra", async (body, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { data } = await axios.post("/api/checkout", body, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.post("/api/checkout", body, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 const ordenesSlice = createSlice({

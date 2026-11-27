@@ -13,6 +13,7 @@ import PagoExitoso from './PagoExitoso';
 import PagoTarjeta from './PagoTarjeta';
 import PanelCheckout from './PanelCheckout';
 import './Checkout.css';
+import { SIN_CONEXION } from '../../redux/mensajeDeError';
 
 const moneda = (valor) =>
   Number(valor ?? 0).toLocaleString('es-AR', {
@@ -106,7 +107,8 @@ const CheckoutDetalle = () => {
     }
     dispatch(fetchCarrito());
     if (codigoAplicado !== null) setRevalidacion((veces) => veces + 1);
-    setError(res.payload);
+    setError(SIN_CONEXION);
+    if (res.payload) setError(res.payload);
   };
 
   if (cargando) {

@@ -6,13 +6,11 @@ import { fetchProductos } from '../../redux/productosSlice';
 import CategoriaTabs from './CategoriaTabs';
 import ProductoCard from './ProductoCard';
 import './Kiosco.css';
+import { SIN_CONEXION } from '../../redux/mensajeDeError';
 
 const elegirImagen = (producto) => {
   return producto.imagenes?.length > 0 ? producto.imagenes[0].url : null;
 };
-
-
-
 
 const ProductoList = () => {
   const { token } = useSelector((state) => state.usuario);
@@ -44,7 +42,8 @@ const ProductoList = () => {
     const res = await dispatch(accion);
     setOcupadoId(null);
     if (res.error) {
-      setErrorCarrito(res.payload);
+      setErrorCarrito(SIN_CONEXION);
+      if (res.payload) setErrorCarrito(res.payload);
     }
   };
 

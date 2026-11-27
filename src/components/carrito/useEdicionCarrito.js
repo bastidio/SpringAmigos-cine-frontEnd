@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCarrito, modificarCantidad, eliminarItem, vaciarCarrito, setVencimiento } from '../../redux/carritoSlice';
 import { fetchFuncion } from '../../redux/carteleraSlice';
+import { SIN_CONEXION } from '../../redux/mensajeDeError';
 
 const informarVencimiento = async (funcionId, dispatch) => {
   let puedeReelegir = false;
@@ -53,7 +54,10 @@ const useEdicionCarrito = () => {
     setErrorAccion(null);
     const res = await dispatch(accion);
     setGuardando(false);
-    if (res.error) setErrorAccion(res.payload);
+    if (res.error) {
+      setErrorAccion(SIN_CONEXION);
+      if (res.payload) setErrorAccion(res.payload);
+    }
   };
 
   const cambiarCantidad = (item, cantidad) => {

@@ -3,10 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import RegisterForm from './RegisterForm';
 import { register } from '../../redux/usuarioSlice';
-
-
-
-
+import { SIN_CONEXION } from '../../redux/mensajeDeError';
 
 function Register({ onIrALogin }) {
   
@@ -39,7 +36,8 @@ function Register({ onIrALogin }) {
     if (!res.error) {
       navigate(res.payload.rol === 'ADMIN' ? '/admin/dashboard' : '/');
     } else {
-      setError(res.payload);
+      setError(SIN_CONEXION);
+      if (res.payload) setError(res.payload);
     }
   }
 

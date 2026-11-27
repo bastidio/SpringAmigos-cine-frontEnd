@@ -14,52 +14,52 @@ export const fetchDescuentos = createAsyncThunk("descuentos/fetchDescuentos", as
 });
 
 export const createDescuento = createAsyncThunk("descuentos/createDescuento", async (descuento, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { data } = await axios.post(URL, descuento, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.post(URL, descuento, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const updateDescuento = createAsyncThunk("descuentos/updateDescuento", async (descuento, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { id, ...datos } = descuento;
-    const { data } = await axios.put(`${URL}/${id}`, datos, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const { id, ...datos } = descuento;
+  const respuesta = await axios.put(`${URL}/${id}`, datos, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 export const deleteDescuento = createAsyncThunk("descuentos/deleteDescuento", async (id, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    await axios.delete(`${URL}/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return id;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.delete(`${URL}/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return id;
 });
 
 export const reactivarDescuento = createAsyncThunk("descuentos/reactivarDescuento", async (id, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().usuario.token;
-    const { data } = await axios.patch(`${URL}/${id}/reactivar`, null, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return data;
-  } catch (error) {
-    return rejectWithValue(mensajeDeError(error));
+  const token = getState().usuario.token;
+  const respuesta = await axios.patch(`${URL}/${id}/reactivar`, null, {
+    headers: { Authorization: `Bearer ${token}` },
+    validateStatus: () => true,
+  });
+  if (respuesta.status >= 400) {
+    return rejectWithValue(mensajeDeError(respuesta));
   }
+  return respuesta.data;
 });
 
 // valida el código contra el carrito actual y devuelve si es válido, mensaje, subtotal, monto y total

@@ -6,6 +6,7 @@ import PeliculasForm from './PeliculasForm';
 import BotonAccion from '../ui/BotonAccion';
 import AdminModal from '../ui/AdminModal';
 import VentanaEmergente from '../../ui/VentanaEmergente';
+import { SIN_CONEXION } from '../../../redux/mensajeDeError';
 
 const PeliculasContainer = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,8 @@ const PeliculasContainer = () => {
     setErrorGuardar(null);
     const res = await dispatch(peliculaEditando !== null ? updatePelicula({ ...formData, id: peliculaEditando.id }) : createPelicula(formData));
     if (res.error) {
-      setErrorGuardar(res.payload);
+      setErrorGuardar(SIN_CONEXION);
+      if (res.payload) setErrorGuardar(res.payload);
       return;
     }
     cerrarModal();
@@ -57,7 +59,10 @@ const PeliculasContainer = () => {
     const res = await dispatch(deletePelicula(peliculaABorrar));
     setBorrando(false);
     setPeliculaABorrar(null);
-    if (res.error) setErrorEliminar(res.payload);
+    if (res.error) {
+      setErrorEliminar(SIN_CONEXION);
+      if (res.payload) setErrorEliminar(res.payload);
+    }
   };
 
   const peliculasFiltradas = peliculas.filter(p =>

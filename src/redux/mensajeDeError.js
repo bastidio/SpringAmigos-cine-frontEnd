@@ -1,9 +1,9 @@
-// Arma un mensaje en español para el usuario a partir del error de axios.
-export const mensajeDeError = (error) => {
-  if (!error.response) {
-    return "No se pudo conectar con el servidor. Intentá de nuevo.";
-  }
-  const status = error.response.status;
+// Cuando el back no responde (apagado o sin red) axios tira excepción y el thunk queda rejected sin payload: se muestra este texto.
+export const SIN_CONEXION = "No se pudo conectar con el servidor. Intentá de nuevo.";
+
+// Arma un mensaje en español para el usuario a partir de la respuesta de error de axios (status y data).
+export const mensajeDeError = (respuesta) => {
+  const status = respuesta.status;
   if (status === 401 || status === 403) {
     return "Tu sesión venció. Volvé a ingresar.";
   }
@@ -11,7 +11,7 @@ export const mensajeDeError = (error) => {
     return "No se encontró lo que buscabas.";
   }
   if (status === 400 || status === 409) {
-    const data = error.response.data;
+    const data = respuesta.data;
     if (typeof data === "string" && data.trim() !== "") {
       return data;
     }
@@ -26,6 +26,10 @@ export const mensajeDeError = (error) => {
       return data.message;
     }
     return "No se pudo completar la operación. Revisá los datos.";
+  }
+  // En desarrollo, con el back apagado, el proxy de Vite responde 500 en vez de dejar la petición sin respuesta.
+  if (status >= 500) {
+    return "El servidor no está disponible en este momento. Intentá de nuevo más tarde.";
   }
   return "Ocurrió un error. Intentá de nuevo.";
 };

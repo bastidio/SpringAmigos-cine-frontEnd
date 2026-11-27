@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../redux/usuarioSlice';
 import CampoContrasena from './CampoContrasena';
+import { SIN_CONEXION } from '../../redux/mensajeDeError';
 
 function Login({ onIrARegistro }) {
   const [email, setEmail] = useState('');
@@ -20,7 +21,8 @@ function Login({ onIrARegistro }) {
     if (!res.error) {
       navigate(res.payload.rol === 'ADMIN' ? '/admin/dashboard' : '/');
     } else {
-      setError('Email o contraseña incorrectos');
+      setError(SIN_CONEXION);
+      if (res.payload) setError(res.payload);
     }
   }
 
